@@ -1,23 +1,13 @@
-client to main server
-최초 접속
 enum class GAME_LEVEL : byte{
     EASY;
     NORMAL;
     HARD;
 }
 
-client to lobby thread
-
-inGame
-
 struct Packet{
     float x, y;
     byte stateMask;
 }
-
-패턴은 시작 시 서버에서 시드 값을 생성해서 넘겨주면
-해당 시드 값을 계산해서 사용
-
 stateMask[BBBBBBBB]
      [0] 게임시작용 비트
         [00] 플레이어 번호
@@ -25,6 +15,40 @@ stateMask[BBBBBBBB]
                 [00] 목숨
                     [0] 진행중인가
                         [0] 우승인가
+
+class LockQueue{
+public:
+    LockQueue();
+    ~LockQueue();
+    void Push(Packet){
+        lock(); // mutex lock, 스코프를 벗어나면 자동으로 unlock
+        que.push();
+        notify(); // mutex 사용이 끝났다는 것을 기다리고 있는 스레드에게 알림
+    }
+    bool TryPop(Packet&){
+        lock();
+        if(que.empty()){
+            unlock();
+            return false;
+        }
+        packet = que.front();
+        que.pop();
+        return true;
+    }
+    void WaitPop(Packet&){
+        lock();
+        wait(); // notify가 호출될 때까지 대기
+        packet = que.front();
+        que.pop();
+    }
+private:
+    queue<Packet> que;
+    mutex mtx;
+    condition_variable cv;
+}
+
+패턴은 시작 시 서버에서 시드 값을 생성해서 넘겨주면
+해당 시드 값을 계산해서 사용
 
 struct ClientInfo{
     shared_ptr<queue<Packet>> packetQuePtr;
@@ -34,7 +58,7 @@ struct ClientInfo{
 
 queue<ClientInfo> Client_Info_Queue[GAME_LEVEL]
 
-queue<Packet> Packet[client_number]
+LockQueue<Packet> Packet[client_number]
 
 
 wait server func
@@ -64,15 +88,19 @@ while(){
 -------------------------------------------------------------------------------------------------
 
 lobby server func
-void Initialize() // wait server에서 호출
-while // client info queue 에 난이도에 따른 큐가 가득 찼는지 확인
-- 가득찬 경우
-void GameStart(ClientInfo, GAME_LEVEL)
-    dword void GameThread(ClientInfo, GAME_LEVEL) // 소켓 정보와 난이도 정보를 전달해 인게임 쓰레드를 생성
+void Initialize() 
+wait server에서 호출
+
+while 
+// client info queue 에 난이도에 따른 큐가 가득 찼는지 확인
+    - 가득찬 경우
+    void GameStart(ClientInfo, GAME_LEVEL)
+        dword void GameThread(ClientInfo, GAME_LEVEL) 
+        // 소켓 정보와 난이도 정보를 전달해 인게임 쓰레드를 생성
     
 -------------------------------------------------------------------------------------------------
-    
-inGame thread func
+
+inGame thread func // 여기서 처리되는 모든 데이터가 게임 플레이의 기준
 void Initialize(GAME_LEVEL, sock)
     // 초기 패킷을 toClientEventQue에 push
     // 초기 패킷 - [1][00 플레이어 번호][1 pos][0000 랜덤 패턴 seed 값], x, y : 플레이어 시작 위치
@@ -82,20 +110,63 @@ while(true){
         break;
     if (numOfPlayer == 1)
         // 해당 플레이어에게 승리 비트 전송
+        SendWinPacket(); // [0__* **01]
         // 게임 종료
+        GameEnd();
     
     // 게임 로직
     void GameLoop()
         // 모든 플레이어의 toServerQue 확인 후 처리
-        void Update()
+        toServerQueueCheck(); // 모든 클라이언트 이벤트 확인
+        void Update();
         // 충돌이 발생하면 toClientQue에 정해진 비트 규칙에따라 push
+        SendPacket(); // [0__1 __10]
         
     // 모든 플레이어의 가속도 정보 toClientQue push
+    SendPacket(); // [0__1 __10]
     
     if (time <= 0.3)
         // 모든 플레이어 위치 정보 toClientQue push (클라이언트 보정 용도)
+        SendPacket() // [0__0 __10]
 }
 
 -------------------------------------------------------------------------------------------------
 
 client
+
+class PacketManager{
+public:
+    PacketManager();
+    ~PacketManager();
+    void Initialize();
+    void SendPacket(Packet); // key event에서 호출
+    bool RecvPacket(); // toClientEventQue에 push
+    
+    shared_ptr<queue<Packet>> GetPacketQueue();
+    
+private:    
+    socket sock;
+    shared_ptr<queue<Packet>> toClientEventQue;
+}
+
+GLvoid keyboard(unsigned char key, int x, int y)
+{
+    float acc = gameManager.handleEvent(key, true);
+    PacketManager.SendPacket(acc);
+    glutPostRedisplay();
+}
+
+GLvoid keyUp(unsigned char key, int x, int y)
+{
+    float acc = gameManager.handleEvent(key, false);
+    PacketManager.SendPacket(acc);
+    glutPostRedisplay();
+}
+
+GLvoid updateTimer(int value)
+{
+    PacketManager.RecvPacket();
+    // elapsedTime update
+    gameManager.update(elapsedTime);
+    glutTimerFunc(1000 / gameSpeed, updateTimer, 0);
+}
