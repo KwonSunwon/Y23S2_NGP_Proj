@@ -17,3 +17,17 @@ void SoundManager::soundPlay(int _type)
 {
     soundSystem->playSound(sound[_type], 0, false, &channel);
 }
+
+void SoundManager::soundStop(int _type)
+{
+    channel->stop();
+}
+
+void SoundManager::setIsBgmPlay(bool in)
+{
+    isBgmPlay = in;
+}
+bool SoundManager::getIsBgmPlay()
+{
+    return isBgmPlay;
+}

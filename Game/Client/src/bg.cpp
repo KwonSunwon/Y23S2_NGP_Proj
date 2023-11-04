@@ -28,8 +28,8 @@ BG::BG()
     }
 
     initPos();
-    scale = glm::vec3(500, 500, 1);
-    pos = glm::vec3(-250, -250, -8);
+    scale = glm::vec3(300, 300, 1);
+    pos = glm::vec3(-150, -150, -8);
 }
 
 void BG::render(GLuint ID)
@@ -45,9 +45,17 @@ void BG::render(GLuint ID)
     glBindVertexArray(vao);
 
     if (!player.getProtectedMode())
+    {
+        scale = glm::vec3(100, 100, 1);
+        pos = glm::vec3(-50, -50, -8);
         glBindTexture(GL_TEXTURE_2D, texture[0]);
+    }
     else
+    {
+        scale = glm::vec3(500, 500, 1);
+        pos = glm::vec3(-250, -250, -8);
         glBindTexture(GL_TEXTURE_2D, texture[1]);
+    }
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }

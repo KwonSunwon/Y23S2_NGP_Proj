@@ -14,6 +14,11 @@ private:
 
     static unsigned int texture;
 
+    static GLuint _vao;
+    static GLuint _vbo;
+    static GLuint _nbo;
+    static GLuint _tbo;
+
 protected:
 public:
     Wall(float, float);

@@ -38,6 +38,7 @@ public:
     void collision();
     void move();
     void die();
+    int getPlayerDieTimer();
 };
 
 #endif

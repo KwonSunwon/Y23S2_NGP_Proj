@@ -17,6 +17,12 @@ vector<glm::vec3> Wall::normals;
 vector<glm::vec2> Wall::uvs;
 
 unsigned int Wall::texture = -1;
+
+GLuint Wall::_vao = -1;
+GLuint Wall::_vbo = -1;
+GLuint Wall::_nbo = -1;
+GLuint Wall::_tbo = -1;
+
 #endif
 
 extern Player player;
@@ -27,7 +33,7 @@ Wall::Wall(float posZ, float revolutionZ)
 {
     if (object == -1)
     {
-        object = objReader.loadObj("res/wall.obj");
+        object = objReader.loadObj("res/Rock.obj");
         vertices.resize(objReader.out_vertices.size());
         normals.resize(objReader.out_normals.size());
         uvs.resize(objReader.out_uvs.size());
@@ -38,6 +44,7 @@ Wall::Wall(float posZ, float revolutionZ)
             uvs[i] = objReader.out_uvs[i];
         }
     }
+
     if (revolutionZ > 360.0f)
     {
         revolutionZ -= 360.0f;
@@ -52,10 +59,10 @@ Wall::Wall(float posZ, float revolutionZ)
 
 Wall::~Wall()
 {
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &nbo);
-    glDeleteBuffers(1, &tbo);
-    glDeleteVertexArrays(1, &vao);
+    // glDeleteBuffers(1, &_vbo);
+    // glDeleteBuffers(1, &_nbo);
+    // glDeleteBuffers(1, &_tbo);
+    // glDeleteVertexArrays(1, &_vao);
 }
 
 void Wall::initTexture()
@@ -72,7 +79,7 @@ void Wall::initTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("res/Jupiter.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("res/Rock.png", &width, &height, &nrChannels, 0);
 
     if (data)
     {
@@ -88,26 +95,30 @@ void Wall::initTexture()
 
 void Wall::initBuffer()
 {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &nbo);
-    glGenBuffers(1, &tbo);
+    if (_vao != -1)
+        return;
+
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+    glGenBuffers(1, &_nbo);
+    glGenBuffers(1, &_tbo);
+
+    glBindVertexArray(_vao);
 
     // vertices
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
     // normals
-    glBindBuffer(GL_ARRAY_BUFFER, nbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _nbo);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(1);
 
     // texture
-    glBindBuffer(GL_ARRAY_BUFFER, tbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _tbo);
     glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(2);
@@ -123,11 +134,11 @@ void Wall::render(GLuint shaderProgramID)
     model = glm::rotate(model, glm::radians(rotate.y), glm::vec3(0, 1, 0));
     model = glm::rotate(model, glm::radians(rotate.x), glm::vec3(1, 0, 0));
     model = glm::rotate(model, glm::radians(rotate.z), glm::vec3(0, 0, 1));
-    model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+    model = glm::scale(model, glm::vec3(0.0015, 0.0015, 0.0015));
 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-    glBindVertexArray(vao);
+    glBindVertexArray(_vao);
     glBindTexture(GL_TEXTURE_2D, Wall::texture);
 
     glDrawArrays(GL_TRIANGLES, 0, object);
@@ -175,7 +186,7 @@ void Wall::collision()
     {
         if (abs(revolution.z - player.getRevolution().z) < 10 || abs(revolution.z + 360.0f - player.getRevolution().z) < 10 || abs(revolution.z - 360.0f - player.getRevolution().z) < 10)
         {
-            cout << "collision with Wall" << endl;
+            // cout << "collision with Wall" << endl;
             if (player.getProtectedMode())
             {
                 soundManager.soundPlay(WALL_DESTROY);

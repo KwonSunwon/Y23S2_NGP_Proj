@@ -44,7 +44,6 @@ void NormalStage::init()
     makePattern(1);
     for (int i = 0; i < 20; ++i)
     {
-        cout << i << endl;
         Particle* tempP = new Particle(true);
         tempP->initBuffer();
         gameWorld.add_object(tempP);
@@ -113,4 +112,5 @@ void NormalStage::draw()
 }
 void NormalStage::out()
 {
+    patterTime = 0;
 }

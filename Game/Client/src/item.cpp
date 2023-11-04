@@ -29,7 +29,7 @@ Item::Item(float posZ, float revolutionZ)
 {
     if (object == -1)
     {
-        object = objReader.loadObj("res/wall.obj");
+        object = objReader.loadObj("res/sphere.obj");
         vertices.resize(objReader.out_vertices.size());
         normals.resize(objReader.out_normals.size());
         uvs.resize(objReader.out_uvs.size());
@@ -59,7 +59,7 @@ void Item::initTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("res/bg.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("res/sun.jpg", &width, &height, &nrChannels, 0);
 
     if (data)
     {
@@ -108,7 +108,7 @@ void Item::render(GLuint shaderProgramID)
     model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
     model = glm::translate(model, pos);
     model = glm::rotate(model, glm::radians(rotate.y), glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+    model = glm::scale(model, glm::vec3(0.015, 0.015, 0.015));
 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
@@ -149,9 +149,10 @@ void Item::move()
 
 void Item::collision()
 {
+    if (player.getPlayerDieTimer() != 0)
+        return;
     if (abs(pos.z) < 0.3)
     {
-        cout << revolution.z << ' ' << player.getRevolution().z << endl;
         if (abs(revolution.z - player.getRevolution().z) < 15 || abs(revolution.z + 360.0f - player.getRevolution().z) < 15 || abs(revolution.z - 360.0f - player.getRevolution().z) < 15)
         {
             cout << "collision with Item" << endl;

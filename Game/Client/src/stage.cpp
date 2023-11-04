@@ -16,30 +16,30 @@ float startZ = 18.0f;
 void Stage::makePattern(int patternNum)
 {
     tempwall = new Wall(0, 0);
-    tempwall->initTexture();
+    // tempwall->initTexture();
     tempitem = new Item(0, 0);
     tempitem->initTexture();
     switch (patternNum)
     {
-    // ï¿½ï¿½ï¿½Ú¸ï¿½ï¿?
+    // ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½?
     case 0:
         cout << "make pattern case:" << patternNum << endl;
         for (int i = 0; i < 9; ++i)
         {
 
             tempwall = new Wall(startZ, 40.0f * i);
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
 
             tempwall = new Wall(startZ + 2.0f, 40.0f * i + 15.0f);
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
             tempwall = new Wall(startZ + 4.0f, 40.0f * i);
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
     case 1:
         cout << "make pattern case:" << patternNum << endl;
         for (int i = 0; i < 24; ++i)
@@ -53,7 +53,7 @@ void Stage::makePattern(int patternNum)
             }
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * (i + 12 % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
@@ -72,26 +72,26 @@ void Stage::makePattern(int patternNum)
             }
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * (i % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * ((i + 12) % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
     case 3:
         cout << "make pattern case:" << patternNum << endl;
         for (int i = 0; i < 24; ++i)
         {
 
             tempwall = new Wall(startZ + (float)i * 0.3, (float)dis4(gen4));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
-    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
     case 4:
         cout << "make pattern case:" << patternNum << endl;
         for (int i = 0; i < 12; ++i)
@@ -105,11 +105,11 @@ void Stage::makePattern(int patternNum)
             }
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * (i % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * ((i + 12) % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
 
@@ -117,11 +117,11 @@ void Stage::makePattern(int patternNum)
         {
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * ((24 - i) % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
 
             tempwall = new Wall(startZ + (float)i * 0.3, 15.0f * ((36 - i) % 24));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
@@ -132,7 +132,7 @@ void Stage::makePattern(int patternNum)
         {
 
             tempwall = new Wall(startZ - 5.0f + (float)i * 0.3, (float)dis4(gen4));
-            tempwall->initBuffer();
+            // tempwall->initBuffer();
             gameWorld.add_object(tempwall);
         }
         break;
