@@ -52,6 +52,6 @@ struct Packet {
 
 struct ClientInfo {
 	shared_ptr<LockQueue<Packet>> packetQueptr;
-	GAME_LEVEL level;
+	BYTE level;
 	SOCKET sock;
 };

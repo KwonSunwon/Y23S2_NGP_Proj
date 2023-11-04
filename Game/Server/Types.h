@@ -10,7 +10,7 @@ using uint16 = unsigned __int16;
 using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
 
-enum class GAME_LEVEL : byte {
+enum class GAME_LEVEL : BYTE {
 	EASY,
 	NORMAL,
 	HARD
