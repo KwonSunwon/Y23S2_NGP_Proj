@@ -45,3 +45,13 @@ private:
 	condition_variable _condVar;
 };
 
+struct Packet {
+	float x, y;
+	BYTE stateMask;
+};
+
+struct ClientInfo {
+	shared_ptr<LockQueue<Packet>> packetQueptr;
+	GAME_LEVEL level;
+	SOCKET sock;
+};

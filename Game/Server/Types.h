@@ -15,14 +15,3 @@ enum class GAME_LEVEL : byte {
 	NORMAL,
 	HARD
 };
-
-struct Packet {
-	float x, y;
-	BYTE stateMask;
-};
-
-struct ClientInfo {
-	shared_ptr<queue<Packet>> packetQueptr;
-	GAME_LEVEL level;
-	SOCKET sock;
-};
