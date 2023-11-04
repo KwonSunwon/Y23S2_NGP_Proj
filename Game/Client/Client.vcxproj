@@ -124,7 +124,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>C:\Windows\System32;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Windows\SysWOW64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Windows\System32;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Windows\SysWOW64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x86;$(ProjectDir)OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

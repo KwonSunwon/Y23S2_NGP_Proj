@@ -19,12 +19,18 @@
 #pragma warning(disable : 4996)
 
 // OpenGL
-#include <gl/glew.h>
-#include <gl/freeglut.h>
-#include <gl/freeglut_ext.h>
-#include <gl/glm/glm.hpp>
-#include <gl/glm/ext.hpp>
-#include <gl/glm/gtc/matrix_transform.hpp>
+//#include <gl/glew.h>
+//#include <gl/freeglut.h>
+//#include <gl/freeglut_ext.h>
+//#include <gl/glm/glm.hpp>
+//#include <gl/glm/ext.hpp>
+//#include <gl/glm/gtc/matrix_transform.hpp>
+#include "../api/OpenGL/glew.h"
+#include "../api/OpenGL/freeglut.h"
+#include "../api/OpenGL/freeglut_ext.h"
+#include "../api/OpenGL/glm/glm.hpp"
+#include "../api/OpenGL/glm/ext.hpp"
+#include "../api/OpenGL/glm/gtc/matrix_transform.hpp"
 
 #include <iostream>
 #include <stdlib.h>
