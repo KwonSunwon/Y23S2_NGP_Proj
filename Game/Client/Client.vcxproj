@@ -33,6 +33,7 @@
     <ClCompile Include="src\normalStage.cpp" />
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\objReader.cpp" />
+    <ClCompile Include="src\PacketManager.cpp" />
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\server.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="src\normalStage.h" />
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\objReader.h" />
+    <ClInclude Include="src\PacketManager.h" />
     <ClInclude Include="src\particle.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\shaders.h" />
