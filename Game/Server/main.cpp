@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "InGameThread.h"
+#include "ClientServerThread.h"
 
 //LockQueue<int32> q;
 //
@@ -27,22 +28,22 @@
 //}
 
 // Test를 위한 client-server thraed
-void ClientServerThread(SOCKET client)
-{
-	struct sockaddr_in clientaddr;
-	char addr[INET_ADDRSTRLEN];
-	int addrlen;
-	char buf[24];
-
-	// 클라이언트 정보 얻기
-	addrlen = sizeof(clientaddr);
-	getpeername(client, (struct sockaddr*)&clientaddr, &addrlen);
-	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-	printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-		addr, ntohs(clientaddr.sin_port));
-
-	closesocket(client);
-}
+//void ClientServerThread(SOCKET client)
+//{
+//	struct sockaddr_in clientaddr;
+//	char addr[INET_ADDRSTRLEN];
+//	int addrlen;
+//	char buf[24];
+//
+//	// 클라이언트 정보 얻기
+//	addrlen = sizeof(clientaddr);
+//	getpeername(client, (struct sockaddr*)&clientaddr, &addrlen);
+//	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+//	printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
+//		addr, ntohs(clientaddr.sin_port));
+//
+//	closesocket(client);
+//}
 
 void print2Digit(BYTE num)
 {
@@ -86,6 +87,12 @@ int main()
 		if (clientSock == INVALID_SOCKET) {
 			continue;
 		}
+		GAME_LEVEL level = GAME_LEVEL::NONE;
+		int retval = recv(clientSock, (char*) level, sizeof(level), 0);
+		cout << BYTE(level);
+		//ClientInfo clientInfo;
+		//clientInfo.level = level;
+		//clientInfo.sock=
 
 		clientServerThreadHandle = thread(/*Client-Server Thread*/ClientServerThread, clientSock);
 		// detach()를 호출해서 thread를 떼어내야 하나의 handle로 여러 thread를 생성가능

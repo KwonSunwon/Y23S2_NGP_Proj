@@ -44,14 +44,3 @@ private:
 	mutex _mutex;
 	condition_variable _condVar;
 };
-
-struct Packet {
-	float x, y;
-	BYTE stateMask;
-};
-
-struct ClientInfo {
-	shared_ptr<LockQueue<Packet>> packetQueptr;
-	BYTE level;
-	SOCKET sock;
-};

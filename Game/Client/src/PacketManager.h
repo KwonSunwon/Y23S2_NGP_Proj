@@ -12,6 +12,7 @@ struct Packet {
 };
 
 enum class GAME_LEVEL : BYTE {
+    NONE,
     EASY,
     NORMAL,
     HARD
@@ -36,7 +37,7 @@ private:
 
     //임시로 사용할 ip, port, Bufsize
     //=======================================
-    char* SERVERIP = (char*)"xxx.xxx.xxx.xxx";
+    char* SERVERIP = (char*)"127.0.0.1";
     int SERVERPORT = 9000;
     int BUFSIZE = 1024;
     //=======================================

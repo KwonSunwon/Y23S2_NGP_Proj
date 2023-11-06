@@ -13,7 +13,7 @@ void initClientInfoQueue()
 	ClientInfo a[3];
 	for (int i = 0; i < 3; ++i) {
 		shared_ptr<LockQueue<Packet>> p = make_shared<LockQueue<Packet>>();
-		a[i].level = (BYTE)GAME_LEVEL::EASY;
+		a[i].level = GAME_LEVEL::EASY;
 		a[i].packetQueptr = p;
 		a[i].sock = 0;
 		ClientInfoQueue.Push(a[i]);

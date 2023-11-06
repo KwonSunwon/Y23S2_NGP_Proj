@@ -11,7 +11,19 @@ using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
 
 enum class GAME_LEVEL : BYTE {
+	NONE,
 	EASY,
 	NORMAL,
 	HARD
+};
+
+struct Packet {
+	float x, y;
+	BYTE stateMask;
+};
+
+struct ClientInfo {
+	shared_ptr<LockQueue<Packet>> packetQueptr;
+	GAME_LEVEL level;
+	SOCKET sock;
 };

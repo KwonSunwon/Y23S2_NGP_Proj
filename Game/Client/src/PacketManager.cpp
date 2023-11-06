@@ -91,6 +91,7 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	}
 
 	//최초 난이도 제공용 send
+	cout << (BYTE)level;
 	retval = send(m_sock, (char*)&level, sizeof(GAME_LEVEL), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
