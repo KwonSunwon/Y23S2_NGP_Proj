@@ -23,7 +23,8 @@ struct Packet {
 };
 
 struct ClientInfo {
-	shared_ptr<LockQueue<Packet>> packetQueptr;
+	shared_ptr<LockQueue<Packet>> toServerEventQueue;
+	shared_ptr<LockQueue<Packet>> toClientEventQueue;
 	GAME_LEVEL level;
 	SOCKET sock;
 };

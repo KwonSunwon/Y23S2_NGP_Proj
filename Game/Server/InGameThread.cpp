@@ -7,24 +7,25 @@ std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
 // 임시 ClientInfoQueue
-LockQueue<ClientInfo> ClientInfoQueue;
+
 void initClientInfoQueue()
 {
-	ClientInfo a[3];
+	/*ClientInfo a[3];
 	for (int i = 0; i < 3; ++i) {
 		shared_ptr<LockQueue<Packet>> p = make_shared<LockQueue<Packet>>();
 		a[i].level = GAME_LEVEL::EASY;
 		a[i].packetQueptr = p;
 		a[i].sock = 0;
 		ClientInfoQueue.Push(a[i]);
-	}
+	}*/
 }
 // ---------------------------------------
 
 // 쓰레드 함수내 쓰레드 초기화 함수
 shared_ptr<shared_ptr<LockQueue<Packet>>[]> InitializeInGameThread(BYTE* level)
 {
-	
+	/*
+
 	// 주소를 담을 쓰레드내 변수가 필요
 	shared_ptr<shared_ptr<LockQueue<Packet>>[]> tmpPtr(new shared_ptr<LockQueue<Packet>>[3]);
 	ClientInfo info;
@@ -56,4 +57,7 @@ shared_ptr<shared_ptr<LockQueue<Packet>>[]> InitializeInGameThread(BYTE* level)
 	// 난이도
 	*level = (BYTE)info.level;
 	return tmpPtr;
+
+	*/
+	return NULL;
 }

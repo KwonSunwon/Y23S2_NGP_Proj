@@ -63,21 +63,24 @@ void StartStage::handleEvent(unsigned char key, bool isDown)
         {
         case '1':
             stages.back()->out();
-            g_packetManager = new PacketManager(GAME_LEVEL::EASY);
+            g_packetManager = new PacketManager();
+            g_packetManager->Initialize(GAME_LEVEL::EASY);
             nowStage++;
             stages.push_back(easyStage);
             stages[nowStage]->init();
             break;
         case '2':
             stages.back()->out();
-            g_packetManager = new PacketManager(GAME_LEVEL::NORMAL);
+            g_packetManager = new PacketManager();
+            g_packetManager->Initialize(GAME_LEVEL::NORMAL);
             nowStage++;
             stages.push_back(normalStage);
             stages[nowStage]->init();
             break;
         case '3':
             stages.back()->out();
-            g_packetManager = new PacketManager(GAME_LEVEL::HARD);
+            g_packetManager = new PacketManager();
+            g_packetManager->Initialize(GAME_LEVEL::HARD);
             nowStage++;
             stages.push_back(hardStage);
             stages[nowStage]->init();
@@ -104,7 +107,7 @@ void StartStage::handleEvent(int button, int state, int x, int y)
     {
     case 1:
         stages.back()->out();
-        g_packetManager = new PacketManager(GAME_LEVEL::EASY);
+        //g_packetManager = new PacketManager(GAME_LEVEL::EASY);
         nowStage++;
         stages.push_back(easyStage);
         stages[nowStage]->init();

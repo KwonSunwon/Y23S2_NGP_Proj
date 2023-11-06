@@ -20,3 +20,5 @@ using namespace std;
 
 #include "LockQueue.h"
 #include "Types.h"
+
+extern LockQueue<ClientInfo> ClientInfoQueue;

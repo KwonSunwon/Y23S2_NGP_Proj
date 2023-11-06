@@ -10,13 +10,13 @@
 #include <string.h> // strncpy(), ...
 
 
-PacketManager::PacketManager(GAME_LEVEL level)
+PacketManager::PacketManager()
 {
-	Initialize(level);
 }
 
 PacketManager::~PacketManager()
 {
+	cout << "herherherherher";
 	// 소켓 닫기
 	closesocket(m_sock);
 
@@ -91,8 +91,8 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	}
 
 	//최초 난이도 제공용 send
-	cout << (BYTE)level;
-	retval = send(m_sock, (char*)&level, sizeof(GAME_LEVEL), 0);
+	retval = send(m_sock, (char*)&level, sizeof(level), 0);
+	cout << retval;
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}

@@ -22,7 +22,7 @@ class PacketManager
 {
 
 public:
-    PacketManager(GAME_LEVEL level);
+    PacketManager();
     ~PacketManager();
     void Initialize(GAME_LEVEL level);
     void SendPacket(Packet);
