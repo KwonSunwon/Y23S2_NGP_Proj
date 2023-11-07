@@ -6,8 +6,7 @@ thread_local shared_ptr<LockQueue<Packet>> m_toClientEventQueue = make_shared<Lo
 void ClientServerThread(SOCKET client)
 {
 	Initialize(client);
-
-	
+	MainLoop(client);
 }
 
 void Initialize(SOCKET client)
@@ -24,7 +23,7 @@ void Initialize(SOCKET client)
 	printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 		addr, ntohs(clientaddr.sin_port));
 
-
+	//최초 1회 난이도 수신
 	GAME_LEVEL level = GAME_LEVEL::NONE;
 	int retval = recv(client, (char*)&level, sizeof(level), 0);
 	switch (level) {
@@ -45,6 +44,9 @@ void Initialize(SOCKET client)
 		break;
 
 	}
+
+	//최초 1회 TLS로 이벤트큐를 2개 설정후
+	//ClientInfoQueue에 넣어준다.
 	ClientInfo clientInfo;
 	clientInfo.level = level;
 	clientInfo.sock = client;
@@ -52,7 +54,30 @@ void Initialize(SOCKET client)
 	clientInfo.toServerEventQueue = m_toServerEventQueue;
 	
 	ClientInfoQueue.Push(clientInfo);
-	
+}
 
-	//closesocket(client);
+void MainLoop(SOCKET client) 
+{
+	int retval;
+	while (true) {
+		//서버에서 클라이언트에 보낼 패킷이 있는 동안
+		//전부 send
+		Packet packet;
+		while (m_toClientEventQueue->TryPop(packet)) {
+			retval = send(client, (char*)&packet, sizeof(packet), 0);
+			//cout << retval;
+			if (retval == SOCKET_ERROR) {
+				//err_display("send()");
+			}
+		}
+
+
+		//recv() 로직 짜기
+		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
+
+
+		//보내기, 받기가 전부 완료되면 쓰레드 양보
+		this_thread::yield();
+	}
+	closesocket(client);
 }

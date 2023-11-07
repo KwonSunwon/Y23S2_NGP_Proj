@@ -14,4 +14,4 @@ const float initialY[3] = { 0.3, -0.3, -0.3 };
 // 임시 함수
 //void initClientInfoQueue();
 
-bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PLAYER])
+bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PLAYER]);
