@@ -95,18 +95,16 @@ int main()
 		clientServerThreadHandle.detach();
 	}
 	// ---------------------------------------
-	// 인게임thread초기화 test
-	initClientInfoQueue();
-	BYTE level;
-	shared_ptr<shared_ptr<LockQueue<Packet>>[]> eventQueuePtr(new shared_ptr<LockQueue<Packet>>[3]);
-	eventQueuePtr = InitializeInGameThread(&level);
-	printf("level = %d\n", level);
-	Packet pack;
-	for (int i = 0; i < 3; ++i) {
-		eventQueuePtr[i]->TryPop(pack);
-		printf("%.1f, %.1f \n", pack.x, pack.y);
-		print2Digit(pack.stateMask);
-	}
+	//// 인게임thread초기화 test
+	//initClientInfoQueue();
+	//shared_ptr<shared_ptr<LockQueue<Packet>>[]> eventQueuePtr(new shared_ptr<LockQueue<Packet>>[3]);
+	//printf("level = %d\n", level);
+	//Packet pack;
+	//for (int i = 0; i < 3; ++i) {
+	//	eventQueuePtr[i]->TryPop(pack);
+	//	printf("%.1f, %.1f \n", pack.x, pack.y);
+	//	print2Digit(pack.stateMask);
+	//}
 
 	closesocket(listenSock);
 	WSACleanup();

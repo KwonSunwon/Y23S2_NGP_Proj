@@ -15,10 +15,13 @@
 
 #include <windows.h>
 #include <iostream>
+#include <chrono>
 #include <thread>
 using namespace std;
 
 #include "LockQueue.h"
 #include "Types.h"
+
+#define NUM_OF_PLAYER 3
 
 extern LockQueue<ClientInfo> ClientInfoQueue;

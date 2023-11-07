@@ -17,6 +17,15 @@ enum class GAME_LEVEL : BYTE {
 	HARD
 };
 
+enum class STATE_MASK {
+	RESULT,
+	PLAYING,
+	LIFE,
+	POS_FLAG,
+	PLAYER_NUM,
+	GAME_START
+};
+
 struct Packet {
 	float x, y;
 	BYTE stateMask;
