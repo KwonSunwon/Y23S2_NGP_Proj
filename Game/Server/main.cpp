@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "InGameThread.h"
 #include "ClientServerThread.h"
+#include "LobbyThread.h"
 
 //LockQueue<int32> q;
 //
@@ -56,6 +57,9 @@ void print2Digit(BYTE num)
 
 int main()
 {
+	thread lobbyThreadHandle;
+	lobbyThreadHandle = thread(LobbyThread);
+
 	//---------------------------------------
 	// wait sock 초기화
 	WSADATA wsa;
@@ -87,8 +91,6 @@ int main()
 		if (clientSock == INVALID_SOCKET) {
 			continue;
 		}
-		
-
 
 		clientServerThreadHandle = thread(/*Client-Server Thread*/ClientServerThread, clientSock);
 		// detach()를 호출해서 thread를 떼어내야 하나의 handle로 여러 thread를 생성가능
