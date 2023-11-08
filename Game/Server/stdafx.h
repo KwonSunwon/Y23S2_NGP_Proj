@@ -24,4 +24,6 @@ using namespace std;
 
 #define NUM_OF_PLAYER 3
 
-extern array<LockQueue<ClientInfo>,3> ClientInfoQueue;
+static const int NUM_OF_LEVEL = 3;
+
+extern array<LockQueue<ClientInfo>, 3> ClientInfoQueue;
