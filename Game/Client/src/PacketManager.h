@@ -11,11 +11,11 @@ struct Packet {
     BYTE stateMask;
 };
 
-enum class GAME_LEVEL : BYTE {
-    NONE,
+enum class GAME_LEVEL : BYTE { 
     EASY,
     NORMAL,
-    HARD
+    HARD,
+    NONE,
 };
 
 class PacketManager

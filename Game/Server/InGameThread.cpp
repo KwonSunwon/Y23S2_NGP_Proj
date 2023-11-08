@@ -31,7 +31,7 @@ bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PL
 
 	for (int i = 0; i < NUM_OF_PLAYER; ++i) {
 		// ClientInfoQueue에서 Packet 데이터 pop
-		if (!ClientInfoQueue.TryPop(clientInfo)) return false;
+		if (!ClientInfoQueue[0].TryPop(clientInfo)) return false;
 		// stateMask 초기화
 		pack.stateMask = 0;
 		// 시작 상태

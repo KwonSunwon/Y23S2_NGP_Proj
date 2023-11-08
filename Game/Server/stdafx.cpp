@@ -1,3 +1,3 @@
 #include "stdafx.h"
 
-LockQueue<ClientInfo> ClientInfoQueue;
+array<LockQueue<ClientInfo>,3> ClientInfoQueue;

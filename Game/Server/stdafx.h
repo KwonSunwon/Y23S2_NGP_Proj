@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <array>
 #include <vector>
 #include <list>
 #include <queue>
@@ -24,4 +24,4 @@ using namespace std;
 
 #define NUM_OF_PLAYER 3
 
-extern LockQueue<ClientInfo> ClientInfoQueue;
+extern array<LockQueue<ClientInfo>,3> ClientInfoQueue;

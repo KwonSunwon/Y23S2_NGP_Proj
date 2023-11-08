@@ -6,6 +6,7 @@ thread_local shared_ptr<LockQueue<Packet>> m_toClientEventQueue = make_shared<Lo
 void ClientServerThread(SOCKET client)
 {
 	Initialize(client);
+
 	MainLoop(client);
 }
 
@@ -29,6 +30,7 @@ void Initialize(SOCKET client)
 	switch (level) {
 	case GAME_LEVEL::NONE:
 		cout << "NONE" << endl;
+
 		break;
 
 	case GAME_LEVEL::EASY:
@@ -53,7 +55,10 @@ void Initialize(SOCKET client)
 	clientInfo.toClientEventQueue = m_toClientEventQueue;
 	clientInfo.toServerEventQueue = m_toServerEventQueue;
 	
-	ClientInfoQueue.Push(clientInfo);
+	ClientInfoQueue[(int)level].Push(clientInfo);
+
+	DWORD optval = 10;
+	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 
 void MainLoop(SOCKET client) 
@@ -62,17 +67,30 @@ void MainLoop(SOCKET client)
 	while (true) {
 		//서버에서 클라이언트에 보낼 패킷이 있는 동안
 		//전부 send
-		Packet packet;
-		while (m_toClientEventQueue->TryPop(packet)) {
-			retval = send(client, (char*)&packet, sizeof(packet), 0);
-			//cout << retval;
-			if (retval == SOCKET_ERROR) {
-				//err_display("send()");
+		{
+			Packet packet;
+			while (m_toClientEventQueue->TryPop(packet)) {
+				retval = send(client, (char*)&packet, sizeof(packet), 0);
+				//cout << retval;
+				if (retval == SOCKET_ERROR) {
+					//err_display("send()");
+				}
 			}
 		}
 
-
 		//recv() 로직 짜기
+		{
+			Packet packet;
+			while (true) {
+				cout << "recv Loop" << endl;
+				retval = recv(client, (char*)&packet, sizeof(packet), 0);
+
+				if (retval < 0) {
+					cout << "TIMEOUT" << endl;
+					break;
+				}
+			}
+		}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
 
 
