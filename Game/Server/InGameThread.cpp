@@ -23,7 +23,7 @@ std::uniform_int_distribution<int> dis(0, 15);
 
 // 쓰레드 함수내 쓰레드 초기화 함수
 // 아이디어 1 구조체 이용
-bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PLAYER])
+bool InitializeInGameThread(GAME_LEVEL level, EventQueues eventQueues[NUM_OF_PLAYER])
 {
 	ClientInfo clientInfo;
 	Packet pack;
@@ -31,7 +31,7 @@ bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PL
 
 	for (int i = 0; i < NUM_OF_PLAYER; ++i) {
 		// ClientInfoQueue에서 Packet 데이터 pop
-		if (!ClientInfoQueue[0].TryPop(clientInfo)) return false;
+		if (!ClientInfoQueue[(int)level].TryPop(clientInfo)) return false;
 		// stateMask 초기화
 		pack.stateMask = 0;
 		// 시작 상태
@@ -50,8 +50,6 @@ bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PL
 		eventQueues[i].toClientEventQueue->Push(pack);
 		
 	}
-	// 난이도 어떻게 전달?
-	*level = clientInfo.level;
 }
 
 
@@ -60,12 +58,12 @@ bool InitializeInGameThread(GAME_LEVEL* level, EventQueues eventQueues[NUM_OF_PL
 //	shared_ptr<shared_ptr<LockQueue<Packet>>[]> toClientEventQueue)
 
 
-//void InGameThread(GAME_LEVEL *level)
+//void InGameThread(GAME_LEVEL level)
 //{
 //	bool timeReset = false;
 //	chrono::system_clock::time_point start;
 //	chrono::duration<double> time;
-//	EventQueues eventQueues[NUM_OF_PLAYER];
+//	array<EventQueues, NUM_OF_PLAYER> eventQueues;
 //	InitializeInGameThread(level, eventQueues);
 //
 //	while (true) {
