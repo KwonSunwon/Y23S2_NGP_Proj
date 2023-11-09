@@ -9,6 +9,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <numeric>
 
 #include <WS2tcpip.h>
 #pragma comment(lib, "ws2_32")

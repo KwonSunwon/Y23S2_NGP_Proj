@@ -6,91 +6,105 @@ std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
-// 임시 ClientInfoQueue
-
-//void initClientInfoQueue()
-//{
-//	ClientInfo a[3];
-//	for (int i = 0; i < 3; ++i) {
-//		shared_ptr<LockQueue<Packet>> p = make_shared<LockQueue<Packet>>();
-//		a[i].level = GAME_LEVEL::EASY;
-//		a[i].packetQueptr = p;
-//		a[i].sock = 0;
-//		ClientInfoQueue.Push(a[i]);
-//	}
-//}
-// ---------------------------------------
-
 // 쓰레드 함수내 쓰레드 초기화 함수
 // 아이디어 1 구조체 이용
-bool InitializeInGameThread(GAME_LEVEL level, EventQueues eventQueues[NUM_OF_PLAYER])
+void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
 	ClientInfo clientInfo;
-	Packet pack;
 	int seed = dis(gen);
 
 	for (int i = 0; i < NUM_OF_PLAYER; ++i) {
 		// ClientInfoQueue에서 Packet 데이터 pop
-		if (!ClientInfoQueue[(int)level].TryPop(clientInfo)) return false;
+		ClientInfoQueue[(int)level].WaitPop(clientInfo);
 		// stateMask 초기화
-		pack.stateMask = 0;
+		playerPackets[i].stateMask = 0;
 		// 시작 상태
-		pack.stateMask |= (1 << (int)STATE_MASK::GAME_START);
+		playerPackets[i].stateMask |= (1 << (int)STATE_MASK::GAME_START);
 		// 플레이어 번호
-		pack.stateMask |= (i << (int)STATE_MASK::PLAYER_NUM);
+		playerPackets[i].stateMask |= (i << (int)STATE_MASK::PLAYER_NUM);
 		// 초기위치설정, opengl로 좌표변환은 Client에서
-		pack.stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
-		pack.x = initialX[i];
-		pack.y = initialY[i];
+		playerPackets[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
+		playerPackets[i].x = initialX[i];
+		playerPackets[i].y = initialY[i];
 		// 랜덤 시드 값
-		pack.stateMask |= seed;
+		playerPackets[i].stateMask |= seed;
 		// toClientEventQueue
 		clientInfo.toClientEventQueue = eventQueues[i].toClientEventQueue;
 		clientInfo.toServerEventQueue = eventQueues[i].toServerEventQueue;
-		eventQueues[i].toClientEventQueue->Push(pack);
+		eventQueues[i].toClientEventQueue->Push(playerPackets[i]);
 		
 	}
 }
 
+static void ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
+{
+	for (auto iter = alivePlayer.begin(); iter != alivePlayer.end(); ++iter)
+	{
+		eventQueues[*iter].toServerEventQueue->TryPop(playerPackets[*iter]);
+	}
+}
 
-// 아이디어2 구조체 없이 주소값만 가지고 할당
-//void InitializeInGameThread(GAME_LEVEL* level, shared_ptr<shared_ptr<LockQueue<Packet>>[]> toSeverEventQueue,  
-//	shared_ptr<shared_ptr<LockQueue<Packet>>[]> toClientEventQueue)
+static void PushWinPacket(EventQueues winnerQueues)
+{
+	Packet winPack;
+	winnerQueues.toServerEventQueue->WaitPop(winPack);
+	winPack.stateMask |= (1 << (int)STATE_MASK::RESULT);
+	winnerQueues.toClientEventQueue->Push(winPack);
+}
 
+static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
+{
+	for (auto iter = alivePlayer.begin(); iter != alivePlayer.end(); ++iter)
+	{
+		eventQueues[*iter].toClientEventQueue->Push(playerPackets[*iter]);
+	}
+}
 
-//void InGameThread(GAME_LEVEL level)
-//{
-//	bool timeReset = false;
-//	chrono::system_clock::time_point start;
-//	chrono::duration<double> time;
-//	array<EventQueues, NUM_OF_PLAYER> eventQueues;
-//	InitializeInGameThread(level, eventQueues);
-//
-//	while (true) {
-//		if (numOfPlayer == 0)
-//			break;
-//		if (numOfPlater == 1) {
-//			PushWinPacket();
-//			break;
-//		}
-//		// 물리클래스로 물리검사
-//		Physics.Caculate(eventQueues)
-//		// 결과 업데이트
-//		// 충돌 방생시 출돌정보 push [0__1__10]
-//		PushPacket(eventQueues);
-//		// 그에 따른 가속도 push
-//		PushPacket(eventQueues);
-//
-//		if (timeReset == false) {
-//			timeReset = true;
-//			start = chrono::system_clock::now();
-//		}
-//		time = chrono::system_clock::now() - start;
-//		// 위치 보정
-//		if (time.count() >= 0.3) {
-//			// 위치 push [0__0__10]
-//			PushPacket(eventQueues);
-//			timeReset == false;
-//		}
-//	}
-//}
+void InGameThread(GAME_LEVEL level)
+{
+	bool timeReset = false;
+	chrono::system_clock::time_point start;
+	chrono::duration<double> time;
+
+	array<EventQueues, NUM_OF_PLAYER> eventQueues;
+	array<Packet, NUM_OF_PLAYER> playerPackets;
+
+	// 플레이어가 죽으면 erase(player_num);
+	vector<int>alivePlayer(NUM_OF_PLAYER);
+	iota(alivePlayer.begin(), alivePlayer.end(), 0);
+
+	InitializeInGameThread(level, eventQueues, playerPackets);
+
+	while (true) {
+		if (alivePlayer.size() == 0)
+			break;
+		if (alivePlayer.size() == 1) {
+			PushWinPacket(eventQueues[alivePlayer.front()]);
+			alivePlayer.clear();
+			break;
+		}
+		ToServerQueueCheck(alivePlayer, eventQueues, playerPackets);
+		// 물리클래스로 물리검사
+		//Physics.Caculate(eventQueues)
+		// 결과 업데이트
+		// 충돌 방생시 출돌정보 push [0__1__10]
+		// 플레이어 사망시 erase(player_num);
+		// 1명만 남을 시 winPlayer에 기록
+		//PushPacket(eventQueues);
+		// 그에 따른 가속도 push
+		PushPacket(alivePlayer, eventQueues, playerPackets);
+
+		if (timeReset == false) {
+			timeReset = true;
+			start = chrono::system_clock::now();
+		}
+		time = chrono::system_clock::now() - start;
+		// 위치 보정
+		if (time.count() >= 0.3) {
+			// 위치 정보 계산결과 가져오고 push
+			// 위치 push전에 Packet 조정 [0__0__10]
+			PushPacket(alivePlayer, eventQueues, playerPackets);
+			timeReset == false;
+		}
+	}
+}
