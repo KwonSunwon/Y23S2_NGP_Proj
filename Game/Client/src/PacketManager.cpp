@@ -16,7 +16,6 @@ PacketManager::PacketManager()
 
 PacketManager::~PacketManager()
 {
-	cout << "herherherherher";
 	// 소켓 닫기
 	closesocket(m_sock);
 
@@ -98,9 +97,28 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	}
 }
 
-void PacketManager::SendPacket(Packet)
+void PacketManager::Reset()
+{
+	Packet packet;
+	packet.stateMask = 0;
+	send(m_sock, (char*)&packet, sizeof(packet), 0);
+	cout << "소켓 종료" << endl;
+	// 소켓 닫기
+	closesocket(m_sock);
+
+	// 윈속 종료
+	WSACleanup();
+}
+
+void PacketManager::SendPacket()
 {
 	//키 입력시 이 함수를 호출해서 서버로 send할 예정
+	Packet packet;
+	packet.stateMask = 0;
+	packet.x = 1;
+	packet.y = 1;
+	send(m_sock, (char*)&packet, sizeof(packet), 0);
+
 }
 
 bool PacketManager::RecvPacket()

@@ -25,6 +25,7 @@
     <ClCompile Include="src\easyStage.cpp" />
     <ClCompile Include="src\gameManager.cpp" />
     <ClCompile Include="src\gameWorld.cpp" />
+    <ClCompile Include="src\Global.cpp" />
     <ClCompile Include="src\hardStage.cpp" />
     <ClCompile Include="src\item.cpp" />
     <ClCompile Include="src\light.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="src\easyStage.h" />
     <ClInclude Include="src\gameManager.h" />
     <ClInclude Include="src\gameWorld.h" />
+    <ClInclude Include="src\Global.h" />
     <ClInclude Include="src\hardStage.h" />
     <ClInclude Include="src\item.h" />
     <ClInclude Include="src\light.h" />
