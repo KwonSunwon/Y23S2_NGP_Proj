@@ -19,6 +19,8 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+// stateMask 체크를 위해 include
+#include <bitset>
 using namespace std;
 
 #include "LockQueue.h"
@@ -32,3 +34,4 @@ extern array<LockQueue<ClientInfo>, 3> ClientInfoQueue;
 
 //#define _DEBUG_LOOBY
 //#define _DEBUG_CLIENT_SERVER
+#define _DEBUG_INGAME
