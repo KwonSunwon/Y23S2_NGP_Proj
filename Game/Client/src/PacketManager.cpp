@@ -18,7 +18,7 @@ PacketManager::~PacketManager()
 {
 	// 소켓 닫기
 	closesocket(m_sock);
-
+	cout << "close Sock" << endl;
 	// 윈속 종료
 	WSACleanup();
 }
@@ -105,7 +105,7 @@ void PacketManager::Reset()
 	cout << "소켓 종료" << endl;
 	// 소켓 닫기
 	closesocket(m_sock);
-
+	cout << "close Sock" << endl;
 	// 윈속 종료
 	WSACleanup();
 }
@@ -117,7 +117,10 @@ void PacketManager::SendPacket()
 	packet.stateMask = 0;
 	packet.x = 1;
 	packet.y = 1;
-	send(m_sock, (char*)&packet, sizeof(packet), 0);
+	int retval = send(m_sock, (char*)&packet, sizeof(packet), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 
 }
 

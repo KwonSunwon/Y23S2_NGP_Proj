@@ -57,8 +57,8 @@ void Initialize(SOCKET client)
 	
 	ClientInfoQueue[(int)level].Push(clientInfo);
 
-	//DWORD optval = 10;
-	//retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+	DWORD optval = 100;
+	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 
 void MainLoop(SOCKET client) 
@@ -82,17 +82,24 @@ void MainLoop(SOCKET client)
 		{
 			Packet packet;
 			while (true) {
-				//cout << "recv Loop" << endl;
+				static int i = 0;
+				i++;
+				cout << "recv Loop" <<i<< endl;
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 				if(retval>0)
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
 				if (packet.stateMask == 0) {
-					cout << "종료";
-					return;
+					//cout << "종료";
+					//return;
 				}
 
 				if (retval < 0) {
 					//cout << "TIMEOUT" << endl;
+					break;
+				}
+				if (retval == 0) {
+					cout << "종료" << endl;
+					return;
 					break;
 				}
 			}
