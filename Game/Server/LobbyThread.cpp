@@ -9,8 +9,8 @@ void LobbyThread()
 		for (int level = 0; level < NUM_OF_LEVEL; level++) {
 			if (ClientInfoQueue[level].Size() == NUM_OF_PLAYER) {
 				// Game Start
-				//thread th = thread(/*InGameThread*/, static_cast<GAME_LEVEL>(level));
-				//th.detach();
+				thread th = thread(/*InGameThread*/InGameThread, static_cast<GAME_LEVEL>(level));
+				th.detach();
 			}
 		}
 	}
