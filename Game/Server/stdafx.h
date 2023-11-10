@@ -28,3 +28,6 @@ using namespace std;
 static const int NUM_OF_LEVEL = 3;
 
 extern array<LockQueue<ClientInfo>, 3> ClientInfoQueue;
+
+//#define _DEBUG_LOOBY
+//#define _DEBUG_CLIENT_SERVER

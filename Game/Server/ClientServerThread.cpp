@@ -54,14 +54,14 @@ void Initialize(SOCKET client)
 	clientInfo.sock = client;
 	clientInfo.toClientEventQueue = m_toClientEventQueue;
 	clientInfo.toServerEventQueue = m_toServerEventQueue;
-	
+
 	ClientInfoQueue[(int)level].Push(clientInfo);
 
 	DWORD optval = 10;
 	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 
-void MainLoop(SOCKET client) 
+void MainLoop(SOCKET client)
 {
 	int retval;
 	while (true) {
@@ -82,11 +82,15 @@ void MainLoop(SOCKET client)
 		{
 			Packet packet;
 			while (true) {
+#ifdef _DEBUG_CLIENT_SERVER
 				cout << "recv Loop" << endl;
+#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 
 				if (retval < 0) {
+#ifdef _DEBUG_CLIENT_SERVER
 					cout << "TIMEOUT" << endl;
+#endif
 					break;
 				}
 			}
