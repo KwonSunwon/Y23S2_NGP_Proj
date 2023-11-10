@@ -1,16 +1,17 @@
+#pragma once
 #include "stdafx.h"
 #include "Global.h"
 #include "PacketManager.h"
 PacketManager* g_PacketManager = nullptr;
 
-class CoreGlobal
+class Global
 {
 public:
-	CoreGlobal()
+	Global()
 	{
 		g_PacketManager = new PacketManager();
 	}
-	~CoreGlobal()
+	~Global()
 	{
 		delete g_PacketManager;
 	}

@@ -37,7 +37,11 @@ public:
 		_queue.pop();
 	}
 
-
+	size_t Size()
+	{
+		lock_guard<mutex> lock(_mutex);
+		return _queue.size();
+	}
 
 private:
 	queue<T> _queue;

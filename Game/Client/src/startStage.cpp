@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "startStage.h"
 #include "player.h"
 #include "light.h"
@@ -22,7 +23,7 @@ extern vector<Stage *> stages;
 extern int nowStage;
 extern SoundManager soundManager;
 
-PacketManager* g_packetManager;
+//PacketManager* g_packetManager;
 EasyStage *easyStage = new EasyStage();
 NormalStage *normalStage = new NormalStage();
 HardStage *hardStage = new HardStage();
@@ -63,24 +64,21 @@ void StartStage::handleEvent(unsigned char key, bool isDown)
         {
         case '1':
             stages.back()->out();
-            g_packetManager = new PacketManager();
-            g_packetManager->Initialize(GAME_LEVEL::EASY);
+            g_PacketManager->Initialize(GAME_LEVEL::EASY);
             nowStage++;
             stages.push_back(easyStage);
             stages[nowStage]->init();
             break;
         case '2':
             stages.back()->out();
-            g_packetManager = new PacketManager();
-            g_packetManager->Initialize(GAME_LEVEL::NORMAL);
+            g_PacketManager->Initialize(GAME_LEVEL::NORMAL);
             nowStage++;
             stages.push_back(normalStage);
             stages[nowStage]->init();
             break;
         case '3':
             stages.back()->out();
-            g_packetManager = new PacketManager();
-            g_packetManager->Initialize(GAME_LEVEL::HARD);
+            g_PacketManager->Initialize(GAME_LEVEL::HARD);
             nowStage++;
             stages.push_back(hardStage);
             stages[nowStage]->init();

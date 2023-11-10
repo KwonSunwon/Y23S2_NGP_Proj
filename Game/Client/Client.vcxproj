@@ -42,6 +42,7 @@
     <ClCompile Include="src\soundManager.cpp" />
     <ClCompile Include="src\stage.cpp" />
     <ClCompile Include="src\startStage.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\wall.cpp" />
   </ItemGroup>
   <ItemGroup>

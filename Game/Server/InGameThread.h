@@ -15,3 +15,4 @@ const float initialY[3] = { 0.3, -0.3, -0.3 };
 //void initClientInfoQueue();
 
 void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets);
+void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues);

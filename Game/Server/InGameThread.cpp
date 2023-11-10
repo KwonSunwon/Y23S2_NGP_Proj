@@ -32,7 +32,7 @@ void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> 
 		clientInfo.toClientEventQueue = eventQueues[i].toClientEventQueue;
 		clientInfo.toServerEventQueue = eventQueues[i].toServerEventQueue;
 		eventQueues[i].toClientEventQueue->Push(playerPackets[i]);
-		
+
 	}
 }
 
@@ -60,13 +60,13 @@ static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER
 	}
 }
 
-void InGameThread(GAME_LEVEL level)
+void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues)
 {
 	bool timeReset = false;
 	chrono::system_clock::time_point start;
 	chrono::duration<double> time;
 
-	array<EventQueues, NUM_OF_PLAYER> eventQueues;
+	//array<EventQueues, NUM_OF_PLAYER> eventQueues;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
 	memset(&playerPackets, 0, sizeof(Packet) * NUM_OF_PLAYER);
 
@@ -76,6 +76,7 @@ void InGameThread(GAME_LEVEL level)
 
 	InitializeInGameThread(level, eventQueues, playerPackets);
 
+	/*
 	while (true) {
 		if (alivePlayer.size() == 0)
 			break;
@@ -108,4 +109,5 @@ void InGameThread(GAME_LEVEL level)
 			timeReset == false;
 		}
 	}
+	*/
 }
