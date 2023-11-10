@@ -40,13 +40,13 @@ static void PrintPacketData(array<Packet, NUM_OF_PLAYER> playerPackets)
 		cout << "[PLAYER_" << num << "] stateMask: ";
 		cout << bitset<8>(packet.stateMask);
 		cout << endl;
-		cout << "[PLAYER_" << num << "] X, y: " << packet.x << ", " << packet.y << endl;
+		cout << "[PLAYER_" << num << "] x, y: " << packet.x << ", " << packet.y << endl;
 		++num;
 	}
 }
 
 // 쓰레드 함수내 쓰레드 초기화 함수
-void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
+void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> *playerPackets)
 {
 	//ClientInfo clientInfo;
 	int seed = dis(gen);
@@ -55,22 +55,21 @@ void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> 
 		// ClientInfoQueue에서 Packet 데이터 pop
 		//ClientInfoQueue[(int)level].WaitPop(clientInfo);
 		// stateMask 초기화
-		playerPackets[i].stateMask = 0;
+		(*playerPackets)[i].stateMask = 0;
 		// 시작 상태
-		playerPackets[i].stateMask |= (1 << (int)STATE_MASK::GAME_START);
+		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::GAME_START);
 		// 플레이어 번호
-		playerPackets[i].stateMask |= (i << (int)STATE_MASK::PLAYER_NUM);
+		(*playerPackets)[i].stateMask |= (i << (int)STATE_MASK::PLAYER_NUM);
 		// 초기위치설정, opengl로 좌표변환은 Client에서
-		playerPackets[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
-		playerPackets[i].x = initialX[i];
-		playerPackets[i].y = initialY[i];
+		(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
+		(*playerPackets)[i].x = initialX[i];
+		(*playerPackets)[i].y = initialY[i];
 		// 랜덤 시드 값
-		playerPackets[i].stateMask |= seed;
+		(*playerPackets)[i].stateMask |= seed;
 		// toClientEventQueue
 		//clientInfo.toClientEventQueue = eventQueues[i].toClientEventQueue;
 		//clientInfo.toServerEventQueue = eventQueues[i].toServerEventQueue;
-		eventQueues[i].toClientEventQueue->Push(playerPackets[i]);
-
+		eventQueues[i].toClientEventQueue->Push((*playerPackets)[i]);
 	}
 }
 
@@ -92,10 +91,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
 
-	InitializeInGameThread(level, eventQueues, playerPackets);
+	InitializeInGameThread(level, eventQueues, &playerPackets);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
-
+	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 
 
