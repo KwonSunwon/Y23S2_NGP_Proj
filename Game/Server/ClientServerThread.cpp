@@ -88,10 +88,6 @@ void MainLoop(SOCKET client)
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 				if(retval>0)
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
-				if (packet.stateMask == 0) {
-					//cout << "종료";
-					//return;
-				}
 
 				if (retval < 0) {
 #ifdef _DEBUG_CLIENT_SERVER
@@ -101,8 +97,11 @@ void MainLoop(SOCKET client)
 				}
 				if (retval == 0) {
 					cout << "종료" << endl;
+					packet.stateMask = 0;
+					packet.x= numeric_limits<float>::infinity();
+					packet.y= numeric_limits<float>::infinity();
+					m_toServerEventQueue->Push(packet);
 					return;
-					break;
 				}
 			}
 		}

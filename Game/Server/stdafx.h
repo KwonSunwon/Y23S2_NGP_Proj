@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <numeric>
+#include <limits>
 
 #include <WS2tcpip.h>
 #pragma comment(lib, "ws2_32")
