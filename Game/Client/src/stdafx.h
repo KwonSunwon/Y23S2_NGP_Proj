@@ -45,7 +45,7 @@
 #include <windows.h>
 #include <queue>
 #include <memory>
-
+#include "Global.h"
 
 
 using namespace std;

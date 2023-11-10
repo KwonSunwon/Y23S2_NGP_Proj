@@ -38,9 +38,9 @@ void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> 
 
 static void ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
-	for (auto iter = alivePlayer.begin(); iter != alivePlayer.end(); ++iter)
+	for (auto player : alivePlayer)
 	{
-		eventQueues[*iter].toServerEventQueue->TryPop(playerPackets[*iter]);
+		eventQueues[player].toServerEventQueue->TryPop(playerPackets[player]);
 	}
 }
 
@@ -54,9 +54,9 @@ static void PushWinPacket(EventQueues winnerQueues)
 
 static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
-	for (auto iter = alivePlayer.begin(); iter != alivePlayer.end(); ++iter)
+	for (auto player : alivePlayer)
 	{
-		eventQueues[*iter].toClientEventQueue->Push(playerPackets[*iter]);
+		eventQueues[player].toClientEventQueue->Push(playerPackets[player]);
 	}
 }
 
@@ -68,6 +68,7 @@ void InGameThread(GAME_LEVEL level)
 
 	array<EventQueues, NUM_OF_PLAYER> eventQueues;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
+	memset(&playerPackets, 0, sizeof(Packet) * NUM_OF_PLAYER);
 
 	// 플레이어가 죽으면 erase(player_num);
 	vector<int>alivePlayer(NUM_OF_PLAYER);

@@ -57,8 +57,8 @@ void Initialize(SOCKET client)
 
 	ClientInfoQueue[(int)level].Push(clientInfo);
 
-	DWORD optval = 10;
-	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+	//DWORD optval = 10;
+	//retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 
 void MainLoop(SOCKET client)
@@ -86,6 +86,12 @@ void MainLoop(SOCKET client)
 				cout << "recv Loop" << endl;
 #endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
+				if(retval>0)
+					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
+				if (packet.stateMask == 0) {
+					cout << "Á¾·á";
+					return;
+				}
 
 				if (retval < 0) {
 #ifdef _DEBUG_CLIENT_SERVER
