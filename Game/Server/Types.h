@@ -13,5 +13,27 @@ using uint64 = unsigned __int64;
 enum class GAME_LEVEL : BYTE {
 	EASY,
 	NORMAL,
-	HARD
+	HARD,
+	NONE
+};
+
+enum class STATE_MASK {
+	RESULT,
+	PLAYING,
+	LIFE,
+	POS_FLAG,
+	PLAYER_NUM,
+	GAME_START
+};
+
+struct Packet {
+	float x, y;
+	BYTE stateMask;
+};
+
+struct ClientInfo {
+	shared_ptr<LockQueue<Packet>> toServerEventQueue;
+	shared_ptr<LockQueue<Packet>> toClientEventQueue;
+	GAME_LEVEL level;
+	SOCKET sock;
 };

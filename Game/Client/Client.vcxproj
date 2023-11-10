@@ -25,6 +25,7 @@
     <ClCompile Include="src\easyStage.cpp" />
     <ClCompile Include="src\gameManager.cpp" />
     <ClCompile Include="src\gameWorld.cpp" />
+    <ClCompile Include="src\Global.cpp" />
     <ClCompile Include="src\hardStage.cpp" />
     <ClCompile Include="src\item.cpp" />
     <ClCompile Include="src\light.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="src\soundManager.cpp" />
     <ClCompile Include="src\stage.cpp" />
     <ClCompile Include="src\startStage.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\wall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,7 @@
     <ClInclude Include="src\easyStage.h" />
     <ClInclude Include="src\gameManager.h" />
     <ClInclude Include="src\gameWorld.h" />
+    <ClInclude Include="src\Global.h" />
     <ClInclude Include="src\hardStage.h" />
     <ClInclude Include="src\item.h" />
     <ClInclude Include="src\light.h" />
@@ -182,9 +185,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)api\core\lib;$(ProjectDir)api\studio\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)api\OpenGL\lib;$(ProjectDir)api\core\lib;$(ProjectDir)api\studio\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>glew32.lib freeglut.lib %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>$(ProjectDir)api\core\lib\x64\fmod_vc.lib;$(ProjectDir)api\core\lib\x64\fmodL_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudio_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)api\core\lib\x64\fmod_vc.lib;$(ProjectDir)api\core\lib\x64\fmodL_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudio_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudioL_vc.lib;$(ProjectDir)api\OpenGL\lib\glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -202,8 +205,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)api\core\lib;$(ProjectDir)api\studio\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(ProjectDir)api\core\lib\x64\fmod_vc.lib;$(ProjectDir)api\core\lib\x64\fmodL_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudio_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)api\OpenGL\lib;$(ProjectDir)api\core\lib;$(ProjectDir)api\studio\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(ProjectDir)api\core\lib\x64\fmod_vc.lib;$(ProjectDir)api\core\lib\x64\fmodL_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudio_vc.lib;$(ProjectDir)api\studio\lib\x64\fmodstudioL_vc.lib;$(ProjectDir)api\OpenGL\lib\glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>glew32.lib freeglut.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>

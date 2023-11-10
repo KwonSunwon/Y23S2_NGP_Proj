@@ -7,6 +7,7 @@
 #include "wall.h"
 #include "particle.h"
 #include "bg.h"
+#include "PacketManager.h"
 
 extern Player player;
 extern Light light;
@@ -99,5 +100,7 @@ void EasyStage::draw()
 }
 void EasyStage::out()
 {
+    g_PacketManager->Reset();
     patterTime = 0;
+    cout << "Out Easy Stage" << endl;
 }

@@ -9,6 +9,8 @@
 #include "src/wall.h"
 #include "src/gameManager.h"
 
+#include "src/PacketManager.h"
+
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid keyboard(unsigned char key, int x, int y);
@@ -83,11 +85,16 @@ GLvoid Reshape(int w, int h)
 GLvoid keyboard(unsigned char key, int x, int y)
 {
     gameManager.handleEvent(key, true);
+    g_PacketManager->SendPacket();
+
     glutPostRedisplay();
+    
 }
 GLvoid keyUp(unsigned char key, int x, int y)
 {
     gameManager.handleEvent(key, false);
+    //g_PacketManager->SendPacket()
+
     glutPostRedisplay();
 }
 GLvoid Mouse(int button, int state, int x, int y)

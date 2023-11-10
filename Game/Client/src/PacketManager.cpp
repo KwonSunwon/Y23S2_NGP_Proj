@@ -10,16 +10,15 @@
 #include <string.h> // strncpy(), ...
 
 
-PacketManager::PacketManager(GAME_LEVEL level)
+PacketManager::PacketManager()
 {
-	Initialize(level);
 }
 
 PacketManager::~PacketManager()
 {
 	// 소켓 닫기
 	closesocket(m_sock);
-
+	cout << "close Sock" << endl;
 	// 윈속 종료
 	WSACleanup();
 }
@@ -91,15 +90,38 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	}
 
 	//최초 난이도 제공용 send
-	retval = send(m_sock, (char*)&level, sizeof(GAME_LEVEL), 0);
+	retval = send(m_sock, (char*)&level, sizeof(level), 0);
+	cout << retval;
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
 }
 
-void PacketManager::SendPacket(Packet)
+void PacketManager::Reset()
+{
+	Packet packet;
+	packet.stateMask = 0;
+	send(m_sock, (char*)&packet, sizeof(packet), 0);
+	cout << "소켓 종료" << endl;
+	// 소켓 닫기
+	closesocket(m_sock);
+	cout << "close Sock" << endl;
+	// 윈속 종료
+	WSACleanup();
+}
+
+void PacketManager::SendPacket()
 {
 	//키 입력시 이 함수를 호출해서 서버로 send할 예정
+	Packet packet;
+	packet.stateMask = 0;
+	packet.x = 1;
+	packet.y = 1;
+	int retval = send(m_sock, (char*)&packet, sizeof(packet), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
 }
 
 bool PacketManager::RecvPacket()

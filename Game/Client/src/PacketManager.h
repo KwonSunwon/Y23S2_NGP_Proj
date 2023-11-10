@@ -11,20 +11,22 @@ struct Packet {
     BYTE stateMask;
 };
 
-enum class GAME_LEVEL : BYTE {
+enum class GAME_LEVEL : BYTE { 
     EASY,
     NORMAL,
-    HARD
+    HARD,
+    NONE,
 };
 
 class PacketManager
 {
 
 public:
-    PacketManager(GAME_LEVEL level);
+    PacketManager();
     ~PacketManager();
     void Initialize(GAME_LEVEL level);
-    void SendPacket(Packet);
+    void Reset();
+    void SendPacket();
     bool RecvPacket();
 
     shared_ptr<queue<Packet>> GetPacketQueue();
@@ -36,7 +38,7 @@ private:
 
     //임시로 사용할 ip, port, Bufsize
     //=======================================
-    char* SERVERIP = (char*)"xxx.xxx.xxx.xxx";
+    char* SERVERIP = (char*)"127.0.0.1";
     int SERVERPORT = 9000;
     int BUFSIZE = 1024;
     //=======================================

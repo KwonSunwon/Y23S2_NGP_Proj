@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "startStage.h"
 #include "player.h"
 #include "light.h"
@@ -10,6 +11,7 @@
 #include "hardStage.h"
 #include "menu.h"
 #include "soundManager.h"
+#include "PacketManager.h"
 
 extern Player player;
 extern Light light;
@@ -21,6 +23,7 @@ extern vector<Stage *> stages;
 extern int nowStage;
 extern SoundManager soundManager;
 
+//PacketManager* g_packetManager;
 EasyStage *easyStage = new EasyStage();
 NormalStage *normalStage = new NormalStage();
 HardStage *hardStage = new HardStage();
@@ -61,18 +64,21 @@ void StartStage::handleEvent(unsigned char key, bool isDown)
         {
         case '1':
             stages.back()->out();
+            g_PacketManager->Initialize(GAME_LEVEL::EASY);
             nowStage++;
             stages.push_back(easyStage);
             stages[nowStage]->init();
             break;
         case '2':
             stages.back()->out();
+            g_PacketManager->Initialize(GAME_LEVEL::NORMAL);
             nowStage++;
             stages.push_back(normalStage);
             stages[nowStage]->init();
             break;
         case '3':
             stages.back()->out();
+            g_PacketManager->Initialize(GAME_LEVEL::HARD);
             nowStage++;
             stages.push_back(hardStage);
             stages[nowStage]->init();
@@ -99,6 +105,7 @@ void StartStage::handleEvent(int button, int state, int x, int y)
     {
     case 1:
         stages.back()->out();
+        //g_packetManager = new PacketManager(GAME_LEVEL::EASY);
         nowStage++;
         stages.push_back(easyStage);
         stages[nowStage]->init();

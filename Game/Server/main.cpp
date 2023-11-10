@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "InGameThread.h"
+#include "ClientServerThread.h"
+#include "LobbyThread.h"
 
 //LockQueue<int32> q;
 //
@@ -27,22 +29,22 @@
 //}
 
 // Test를 위한 client-server thraed
-void ClientServerThread(SOCKET client)
-{
-	struct sockaddr_in clientaddr;
-	char addr[INET_ADDRSTRLEN];
-	int addrlen;
-	char buf[24];
-
-	// 클라이언트 정보 얻기
-	addrlen = sizeof(clientaddr);
-	getpeername(client, (struct sockaddr*)&clientaddr, &addrlen);
-	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-	printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-		addr, ntohs(clientaddr.sin_port));
-
-	closesocket(client);
-}
+//void ClientServerThread(SOCKET client)
+//{
+//	struct sockaddr_in clientaddr;
+//	char addr[INET_ADDRSTRLEN];
+//	int addrlen;
+//	char buf[24];
+//
+//	// 클라이언트 정보 얻기
+//	addrlen = sizeof(clientaddr);
+//	getpeername(client, (struct sockaddr*)&clientaddr, &addrlen);
+//	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+//	printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
+//		addr, ntohs(clientaddr.sin_port));
+//
+//	closesocket(client);
+//}
 
 void print2Digit(BYTE num)
 {
@@ -55,6 +57,9 @@ void print2Digit(BYTE num)
 
 int main()
 {
+	thread lobbyThreadHandle;
+	lobbyThreadHandle = thread(LobbyThread);
+
 	//---------------------------------------
 	// wait sock 초기화
 	WSADATA wsa;
@@ -92,18 +97,16 @@ int main()
 		clientServerThreadHandle.detach();
 	}
 	// ---------------------------------------
-	// 인게임thread초기화 test
-	initClientInfoQueue();
-	BYTE level;
-	shared_ptr<shared_ptr<LockQueue<Packet>>[]> eventQueuePtr(new shared_ptr<LockQueue<Packet>>[3]);
-	eventQueuePtr = InitializeInGameThread(&level);
-	printf("level = %d\n", level);
-	Packet pack;
-	for (int i = 0; i < 3; ++i) {
-		eventQueuePtr[i]->TryPop(pack);
-		printf("%.1f, %.1f \n", pack.x, pack.y);
-		print2Digit(pack.stateMask);
-	}
+	//// 인게임thread초기화 test
+	//initClientInfoQueue();
+	//shared_ptr<shared_ptr<LockQueue<Packet>>[]> eventQueuePtr(new shared_ptr<LockQueue<Packet>>[3]);
+	//printf("level = %d\n", level);
+	//Packet pack;
+	//for (int i = 0; i < 3; ++i) {
+	//	eventQueuePtr[i]->TryPop(pack);
+	//	printf("%.1f, %.1f \n", pack.x, pack.y);
+	//	print2Digit(pack.stateMask);
+	//}
 
 	closesocket(listenSock);
 	WSACleanup();

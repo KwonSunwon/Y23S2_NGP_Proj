@@ -9,6 +9,7 @@
 #include "stage.h"
 #include "soundManager.h"
 #include "bg.h"
+#include "PacketManager.h"
 #include <vector>
 
 extern GLint g_width;
