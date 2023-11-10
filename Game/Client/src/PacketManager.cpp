@@ -127,6 +127,16 @@ void PacketManager::SendPacket()
 bool PacketManager::RecvPacket()
 {
 	//toClientEventque가 비어있지 않다면 모두 꺼내서 처리할 예정
+	static bool gameStart = false;
+
+	Packet packet;
+	if (!gameStart) {
+		int retval = recv(m_sock, (char*)&packet, sizeof(packet), 0);
+		cout << "recv Packet" << retval << endl;
+		gameStart = true;
+	}
+
+
 	return false;
 }
 

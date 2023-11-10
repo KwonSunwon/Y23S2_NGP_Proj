@@ -86,7 +86,6 @@ GLvoid keyboard(unsigned char key, int x, int y)
 {
     gameManager.handleEvent(key, true);
     g_PacketManager->SendPacket();
-
     glutPostRedisplay();
     
 }
@@ -99,6 +98,7 @@ GLvoid keyUp(unsigned char key, int x, int y)
 }
 GLvoid Mouse(int button, int state, int x, int y)
 {
+
     gameManager.handleEvent(button, state, x, y);
     glutPostRedisplay();
 }

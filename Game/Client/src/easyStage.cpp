@@ -20,6 +20,7 @@ extern BG backGround;
 
 void EasyStage::init()
 {
+    g_PacketManager->RecvPacket();
     cout << "easy Stage" << endl;
      
     backGround.initBuffer();
