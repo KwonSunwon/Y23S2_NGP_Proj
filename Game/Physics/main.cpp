@@ -7,6 +7,7 @@
 GLvoid DrawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid KeyboardUp(unsigned char key, int x, int y);
 GLvoid TimerFunction(int value);
 
 void InitBuffer();
@@ -18,6 +19,12 @@ float cameraPosX = 0.5f;
 float cameraPosZ = 200.f;
 
 int gameSpeed = 60;
+
+bool UpCompressed = false;
+bool DownCompressed = false;
+bool LeftCompressed = false;
+bool RightCompressed = false;
+
 
 GLuint shader_program;
 //GLchar* vertexsource, * fragmentsource; //--- 소스코드 저장 변수
@@ -32,7 +39,7 @@ glm::vec3 initialColor[3] = {
 	glm::vec3(1.f,0.f,0.f)
 };
 
-Object Objects[3];
+Object Objects[NUM_OF_PLAYER];
 
 int main(int argc, char** argv) //윈도우 출력하고 콜백함수 설정
 {
@@ -64,6 +71,7 @@ int main(int argc, char** argv) //윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(DrawScene); // 출력 함수의 지정
 	glutReshapeFunc(Reshape);// 다시 그리기 함수 지정
 	glutKeyboardFunc(Keyboard);
+	glutKeyboardUpFunc(KeyboardUp);
 	glutTimerFunc(0, TimerFunction, 1);
 
 
@@ -121,18 +129,89 @@ void Keyboard(unsigned char key, int x, int y)
 
 	switch (key)
 	{
+	case 27:
+		exit(0);
+		break;
 	case 'w':
-		Objects[0].SetVelocity(glm::vec2(0.f, +0.2f));
+		if (DownCompressed == false)
+		{
+			UpCompressed = true;
+			if (LeftCompressed)
+				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, ACCELERATION));
+			else if (RightCompressed)
+				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, ACCELERATION));
+			else
+				Objects[0].SetAcceleration(glm::vec2(0.f, ACCELERATION));
+		}
 		break;
 	case 'a':
-		Objects[0].SetVelocity(glm::vec2(-0.2f, 0.f));
-		//Objects[0].SetVelocityByAccceleration(g)
+		if (RightCompressed == false)
+		{
+			LeftCompressed = true;
+			if (UpCompressed)
+				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, ACCELERATION));
+			else if (DownCompressed)
+				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, -ACCELERATION));
+			else
+				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, 0.f));
+		}
 		break;
 	case 's':
-		Objects[0].SetVelocity(glm::vec2(0.f, -0.2f));
+		if (UpCompressed == false)
+		{
+			DownCompressed = true;
+			if (LeftCompressed)
+				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, -ACCELERATION));
+			else if (RightCompressed)
+				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, -ACCELERATION));
+			else
+				Objects[0].SetAcceleration(glm::vec2(0.f, -ACCELERATION));
+		}
 		break;
 	case 'd':
-		Objects[0].SetVelocity(glm::vec2(0.2f, 0.f));
+		if (LeftCompressed == false)
+		{
+			RightCompressed = true;
+			if (UpCompressed)
+				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, ACCELERATION));
+			else if (DownCompressed)
+				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, -ACCELERATION));
+			else
+				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, 0.f));
+		}
+		break;
+	default:
+		break;
+	}
+
+	glutPostRedisplay();
+}
+
+GLvoid KeyboardUp(unsigned char key, int x, int y)
+{
+	glm::vec2 temp = Objects[0].GetVelocity();
+	glm::vec2 tempAcc = Objects[0].GetAcceleration();
+	switch (key)
+	{
+	case 'w':
+		UpCompressed = false;
+		Objects[0].SetVelocity(glm::vec2(temp.x, 0.f));
+		Objects[0].SetAcceleration(glm::vec2(tempAcc.x, 0.f));
+		break;
+	case 'a':
+		LeftCompressed = false;
+		Objects[0].SetVelocity(glm::vec2(0.f, temp.y));
+		Objects[0].SetAcceleration(glm::vec2(0.f, tempAcc.y));
+		break;
+	case 's':
+		DownCompressed = false;
+		Objects[0].SetVelocity(glm::vec2(temp.x, 0.f));
+		Objects[0].SetAcceleration(glm::vec2(tempAcc.x, 0.f));
+		break;
+	case 'd':
+		RightCompressed = false;
+		Objects[0].SetVelocity(glm::vec2(0.f, temp.y));
+		Objects[0].SetAcceleration(glm::vec2(0.f, tempAcc.y));
 		break;
 	default:
 		break;

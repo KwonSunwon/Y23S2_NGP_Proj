@@ -12,7 +12,6 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <random>
 #include <vector>
@@ -23,6 +22,10 @@
 #include <windows.h>
 #include <math.h>
 
+#define MAX_SPEED 0.02f
+#define ACCELERATION 0.002f
+
+#define NUM_OF_PLAYER 3
 
 using namespace std;
 

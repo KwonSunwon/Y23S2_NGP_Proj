@@ -78,11 +78,29 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, num_triangle);
 	};
 
-	void Update() { m_Position += m_Velocity; };
 	void SetVelocity(glm::vec2 velocity) { m_Velocity = velocity; };
-	void SetVelocityByAccceleration(glm::vec2 acceleration) { m_Velocity += acceleration; };
-	void SetAcceleration(glm::vec2 acceleration) { m_Velocity = acceleration; };
+	void SetAcceleration(glm::vec2 acceleration) { m_Acceleration = acceleration; };
 	glm::vec2 GetPos() { return m_Position; };
 	glm::vec2 GetVelocity() { return m_Velocity; };
 	glm::vec2 GetAcceleration() { return m_Acceleration; };
+
+	void SetVelocityByAcceleration()
+	{
+		m_Velocity += m_Acceleration;
+		if (m_Velocity.x > MAX_SPEED)
+			m_Velocity.x = MAX_SPEED;
+		else if (m_Velocity.x < -MAX_SPEED)
+			m_Velocity.x = -MAX_SPEED;
+		if (m_Velocity.y > MAX_SPEED)
+			m_Velocity.y = MAX_SPEED;
+		else if (m_Velocity.y < -MAX_SPEED)
+			m_Velocity.y = -MAX_SPEED;
+
+		//cout << "Velocity.x = " << m_Velocity.x << "Velocity.y = " << m_Velocity.y << endl;
+	};
+	void Update()
+	{
+		SetVelocityByAcceleration();
+		m_Position += m_Velocity;
+	};
 };
