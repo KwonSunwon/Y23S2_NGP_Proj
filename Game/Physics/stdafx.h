@@ -20,12 +20,19 @@
 #include <fstream>
 #include <sstream>
 #include <windows.h>
+#include <chrono>
+
+#define _USE_MATH_DEFINES
 #include <math.h>
 
-#define MAX_SPEED 0.02f
-#define ACCELERATION 0.002f
+#define MAX_SPEED 0.04f
+#define ACCELERATION 0.01f
+#define COEF 0.003f
+#define ROOT_TWO 1.41421f
 
 #define NUM_OF_PLAYER 3
+#define END_OF_X 1.06f
+#define END_OF_Y 0.8f
 
 using namespace std;
 

@@ -40,6 +40,44 @@ glm::vec3 initialColor[3] = {
 };
 
 Object Objects[NUM_OF_PLAYER];
+CollisionManager Cm;
+PlayerInfo Players[NUM_OF_PLAYER];
+
+
+void UpdatePlayerInfo(PlayerInfo* Player, Object* obs)
+{
+	Player->Acc.x = obs->GetAcceleration().x;
+	Player->Acc.y = obs->GetAcceleration().y;
+	Player->Pos.x = obs->GetPos().x;
+	Player->Pos.y = obs->GetPos().y;
+	Player->Vel.x = obs->GetVelocity().x;
+	Player->Vel.y = obs->GetVelocity().y;
+	Player->Radius = obs->GetRadius();
+	Player->Mass = obs->GetMass();
+}
+
+void CheckColideWithOtherPlayer(PlayerInfo* Player1, PlayerInfo* Player2, Object* obs1)
+{
+	Cm.DoCollideAB(Player1, Player2);
+	if (Cm.DoCollideAB(Player1, Player2))
+	{
+		obs1->SetAccelerationX(Player1->Acc.x);
+		obs1->SetAccelerationY(Player1->Acc.y);
+	}
+
+	//if (Cm.DoCollideWithWall(Player2)) {
+	//	obs->SetAccelerationX(Player2->Acc.x);
+	//	obs->SetAccelerationY(Player2->Acc.y);
+	//}
+}
+
+void CheckColideWithWall(PlayerInfo* Player, Object* obs)
+{
+	if (Cm.DoCollideWithWall(Player)) {
+		obs->SetAccelerationX(Player->Acc.x);
+		obs->SetAccelerationY(Player->Acc.y);
+	}
+}
 
 int main(int argc, char** argv) //윈도우 출력하고 콜백함수 설정
 {
@@ -133,52 +171,16 @@ void Keyboard(unsigned char key, int x, int y)
 		exit(0);
 		break;
 	case 'w':
-		if (DownCompressed == false)
-		{
-			UpCompressed = true;
-			if (LeftCompressed)
-				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, ACCELERATION));
-			else if (RightCompressed)
-				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, ACCELERATION));
-			else
-				Objects[0].SetAcceleration(glm::vec2(0.f, ACCELERATION));
-		}
+		Objects[0].SetUp(true);
 		break;
 	case 'a':
-		if (RightCompressed == false)
-		{
-			LeftCompressed = true;
-			if (UpCompressed)
-				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, ACCELERATION));
-			else if (DownCompressed)
-				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, -ACCELERATION));
-			else
-				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, 0.f));
-		}
+		Objects[0].SetLeft(true);
 		break;
 	case 's':
-		if (UpCompressed == false)
-		{
-			DownCompressed = true;
-			if (LeftCompressed)
-				Objects[0].SetAcceleration(glm::vec2(-ACCELERATION, -ACCELERATION));
-			else if (RightCompressed)
-				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, -ACCELERATION));
-			else
-				Objects[0].SetAcceleration(glm::vec2(0.f, -ACCELERATION));
-		}
+		Objects[0].SetDown(true);
 		break;
 	case 'd':
-		if (LeftCompressed == false)
-		{
-			RightCompressed = true;
-			if (UpCompressed)
-				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, ACCELERATION));
-			else if (DownCompressed)
-				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, -ACCELERATION));
-			else
-				Objects[0].SetAcceleration(glm::vec2(ACCELERATION, 0.f));
-		}
+		Objects[0].SetRight(true);
 		break;
 	default:
 		break;
@@ -194,24 +196,16 @@ GLvoid KeyboardUp(unsigned char key, int x, int y)
 	switch (key)
 	{
 	case 'w':
-		UpCompressed = false;
-		Objects[0].SetVelocity(glm::vec2(temp.x, 0.f));
-		Objects[0].SetAcceleration(glm::vec2(tempAcc.x, 0.f));
+		Objects[0].SetUp(false);
 		break;
 	case 'a':
-		LeftCompressed = false;
-		Objects[0].SetVelocity(glm::vec2(0.f, temp.y));
-		Objects[0].SetAcceleration(glm::vec2(0.f, tempAcc.y));
+		Objects[0].SetLeft(false);
 		break;
 	case 's':
-		DownCompressed = false;
-		Objects[0].SetVelocity(glm::vec2(temp.x, 0.f));
-		Objects[0].SetAcceleration(glm::vec2(tempAcc.x, 0.f));
+		Objects[0].SetDown(false);
 		break;
 	case 'd':
-		RightCompressed = false;
-		Objects[0].SetVelocity(glm::vec2(0.f, temp.y));
-		Objects[0].SetAcceleration(glm::vec2(0.f, tempAcc.y));
+		Objects[0].SetRight(false);
 		break;
 	default:
 		break;
@@ -223,8 +217,19 @@ GLvoid KeyboardUp(unsigned char key, int x, int y)
 GLvoid TimerFunction(int value)
 {
 	//TimerFunc();
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+	{
+		Objects[i].SetAccelerationByKey();
+		UpdatePlayerInfo(&Players[i], &Objects[i]);
+		CheckColideWithOtherPlayer(&Players[i], &Players[(i + 1)%3], &Objects[i]);
+		CheckColideWithOtherPlayer(&Players[i], &Players[(i + 2)%3], &Objects[i]);
+		CheckColideWithWall(&Players[i], &Objects[i]);
+		Objects[i].VelocityUpdate();
 		Objects[i].Update();
+	}
+
+	//cout << "x=" << Objects[0].GetPos().x << "y=" << Objects[0].GetPos().y << endl;
+	//cout << "velocity=" << sqrt(Objects[0].GetVelocity().x * Objects[0].GetVelocity().x + Objects[0].GetVelocity().y * Objects[0].GetVelocity().y) << endl;
 	glutPostRedisplay();// 화면 재 출력
 	glutTimerFunc(1000 / gameSpeed, TimerFunction, value);// 타이머함수 재 설정
 

@@ -1,10 +1,17 @@
 #pragma once
 #include "buffer.h"
 #include "loadobj.h"
+#include "CollisionManager.h"
+
+
 
 class Object
 {
 private:
+	bool m_Up = false;
+	bool m_Down = false;
+	bool m_Left = false;
+	bool m_Right = false;
 	float m_Radius = 0.1f;
 	float m_Mass;
 	int num_triangle;
@@ -79,28 +86,101 @@ public:
 	};
 
 	void SetVelocity(glm::vec2 velocity) { m_Velocity = velocity; };
-	void SetAcceleration(glm::vec2 acceleration) { m_Acceleration = acceleration; };
+	void SetAccelerationX(float acceleration) { m_Acceleration.x = acceleration; };
+	void SetAccelerationY(float acceleration) { m_Acceleration.y = acceleration; };
+	void SetPosX(float x) { m_Position.x = x; };
+	void SetPosY(float y) { m_Position.y = y; };
 	glm::vec2 GetPos() { return m_Position; };
 	glm::vec2 GetVelocity() { return m_Velocity; };
 	glm::vec2 GetAcceleration() { return m_Acceleration; };
+	float GetRadius() { return m_Radius; };
+	float GetMass() { return m_Mass; };
+	bool GetUp() { return m_Up; };
+	bool GetDown() { return m_Down; };
+	bool GetLeft() { return m_Left; };
+	bool GetRight() { return m_Right; };
+	void SetUp(bool val) { m_Up = val; };
+	void SetDown(bool val) { m_Down = val; };
+	void SetLeft(bool val) { m_Left = val; };
+	void SetRight(bool val) { m_Right = val; };
 
-	void SetVelocityByAcceleration()
+
+	void SetAccelerationByKey()
 	{
-		m_Velocity += m_Acceleration;
+		m_Acceleration = glm::vec2(0, 0);
+		if (m_Up) {
+			if (m_Left || m_Right)
+				m_Acceleration.y = (ACCELERATION / ROOT_TWO);
+			else
+				m_Acceleration.y = ACCELERATION;
+		}
+		if (m_Down) {
+			if (m_Left || m_Right)
+				m_Acceleration.y = -(ACCELERATION / ROOT_TWO);
+			else
+				m_Acceleration.y = -ACCELERATION;
+		}
+		if (m_Left) {
+			if (m_Up || m_Down)
+				m_Acceleration.x = -(ACCELERATION / ROOT_TWO);
+			else
+				m_Acceleration.x = -ACCELERATION;
+		}
+		if (m_Right) {
+			if (m_Up || m_Down)
+				m_Acceleration.x = (ACCELERATION / ROOT_TWO);
+			else
+				m_Acceleration.x = ACCELERATION;
+		}
+	};
+
+	void VelocityUpdate()
+	{
+		m_Velocity = m_Velocity + m_Acceleration;
+
+		glm::vec2 friction = -m_Velocity;
+		float mag = sqrt(friction.x * friction.x + friction.y * friction.y);
+		if (mag > FLT_EPSILON) {
+			friction = friction / mag;
+			friction = friction * COEF;
+
+			glm::vec2 resultVel = m_Velocity + friction;
+			if (resultVel.x * m_Velocity.x < 0.f)
+				m_Velocity.x = 0.f;
+			else
+				m_Velocity.x = resultVel.x;
+			if (resultVel.y * m_Velocity.y < 0.f)
+				m_Velocity.y = 0.f;
+			else
+				m_Velocity.y = resultVel.y;
+		}
 		if (m_Velocity.x > MAX_SPEED)
 			m_Velocity.x = MAX_SPEED;
-		else if (m_Velocity.x < -MAX_SPEED)
+		if (m_Velocity.x < -MAX_SPEED)
 			m_Velocity.x = -MAX_SPEED;
+
 		if (m_Velocity.y > MAX_SPEED)
 			m_Velocity.y = MAX_SPEED;
-		else if (m_Velocity.y < -MAX_SPEED)
+		if (m_Velocity.y < -MAX_SPEED)
 			m_Velocity.y = -MAX_SPEED;
+		//cout << sqrt(m_Velocity.x * m_Velocity.x + m_Velocity.y * m_Velocity.y) << endl;
+		if (m_Velocity.x == m_Velocity.y || m_Velocity.x * m_Velocity.x + m_Velocity.y * m_Velocity.y > MAX_SPEED * MAX_SPEED)
+		{
+			if (m_Velocity.x > MAX_SPEED / ROOT_TWO)
+				m_Velocity.x = MAX_SPEED / ROOT_TWO;
+			if (m_Velocity.x < -MAX_SPEED / ROOT_TWO)
+				m_Velocity.x = -MAX_SPEED / ROOT_TWO;
 
-		//cout << "Velocity.x = " << m_Velocity.x << "Velocity.y = " << m_Velocity.y << endl;
+			if (m_Velocity.y > MAX_SPEED / ROOT_TWO)
+				m_Velocity.y = MAX_SPEED / ROOT_TWO;
+			if (m_Velocity.y < -MAX_SPEED / ROOT_TWO)
+				m_Velocity.y = -MAX_SPEED / ROOT_TWO;
+		}
+		//cout << sqrt(m_Velocity.x * m_Velocity.x + m_Velocity.y * m_Velocity.y) << endl;
 	};
+
 	void Update()
 	{
-		SetVelocityByAcceleration();
-		m_Position += m_Velocity;
+		m_Position = m_Position + m_Velocity;
 	};
 };
