@@ -13,11 +13,10 @@ void Physics::AfterColideWithWall(float* Acc, float* Vel)
 void Physics::AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB)
 {
 	vec2f unitVec = DecideUnitVec(posA, posB);
-	vec2f velAAfter = AfterColisionVelocityA(velA, velB, unitVec, massA, massB);
-	vec2f velBAfter = AfterColisionVelocityB(velA, velB, unitVec, massA, massB);
-	*AccA = velAAfter - velA;
-	*AccB = velBAfter - velB;
-	cout << velAAfter.x << ", " << velAAfter.y << endl;
+	AfterForce(AccA, AccB, unitVec, massA, massB);
+	*AccA = *AccA - velA;
+	*AccB = *AccB - velB;
+	cout << AccA->x << ", " << AccA->y << endl;
 }
 
 vec2f Physics::DecideUnitVec(vec2f posA, vec2f posB)
@@ -49,4 +48,16 @@ vec2f Physics::AfterColisionVelocityB(vec2f velA, vec2f velB, vec2f unitVec, flo
 	vec2f J = (velSub * massA) / ((massA + massB) / 2);
 	vec2f vel2After = vel2 + J;
 	return vel2After;
+}
+
+// 작용 반작용
+void Physics::AfterForce(vec2f *AccA, vec2f *AccB, vec2f unitVec, float massA, float massB)
+{
+	vec2f forceA = *AccA * massA;
+	vec2f forceB = *AccB * massB;
+	vec2f dirForceA = unitVec * vec2f().dot(forceA, unitVec);
+	vec2f dirForceB = unitVec * vec2f().dot(forceB, unitVec);
+	vec2f afterForce = dirForceA + dirForceB;
+	*AccA = afterForce / massA;
+	*AccB = (afterForce * -1) / massB;
 }
