@@ -18,7 +18,7 @@ vector<glm::vec3> Player::vertices;
 vector<glm::vec3> Player::normals;
 vector<glm::vec2> Player::uvs;
 
-unsigned int Player::texture = -1;
+//unsigned int Player::texture = -1;
 
 #endif
 extern GameWorld gameWorld;
@@ -71,6 +71,29 @@ void Player::initTexture()
 	else
 	{
 		std::cout << "Failed to load texture" << std::endl;
+	}
+
+	stbi_image_free(data);
+}
+
+void Player::initTexture(const char* path)
+{
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+	else {
+		std::cout << "Failed to load texture: " << path << std::endl;
 	}
 
 	stbi_image_free(data);
@@ -150,33 +173,50 @@ void Player::update()
 void Player::getEvent(unsigned char key, bool isDown)
 {
 }
+
 void Player::setMoveLeft(bool in)
 {
 	if (in != isMoveLeft) {
-		g_PacketManager->SendPacket();
+		isMoveLeft = in;
+		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		g_PacketManager->SendPacket(true, x, y);
+		
 	}
-	isMoveLeft = in;
+	
 }
 void Player::setMoveRight(bool in)
 {
 	if (in != isMoveRight) {
-		g_PacketManager->SendPacket();
+		isMoveRight = in;
+		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		g_PacketManager->SendPacket(true, x, y);
+		
 	}
-	isMoveRight = in;
 }
+	
 void Player::setMoveUp(bool in)
 {
 	if (in != isMoveUp) {
-		g_PacketManager->SendPacket();
+		isMoveUp = in;
+		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		g_PacketManager->SendPacket(true, x, y);
+		
 	}
-	isMoveUp = in;
+	
 }
 void Player::setMoveDown(bool in)
 {
 	if (in != isMoveDown) {
-		g_PacketManager->SendPacket();
+		isMoveDown = in;
+		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		g_PacketManager->SendPacket(true, x, y);
+		
 	}
-	isMoveDown = in;
+	
 }
 
 void Player::setProtectedMode(bool in)

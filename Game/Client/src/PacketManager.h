@@ -26,7 +26,7 @@ public:
     ~PacketManager();
     void Initialize(GAME_LEVEL level);
     void Reset();
-    void SendPacket();
+    void SendPacket(bool sig, float x, float y);
     bool RecvPacket();
 
     shared_ptr<queue<Packet>> GetPacketQueue();

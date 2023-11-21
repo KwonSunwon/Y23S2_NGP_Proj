@@ -110,13 +110,14 @@ void PacketManager::Reset()
 	WSACleanup();
 }
 
-void PacketManager::SendPacket()
+void PacketManager::SendPacket(bool sig, float x, float y)
 {
 	//키 입력시 이 함수를 호출해서 서버로 send할 예정
 	Packet packet;
+	
 	packet.stateMask = 0;
-	packet.x = 1;
-	packet.y = 1;
+	packet.x = x;
+	packet.y = y;
 	int retval = send(m_sock, (char*)&packet, sizeof(packet), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");

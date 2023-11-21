@@ -33,13 +33,16 @@ void EasyStage::init()
     for(int i= 0 ; i < 2; i++){
         Player* other = new Player();
         other->initBuffer();
-        other->initTexture();
-        if (i == 0)
+        if (i == 0){
             other->setPos(glm::vec3(0.3, 0.3, 0.3));
-        else
+            other->initTexture("res/Rock.png");
+            }
+        else{
             other->setPos(glm::vec3(-0.3, 0.3, 0.3));
+            other->initTexture("res/Rock.png");
+        }
         gameWorld.add_object(other);
-        otherPlayers[i] = other;
+        otherPlayers.emplace_back(other);
     }
 
     makePattern(3);

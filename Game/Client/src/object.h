@@ -47,6 +47,7 @@ public:
     virtual void initBuffer();
     virtual void _initBuffer();
     virtual void initTexture(){};
+    virtual void initTexture(const char* fileName) {};
 
     void setModelPos(vector<float> vertices);
     void setModelColor(vector<float> colors);

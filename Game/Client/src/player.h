@@ -13,7 +13,7 @@ private:
 	static vector<glm::vec3> normals;
 	static vector<glm::vec2> uvs;
 
-	static unsigned int texture;
+	unsigned int texture;
 
 protected:
 	bool isMoveLeft = false;
@@ -29,6 +29,7 @@ public:
 	void colorInit();
 	void initTexture() override;
 	void initBuffer() override;
+	void initTexture(const char* fileName) override;
 
 	void update() override;
 	void getEvent(unsigned char key, bool isDown);
