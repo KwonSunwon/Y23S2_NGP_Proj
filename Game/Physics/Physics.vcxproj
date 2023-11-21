@@ -131,16 +131,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="physics.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="loadobj.h" />
+    <ClInclude Include="physics.h" />
     <ClInclude Include="physicsobject.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
