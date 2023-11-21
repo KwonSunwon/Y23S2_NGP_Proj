@@ -57,7 +57,7 @@ void Initialize(SOCKET client)
 
 	ClientInfoQueue[(int)level].Push(clientInfo);
 
-	DWORD optval = 100;
+	DWORD optval = 10;
 	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 

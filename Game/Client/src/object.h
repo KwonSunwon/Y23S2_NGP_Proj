@@ -15,6 +15,7 @@ protected:
     glm::vec3 rotate;
     glm::vec3 revolution;
     glm::vec3 speed;
+    glm::vec3 acc;
 
     GLuint vao;
     GLuint vbo;
@@ -84,6 +85,11 @@ public:
     void setSpeedX(float x);
     void setSpeedY(float y);
     void setSpeedZ(float z);
+
+    void setAcc(glm::vec3 acc);
+    void setAccX(float x);
+    void setAccY(float y);
+    void setAccZ(float z);
 
     // Getters
     glm::vec3 getPos();

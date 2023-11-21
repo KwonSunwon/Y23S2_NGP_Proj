@@ -62,6 +62,13 @@ void EasyStage::update()
 
     // Camera rolling test
     
+    Packet* packet;
+    while (g_PacketManager->RecvPacket(packet)) {
+        short otherIdx = packet->stateMask & 0b01100000;
+        float accX = packet->x;
+        float accY = packet->y;
+        otherPlayers[otherIdx]->setAcc(glm::vec3(accX, accY, 0));
+    }
 
     if (patterTime > 250)
     {

@@ -89,6 +89,10 @@ void PacketManager::Initialize(GAME_LEVEL level)
 		err_quit("connect()");
 	}
 
+	//
+	DWORD optval = 10;
+	retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+
 	//최초 난이도 제공용 send
 	retval = send(m_sock, (char*)&level, sizeof(level), 0);
 	cout << retval;
@@ -125,10 +129,15 @@ void PacketManager::SendPacket(bool sig, float x, float y)
 
 }
 
-bool PacketManager::RecvPacket()
+bool PacketManager::RecvPacket(Packet* packet)
 {
-	//toClientEventque가 비어있지 않다면 모두 꺼내서 처리할 예정
-	return false;
+
+	int retval = recv(m_sock, (char*)&packet, sizeof(packet), 0);
+	if (retval < 0) {
+		return false;
+	}
+	return true;
+		
 }
 
 shared_ptr<queue<Packet>> PacketManager::GetPacketQueue()

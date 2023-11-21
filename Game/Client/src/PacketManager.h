@@ -27,7 +27,7 @@ public:
     void Initialize(GAME_LEVEL level);
     void Reset();
     void SendPacket(bool sig, float x, float y);
-    bool RecvPacket();
+    bool RecvPacket(Packet* packet);
 
     shared_ptr<queue<Packet>> GetPacketQueue();
 
