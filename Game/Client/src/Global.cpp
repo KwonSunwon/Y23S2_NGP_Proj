@@ -3,8 +3,8 @@
 #include "Global.h"
 #include "PacketManager.h"
 PacketManager* g_PacketManager = nullptr;
-g_prevTime = 0;
-g_elapsedTime = 0;
+std::chrono::system_clock::time_point g_prevTime = std::chrono::system_clock::now();
+double g_elapsedTime = 0.f;
 
 class Global
 {
@@ -12,7 +12,6 @@ public:
 	Global()
 	{
 		g_PacketManager = new PacketManager();
-		g_prevTime = std::chrono::system_clock::now();
 	}
 	~Global()
 	{

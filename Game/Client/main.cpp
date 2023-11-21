@@ -17,7 +17,7 @@ GLvoid keyboard(unsigned char key, int x, int y);
 GLvoid keyUp(unsigned char, int, int);
 GLvoid Mouse(int, int, int, int);
 
-GLclampf g_color[4] = {0.5, 0.5, 0.5, 1.0f};
+GLclampf g_color[4] = { 0.5, 0.5, 0.5, 1.0f };
 GLint g_width = 1000, g_height = 1000;
 
 GLuint shaderID;
@@ -32,82 +32,82 @@ extern int gameSpeed;
 
 GLvoid updateTimer(int value);
 
-void main(int argc, char **argv)
+void main(int argc, char** argv)
 {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(300, 0);
-    glutInitWindowSize(g_width, g_height);
-    glutCreateWindow("Last Project");
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK)
-    {
-        std::cerr << "Unable to initialize GLEW" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    else
-        std::cout << "GLEW Initialized" << std::endl;
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowPosition(300, 0);
+	glutInitWindowSize(g_width, g_height);
+	glutCreateWindow("Last Project");
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
+	{
+		std::cerr << "Unable to initialize GLEW" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else
+		std::cout << "GLEW Initialized" << std::endl;
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
-    shaderID = initShader("res/shader.vert", "res/shader.frag");
+	shaderID = initShader("res/shader.vert", "res/shader.frag");
 
-    gameManager.gameRun();
-    gameWorld.set_shader(shaderID);
+	gameManager.gameRun();
+	gameWorld.set_shader(shaderID);
 
-    updateTimer(0);
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(drawScene);
-    glutReshapeFunc(Reshape);
-    glutKeyboardUpFunc(keyUp);
-    glutMouseFunc(Mouse);
-    glutMainLoop();
+	updateTimer(0);
+	glutKeyboardFunc(keyboard);
+	glutDisplayFunc(drawScene);
+	glutReshapeFunc(Reshape);
+	glutKeyboardUpFunc(keyUp);
+	glutMouseFunc(Mouse);
+	glutMainLoop();
 }
 
 GLvoid drawScene()
 {
-    glClearColor(g_color[0], g_color[1], g_color[2], g_color[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glUseProgram(shaderID);
+	glClearColor(g_color[0], g_color[1], g_color[2], g_color[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glUseProgram(shaderID);
 
-    gameManager.draw();
+	gameManager.draw();
 
-    glutSwapBuffers();
+	glutSwapBuffers();
 }
 
 GLvoid Reshape(int w, int h)
 {
-    glViewport(0, 0, 1000, 1000);
+	glViewport(0, 0, 1000, 1000);
 }
 
 GLvoid keyboard(unsigned char key, int x, int y)
 {
-    gameManager.handleEvent(key, true);
-    g_PacketManager->SendPacket();
+	gameManager.handleEvent(key, true);
+	g_PacketManager->SendPacket();
 
-    glutPostRedisplay();
-    
+	glutPostRedisplay();
+
 }
 GLvoid keyUp(unsigned char key, int x, int y)
 {
-    gameManager.handleEvent(key, false);
-    //g_PacketManager->SendPacket()
+	gameManager.handleEvent(key, false);
+	//g_PacketManager->SendPacket()
 
-    glutPostRedisplay();
+	glutPostRedisplay();
 }
 GLvoid Mouse(int button, int state, int x, int y)
 {
-    gameManager.handleEvent(button, state, x, y);
-    glutPostRedisplay();
+	gameManager.handleEvent(button, state, x, y);
+	glutPostRedisplay();
 }
 GLvoid updateTimer(int value)
 {
-    std::chrono::duration<double, std::micro> now = std::chrono::system_clock::now();
-    g_elapsedTime = now - g_prevTime;
-    g_prevTime = now;
+	auto now = std::chrono::system_clock::now();
+	g_elapsedTime = static_cast<std::chrono::duration<double>>(now - g_prevTime).count();
+	g_prevTime = now;
 
-    gameManager.update();
-    glutTimerFunc(1000 / gameSpeed, updateTimer, 0);
+	gameManager.update();
+	glutTimerFunc(1000 / gameSpeed, updateTimer, 0);
 }
