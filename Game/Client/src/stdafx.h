@@ -47,6 +47,7 @@
 #include <memory>
 #include <chrono>
 #include <ratio>
+#include <array>
 #include "Global.h"
 
 

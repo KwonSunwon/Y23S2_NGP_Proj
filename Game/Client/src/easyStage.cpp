@@ -30,6 +30,18 @@ void EasyStage::init()
     player.initTexture();
     gameWorld.add_object(playerPtr);
 
+    for(int i= 0 ; i < 2; i++){
+        Player* other = new Player();
+        other->initBuffer();
+        other->initTexture();
+        if (i == 0)
+            other->setPos(glm::vec3(0.3, 0.3, 0.3));
+        else
+            other->setPos(glm::vec3(-0.3, 0.3, 0.3));
+        gameWorld.add_object(other);
+        otherPlayers[i] = other;
+    }
+
     makePattern(3);
     for (int i = 0; i < 20; ++i)
     {
@@ -67,6 +79,7 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
             //player.setProtectedMode(true);
             break;
         case 'a':
+
             player.setMoveLeft(true);
             break;
 

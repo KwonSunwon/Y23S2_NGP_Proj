@@ -3,6 +3,7 @@
 
 #include "stage.h"
 #include "stdafx.h"
+#include "player.h"
 class EasyStage : public Stage
 {
 protected:
@@ -12,6 +13,9 @@ public:
     void handleEvent(unsigned char, bool);
     void draw();
     void out();
+
+public:
+    vector<Player*> otherPlayers;
 };
 
 #endif

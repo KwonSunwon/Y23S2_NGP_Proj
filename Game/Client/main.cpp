@@ -85,7 +85,7 @@ GLvoid Reshape(int w, int h)
 GLvoid keyboard(unsigned char key, int x, int y)
 {
 	gameManager.handleEvent(key, true);
-	g_PacketManager->SendPacket();
+	//SendPacket();
 
 	glutPostRedisplay();
 

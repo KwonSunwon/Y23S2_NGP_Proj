@@ -7,7 +7,7 @@
 #include "Global.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#include "PacketManager.h"
 #include "soundManager.h"
 
 #ifndef __PLAYER_STATIC__
@@ -152,18 +152,30 @@ void Player::getEvent(unsigned char key, bool isDown)
 }
 void Player::setMoveLeft(bool in)
 {
+	if (in != isMoveLeft) {
+		g_PacketManager->SendPacket();
+	}
 	isMoveLeft = in;
 }
 void Player::setMoveRight(bool in)
 {
+	if (in != isMoveRight) {
+		g_PacketManager->SendPacket();
+	}
 	isMoveRight = in;
 }
 void Player::setMoveUp(bool in)
 {
+	if (in != isMoveUp) {
+		g_PacketManager->SendPacket();
+	}
 	isMoveUp = in;
 }
 void Player::setMoveDown(bool in)
 {
+	if (in != isMoveDown) {
+		g_PacketManager->SendPacket();
+	}
 	isMoveDown = in;
 }
 
