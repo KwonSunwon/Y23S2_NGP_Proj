@@ -45,6 +45,8 @@
 #include <windows.h>
 #include <queue>
 #include <memory>
+#include <chrono>
+#include <ratio>
 #include "Global.h"
 
 

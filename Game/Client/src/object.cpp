@@ -35,6 +35,7 @@ void Object::initPos()
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
     scale = glm::vec3(1.0f, 1.0f, 1.0f);
     rotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void Object::setPos(glm::vec3 pos) { this->pos = pos; }
@@ -52,6 +53,26 @@ void Object::setRotateX(float x) { this->rotate.x = x; }
 void Object::setRotateY(float y) { this->rotate.y = y; }
 void Object::setRotateZ(float z) { this->rotate.z = z; }
 
+void Object::setSpeed(glm::vec3 speed) { this->speed = speed; }
+void Object::setSpeedX(float x) 
+{ 
+    this->speed.x = x; 
+    if(this->spedd.x > 0.02)
+        this->speed.x = 0.02;
+}
+void Object::setSpeedY(float y)
+{
+    this->speed.y = y;
+    if(this->spedd.y > 0.02)
+        this->speed.y = 0.02;
+}
+void Object::setSpeedZ(float z) 
+{
+    this->speed.z = z;
+    if(this->spedd.z > 0.02)
+        this->speed.z = 0.02;
+}
+
 void Object::setRevolution(glm::vec3 revolution) { this->revolution = revolution; }
 void Object::setRevolutionX(float x) { this->revolution.x = x; }
 void Object::setRevolutionY(float y) { this->revolution.y = y; }
@@ -61,6 +82,10 @@ glm::vec3 Object::getPos() { return pos; }
 glm::vec3 Object::getScale() { return scale; }
 glm::vec3 Object::getRotate() { return rotate; }
 glm::vec3 Object::getRevolution() { return revolution; }
+glm::vec3 Object::getSpeed()
+{
+    return speed;
+}
 int Object::getId() { return id; }
 
 void Object::setModelPos(vector<float> vertices)

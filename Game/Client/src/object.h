@@ -14,6 +14,7 @@ protected:
     glm::vec3 scale;
     glm::vec3 rotate;
     glm::vec3 revolution;
+    glm::vec3 speed;
 
     GLuint vao;
     GLuint vbo;
@@ -78,11 +79,17 @@ public:
     void setRevolutionY(float y);
     void setRevolutionZ(float z);
 
+    void setSpeed(glm::vec3 speed);
+    void setSpeedX(float x);
+    void setSpeedY(float y);
+    void setSpeedZ(float z);
+
     // Getters
     glm::vec3 getPos();
     glm::vec3 getScale();
     glm::vec3 getRotate();
     glm::vec3 getRevolution();
+    glm::vec3 getSpeed();
     int getId();
 } Object;
 

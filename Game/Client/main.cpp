@@ -104,6 +104,10 @@ GLvoid Mouse(int button, int state, int x, int y)
 }
 GLvoid updateTimer(int value)
 {
+    std::chrono::duration<double, std::micro> now = std::chrono::system_clock::now();
+    g_elapsedTime = now - g_prevTime;
+    g_prevTime = now;
+
     gameManager.update();
     glutTimerFunc(1000 / gameSpeed, updateTimer, 0);
 }

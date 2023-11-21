@@ -72,6 +72,14 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
         case 'd':
             player.setMoveRight(true);
             break;
+
+        case 's':
+            player.setMoveDown(true);
+            break;
+
+        case 'w':
+            player.setMoveUp(true);
+            break;
         case 'Q':
         case 'q':
             exit(0);

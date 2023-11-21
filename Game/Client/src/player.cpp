@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "stage.h"
 #include "startStage.h"
+#include "Global.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -149,8 +150,23 @@ void Player::update()
 void Player::getEvent(unsigned char key, bool isDown)
 {
 }
-void Player::setMoveLeft(bool in) { isMoveLeft = in; }
-void Player::setMoveRight(bool in) { isMoveRight = in; }
+void Player::setMoveLeft(bool in) 
+{
+    isMoveLeft = in; 
+}
+void Player::setMoveRight(bool in) 
+{ 
+    isMoveRight = in; 
+}
+void Player::setMoveUp(bool in) 
+{
+    isMoveUp = in; 
+}
+void Player::setMoveDown(bool in) 
+{ 
+    isMoveDown = in; 
+}
+
 void Player::setProtectedMode(bool in)
 {
     isProtectedMode = in;
@@ -176,17 +192,27 @@ void Player::updateItemTimer()
 }
 void Player::move()
 {
-    rotate.x -= 3.0;
+    pos.x -= 3.0;
     rotate.y = 0;
+
+    
     if (isMoveLeft)
     {
-        setRevolutionZ(revolution.z - 1.6f);
-        rotate.y = 25;
+        setSpeedX(getSpeed().x - 0.002 * g_elapsedTime);
+        ma*_speed/root2
     }
     if (isMoveRight)
     {
         setRevolutionZ(revolution.z + 1.6f);
         rotate.y = -25;
+    }
+    if(isMoveUp)
+    {
+        setSpeedY(getSpeed().y + 0.002 * g_elapsedTime);
+    }
+    if(isMoveDown)
+    {
+        setSpeedY(getSpeed().y - 0.002 * g_elapsedTime);
     }
 
     if (revolution.z < 0)
