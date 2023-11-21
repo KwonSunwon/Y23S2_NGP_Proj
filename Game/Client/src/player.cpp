@@ -192,19 +192,15 @@ void Player::updateItemTimer()
 }
 void Player::move()
 {
-	pos.x -= 3.0;
-	rotate.y = 0;
 
 
 	if (isMoveLeft)
 	{
 		setSpeedX(getSpeed().x - 0.002 * g_elapsedTime);
-		//ma*_speed/root2
 	}
 	if (isMoveRight)
 	{
-		setRevolutionZ(revolution.z + 1.6f);
-		rotate.y = -25;
+		setSpeedX(getSpeed().x + 0.002 * g_elapsedTime);
 	}
 	if (isMoveUp)
 	{
@@ -214,6 +210,27 @@ void Player::move()
 	{
 		setSpeedY(getSpeed().y - 0.002 * g_elapsedTime);
 	}
+
+	//if (isMoveLeft)
+	//{
+	//	setSpeedX(getSpeed().x - 0.002);
+	//}
+	//if (isMoveRight)
+	//{
+	//	setSpeedX(getSpeed().x + 0.002);
+	//}
+	//if (isMoveUp)
+	//{
+	//	setSpeedY(getSpeed().y + 0.002);
+	//}
+	//if (isMoveDown)
+	//{
+	//	setSpeedY(getSpeed().y - 0.002);
+	//}
+
+	pos.x += speed.x;
+	pos.y += speed.y;
+	pos.z += speed.z;
 
 	if (revolution.z < 0)
 		revolution.z += 360.0f;

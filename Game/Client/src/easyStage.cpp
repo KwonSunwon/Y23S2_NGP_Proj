@@ -69,6 +69,7 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
         case 'a':
             player.setMoveLeft(true);
             break;
+
         case 'd':
             player.setMoveRight(true);
             break;
@@ -80,6 +81,7 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
         case 'w':
             player.setMoveUp(true);
             break;
+
         case 'Q':
         case 'q':
             exit(0);
@@ -91,9 +93,18 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
         switch (key)
         {
 
+        case 'w':
+            player.setMoveUp(false);
+            break;
+
         case 'a':
             player.setMoveLeft(false);
             break;
+
+        case 's':
+            player.setMoveDown(false);
+            break;
+
         case 'd':
             player.setMoveRight(false);
             break;
