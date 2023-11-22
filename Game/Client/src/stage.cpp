@@ -9,19 +9,71 @@ Wall* tempwall;
 Item* tempitem;
 extern GameWorld gameWorld;
 
-std::random_device rd4;
-std::mt19937 gen4(rd4());
+//std::random_device rd4;
+std::mt19937 gen4;
 std::uniform_int_distribution<int> dis4(0, 360);
 float startZ = 18.0f;
 void Stage::makePattern(int patternNum)
 {
+	gen4 = std::mt19937(m_seed);
+	std::uniform_int_distribution<int> pattern(0, 10);
+	int randomPattern = pattern(gen4);
+
+#ifdef __DEBUG__
+	randomPattern = 0;
+#endif
+
 	tempwall = new Wall(0, 0);
 	// tempwall->initTexture();
 	tempitem = new Item(0, 0);
 	tempitem->initTexture();
+
+#ifndef LEGACY_PATTERN
+	switch (randomPattern)
+	{
+	case 0:
+		// pattern 0 : cross
+		for (float i = -0.5; i < 0.5; i += 0.2) {
+			tempwall = new Wall(startZ, 0.0f);
+			tempwall->setPosX(i);
+			tempwall->setPosY(0.f);
+			gameWorld.add_object(tempwall);
+		}
+		for (float i = -0.5; i < 0.5; i += 0.2) {
+			tempwall = new Wall(startZ, 0.0f);
+			tempwall->setPosX(0.f);
+			tempwall->setPosY(i);
+			gameWorld.add_object(tempwall);
+		}
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	case 10:
+		break;
+	default:
+		break;
+	}
+#endif // !LEGACY_PATTERN
+
+#ifdef LEGACY_PATTERN
 	switch (patternNum)
 	{
-		// ï¿½ï¿½ï¿½Ú¸ï¿½ï¿?
 	case 0:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 9; ++i)
@@ -39,7 +91,6 @@ void Stage::makePattern(int patternNum)
 			gameWorld.add_object(tempwall);
 		}
 		break;
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?
 	case 1:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 24; ++i)
@@ -57,8 +108,6 @@ void Stage::makePattern(int patternNum)
 			gameWorld.add_object(tempwall);
 		}
 		break;
-
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	case 2:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 24; ++i)
@@ -80,7 +129,6 @@ void Stage::makePattern(int patternNum)
 			gameWorld.add_object(tempwall);
 		}
 		break;
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?
 	case 3:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 24; ++i)
@@ -91,7 +139,6 @@ void Stage::makePattern(int patternNum)
 			gameWorld.add_object(tempwall);
 		}
 		break;
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
 	case 4:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 12; ++i)
@@ -125,7 +172,6 @@ void Stage::makePattern(int patternNum)
 			gameWorld.add_object(tempwall);
 		}
 		break;
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	case 100:
 		cout << "make pattern case:" << patternNum << endl;
 		for (int i = 0; i < 24; ++i)
@@ -139,4 +185,5 @@ void Stage::makePattern(int patternNum)
 	default:
 		cout << patternNum << "default" << endl;
 	}
+#endif // LEGACY_PATTERN
 }

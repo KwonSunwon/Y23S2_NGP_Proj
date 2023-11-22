@@ -27,6 +27,7 @@ public:
     void colorInit();
     void initBuffer() override;
     void initTexture() override;
+	Wall(float);
 
     void update() override;
     void move();

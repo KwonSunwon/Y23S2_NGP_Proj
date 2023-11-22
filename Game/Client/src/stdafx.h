@@ -7,6 +7,7 @@
 #define WALL_DESTROY 3
 #define ITEM_DESTROY 4
 
+#define __DEBUG__
 
 #if FREEGLUT_LIB_PRAGMAS
 #	ifdef NDEBUG
