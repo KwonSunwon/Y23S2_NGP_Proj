@@ -8,11 +8,11 @@ std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
 
-static void ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
+static void ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
 {
 	for (auto player : alivePlayer)
 	{
-		eventQueues[player].toServerEventQueue->TryPop(playerPackets[player]);
+		(*eventQueues)[player].toServerEventQueue->TryPop((*playerPackets)[player]);
 	}
 }
 
@@ -24,11 +24,12 @@ static void PushWinPacket(EventQueues winnerQueues)
 	winnerQueues.toClientEventQueue->Push(winPack);
 }
 
-static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
+static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
 {
 	for (auto player : alivePlayer)
 	{
-		eventQueues[player].toClientEventQueue->Push(playerPackets[player]);
+		for (int i = 0; i < NUM_OF_PLAYER; ++i)
+			(*eventQueues)[player].toClientEventQueue->Push((*playerPackets)[i]);
 	}
 }
 
@@ -46,7 +47,7 @@ static void PrintPacketData(array<Packet, NUM_OF_PLAYER> playerPackets)
 }
 
 // 쓰레드 함수내 쓰레드 초기화 함수
-void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueues, array<Packet, NUM_OF_PLAYER> *playerPackets)
+void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER> *playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
 {
 	//ClientInfo clientInfo;
 	int seed = dis(gen);
@@ -64,12 +65,42 @@ void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> 
 		(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 		(*playerPackets)[i].x = initialX[i];
 		(*playerPackets)[i].y = initialY[i];
+		(*players)[i].PosX = initialX[i];
+		(*players)[i].PosY = initialY[i];
 		// 랜덤 시드 값
 		(*playerPackets)[i].stateMask |= seed;
 		// toClientEventQueue
 		//clientInfo.toClientEventQueue = eventQueues[i].toClientEventQueue;
 		//clientInfo.toServerEventQueue = eventQueues[i].toServerEventQueue;
-		eventQueues[i].toClientEventQueue->Push((*playerPackets)[i]);
+		for (int j = 0; j < NUM_OF_PLAYER ; ++j)
+			(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[j]);
+	}
+}
+
+void InitPacket(array<Packet, NUM_OF_PLAYER>* playerPackets)
+{
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+	{
+		(*playerPackets)[i].x = 0;
+		(*playerPackets)[i].y = 0;
+		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::GAME_START);
+		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+		(*playerPackets)[i].stateMask |= (3 << (int)STATE_MASK::LIFE);
+		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::PLAYING);
+		(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::RESULT);
+	}
+}
+
+void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
+{
+	for (auto player : alivePlayer)
+	{
+		(*players)[player].AccX = (*playerPackets)[player].x;
+		(*players)[player].VelX += (*players)[player].AccX;
+		(*players)[player].PosX += (*players)[player].VelX;
+		(*players)[player].AccY = (*playerPackets)[player].y;
+		(*players)[player].VelY += (*players)[player].AccY;
+		(*players)[player].PosY += (*players)[player].VelY;
 	}
 }
 
@@ -83,22 +114,20 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	chrono::system_clock::time_point start;
 	chrono::duration<double> time;
 
-	//array<EventQueues, NUM_OF_PLAYER> eventQueues;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
+	array<PlayerPosAcc, NUM_OF_PLAYER> players;
 	memset(&playerPackets, 0, sizeof(Packet) * NUM_OF_PLAYER);
 
 	// 플레이어가 죽으면 erase(player_num);
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
 
-	InitializeInGameThread(level, eventQueues, &playerPackets);
+	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
-
-
-	/*
+	InitPacket(&playerPackets);
 	while (true) {
 		if (alivePlayer.size() == 0)
 			break;
@@ -107,7 +136,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			alivePlayer.clear();
 			break;
 		}
-		ToServerQueueCheck(alivePlayer, eventQueues, playerPackets);
+		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets);
 		// 물리클래스로 물리검사
 		//Physics.Caculate(eventQueues)
 		// 결과 업데이트
@@ -116,7 +145,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		// 1명만 남을 시 winPlayer에 기록
 		//PushPacket(eventQueues);
 		// 그에 따른 가속도 push
-		PushPacket(alivePlayer, eventQueues, playerPackets);
+		PushPacket(alivePlayer, &eventQueues, &playerPackets);
 
 		if (timeReset == false) {
 			timeReset = true;
@@ -131,5 +160,4 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			timeReset == false;
 		}
 	}
-	*/
 }
