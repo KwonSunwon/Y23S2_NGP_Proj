@@ -5,18 +5,19 @@ Physics::Physics() { };
 
 Physics::~Physics() {};
 
-void Physics::AfterColideWithWall(float* Acc, float* Vel)
+void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
 {
-	*Acc = (- *Vel * 2.1) - *Acc;
+	*Acc = -(*Vel * 2) - diff;
 }
 
-void Physics::AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB)
+void Physics::AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B)
 {
-	vec2f unitVec = DecideUnitVec(posA, posB);
-	AfterForce(AccA, AccB, unitVec, massA, massB);
-	*AccA = *AccA - velA;
-	*AccB = *AccB - velB;
-	cout << AccA->x << ", " << AccA->y << endl;
+	vec2f unitVec = DecideUnitVec(A->Pos, B->Pos);
+	vec2f diff = unitVec * (A->Radius + B->Radius);
+	AfterForce(&A->Acc, &B->Acc, unitVec, A->Mass, B->Mass);
+	A->Acc = A->Acc+ diff;
+	B->Acc = B->Acc;
+	//cout << AccA->x << ", " << AccA->y << endl;
 }
 
 vec2f Physics::DecideUnitVec(vec2f posA, vec2f posB)

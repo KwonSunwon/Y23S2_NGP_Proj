@@ -1,6 +1,14 @@
 #pragma once
 #include "vec2.h"
 
+struct PlayerInfo {
+	vec2f Vel;
+	vec2f Acc;
+	vec2f Pos;
+	float Radius = 0;
+	float Mass = 0;
+};
+
 class Physics
 {
 private:
@@ -14,8 +22,9 @@ public:
 	~Physics();
 
 
-	void AfterColideWithWall(float* Acc, float* Vel);
-	void AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB);
+	void AfterColideWithWall(float* Acc, float* Vel, float diff);
+	//void AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB);	
+	void AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B);
 	
 	vec2f DecideUnitVec(vec2f posA, vec2f posB);
 	vec2f AfterColisionVelocityA(vec2f velA, vec2f velB, vec2f unitVec, float massA, float massB);

@@ -1,13 +1,6 @@
 #pragma once
 #include "vec2.h"
-
-struct PlayerInfo {
-	vec2f Vel;
-	vec2f Acc;
-	vec2f Pos;
-	float Radius = 0;
-	float Mass = 0;
-};
+#include "physics.h"
 
 class CollisionManager
 {
