@@ -20,7 +20,7 @@ void Stage::makePattern(int patternNum)
 	int randomPattern = pattern(gen4);
 
 #ifdef __DEBUG__
-	randomPattern = 1;
+	randomPattern = 9;
 #endif
 
 	tempwall = new Wall(0);
@@ -32,7 +32,7 @@ void Stage::makePattern(int patternNum)
 	switch (randomPattern)
 	{
 	case 0:
-		// pattern 0 : cross +
+		// pattern 0: cross +
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			tempwall = new Wall(startZ);
 			tempwall->setPosX(i);
@@ -47,7 +47,7 @@ void Stage::makePattern(int patternNum)
 		}
 		break;
 	case 1:
-		// pattern 1 : cross x
+		// pattern 1: cross x
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			tempwall = new Wall(startZ);
 			tempwall->setPosX(i);
@@ -62,7 +62,7 @@ void Stage::makePattern(int patternNum)
 		}
 		break;
 	case 2:
-		// pattern 2 : rectangle ¤±
+		// pattern 2: rectangle ¤±
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			tempwall = new Wall(startZ);
 			tempwall->setPosX(i);
@@ -89,18 +89,81 @@ void Stage::makePattern(int patternNum)
 		}
 		break;
 	case 3:
+		// pattern 3: window half(upside)
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			for (float j = 0.2; j < 0.8; j += 0.2) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 4:
+		// pattern 4: window half(downside)
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			for (float j = -0.2; j > -0.8; j -= 0.2) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 5:
+		// pattern 5: window half(leftside)
+		for (float i = -0.8; i > -0.2; i -= 0.2) {
+			for (float j = -0.8; j < 0.8; j += 0.2) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 6:
+		// pattern 6: window half(rightside)
+		for (float i = 0.8; i < 0.2; i += 0.2) {
+			for (float j = -0.8; j < 0.8; j += 0.2) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 7:
+		// pattern 7: sprite
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			for (float j = -0.8; j < 0.8; j += 0.6) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 8:
+		// pattern 8: sprite 2
+		for (float i = -0.8; i < 0.8; i += 0.6) {
+			for (float j = -0.8; j < 0.8; j += 0.2) {
+				tempwall = new Wall(startZ);
+				tempwall->setPosX(i);
+				tempwall->setPosY(j);
+				gameWorld.add_object(tempwall);
+			}
+		}
 		break;
 	case 9:
+		for (int z = 0; z < 6; z++)
+			for (float i = -0.8; i < 0.8; i += 0.2) {
+				for (float j = -0.8; j < 0.8; j += 0.6) {
+					tempwall = new Wall(startZ + z);
+					tempwall->setPosX(i);
+					tempwall->setPosY(j);
+					gameWorld.add_object(tempwall);
+				}
+			}
 		break;
 	case 10:
 		break;
