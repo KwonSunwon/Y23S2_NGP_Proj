@@ -90,8 +90,8 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	}
 
 	//
-	DWORD optval = 10;
-	retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+	/*DWORD optval = 10;
+	retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));*/
 
 	//최초 난이도 제공용 send
 	retval = send(m_sock, (char*)&level, sizeof(level), 0);
@@ -132,12 +132,22 @@ void PacketManager::SendPacket(bool sig, float x, float y)
 bool PacketManager::RecvPacket(Packet* packet)
 {
 
-	int retval = recv(m_sock, (char*)&packet, sizeof(packet), 0);
+	int retval = recv(m_sock, (char*)packet, sizeof(packet), 0);
+	//cout << "retval:"<< retval << endl;
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
 	if (retval < 0) {
 		return false;
 	}
 	return true;
 		
+}
+
+void PacketManager::SetSocketOpt()
+{
+	DWORD optval = 10;
+	int retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 }
 
 shared_ptr<queue<Packet>> PacketManager::GetPacketQueue()

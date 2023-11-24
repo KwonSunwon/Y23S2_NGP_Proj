@@ -29,6 +29,8 @@ public:
     void SendPacket(bool sig, float x, float y);
     bool RecvPacket(Packet* packet);
 
+    void SetSocketOpt();
+
     shared_ptr<queue<Packet>> GetPacketQueue();
 
 private:

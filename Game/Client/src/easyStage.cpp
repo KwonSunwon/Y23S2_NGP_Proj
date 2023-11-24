@@ -32,13 +32,13 @@ void EasyStage::init()
     player.initTexture();
     gameWorld.add_object(playerPtr);
 
+    
+
     for(int i= 0 ; i < 3; i++){
-        Packet* packet;
-        while (true) {
-            int retval = g_PacketManager->RecvPacket(packet);
-            if (retval > 0)
-                break;
-        }
+        Packet* packet= new Packet();
+        g_PacketManager->RecvPacket(packet);
+
+        
         
         seed = packet->stateMask & 0b1111;
         packet->stateMask = packet->stateMask >> 4;
@@ -53,6 +53,8 @@ void EasyStage::init()
 
         float accX = packet->x;
         float accY = packet->y;
+
+        //cout << seed << " " << isPos << " " << playerNum << " " << isInit <<" " << accX<<" "<<accY<< endl;
 
         if (i == 0) {
             player.setPlayerNum(playerNum);
@@ -71,7 +73,7 @@ void EasyStage::init()
         }
         
     }
-
+    g_PacketManager->SetSocketOpt();
     makePattern(3);
     for (int i = 0; i < 20; ++i)
     {
@@ -89,9 +91,10 @@ void EasyStage::update()
 
     // Camera rolling test
     
-    Packet* packet;
+    Packet* packet= new Packet();
     while (g_PacketManager->RecvPacket(packet)) {
         //short seed = packet->stateMask & 15;
+        //cout << "recv packet in stage" << endl;
 
         bool isWin = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
@@ -114,6 +117,7 @@ void EasyStage::update()
         float accY = packet->y;
 
         if (isPos) {
+            //continue;
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
                     p->setPos(glm::vec3(accX, accY, 0));
@@ -124,7 +128,7 @@ void EasyStage::update()
         else {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
-                    p->setPos(glm::vec3(accX, accY, 0));
+                    p->setAcc(glm::vec3(accX, accY, 0));
                 }
             }
         }
