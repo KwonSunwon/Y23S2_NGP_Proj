@@ -257,8 +257,8 @@ void Player::move()
 
 	if (getAcc().x<=0.001)
 	{
-		cout << "가속도 x:" << getAcc().x << endl;
-		setSpeedX(getSpeed().x + getAcc().x * g_elapsedTime);
+		//cout << "가속도 x:" << getAcc().x << endl;
+		setSpeedX(getSpeed().x + getAcc().x);
 	}
 	if (getAcc().y<=0.001)
 	{

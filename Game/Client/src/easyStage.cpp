@@ -51,6 +51,8 @@ void EasyStage::init()
 
         bool isInit = packet->stateMask & 1;
 
+        cout << packet->x << ", " << packet->y << endl;
+
         float accX = packet->x;
         float accY = packet->y;
 

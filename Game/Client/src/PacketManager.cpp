@@ -133,7 +133,7 @@ void PacketManager::SendPacket(bool sig, float x, float y)
 bool PacketManager::RecvPacket(Packet* packet)
 {
 
-	int retval = recv(m_sock, (char*)packet, sizeof(packet), 0);
+	int retval = recv(m_sock, (char*)packet, sizeof(Packet), 0);
 	//cout << "retval:"<< retval << endl;
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("recv()");
