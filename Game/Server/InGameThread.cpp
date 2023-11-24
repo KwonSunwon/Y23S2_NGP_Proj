@@ -166,6 +166,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	bool collision = false;
 
 	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
+	InitPacket(&playerPackets);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
