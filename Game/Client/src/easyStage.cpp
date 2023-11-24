@@ -105,7 +105,7 @@ void EasyStage::update()
         short life = packet->stateMask & 3;
         packet->stateMask = packet->stateMask >> 2;
 
-        bool isPos = packet->stateMask & 1;
+        bool isAcc = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
 
         short playerNum = packet->stateMask & 3;
@@ -116,20 +116,21 @@ void EasyStage::update()
         float accX = packet->x;
         float accY = packet->y;
 
-        if (isPos) {
-            //continue;
+        if (isAcc) {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
-                    p->setPos(glm::vec3(accX, accY, 0));
+                    p->setAcc(glm::vec3(accX, accY, 0));
+                   
                 }
             }
             
         }
         else {
             for (auto& p : otherPlayers) {
+                continue;
                 if (p->getPlayerNum() == playerNum) {
-                    cout << accX << " " << accY << endl;
-                    p->setAcc(glm::vec3(accX, accY, 0));
+                    //cout << accX << " " << accY << endl;
+                    p->setPos(glm::vec3(accX, accY, 0));
                 }
             }
         }
