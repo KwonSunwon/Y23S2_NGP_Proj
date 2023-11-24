@@ -20,7 +20,7 @@ void Stage::makePattern(int patternNum)
 	int randomPattern = pattern(gen4);
 
 #ifdef __DEBUG__
-	randomPattern = 0;
+	randomPattern = 1;
 #endif
 
 	tempwall = new Wall(0);
@@ -32,14 +32,14 @@ void Stage::makePattern(int patternNum)
 	switch (randomPattern)
 	{
 	case 0:
-		// pattern 0 : cross
-		for (float i = -0.5; i < 0.5; i += 0.2) {
+		// pattern 0 : cross +
+		for (float i = -0.8; i < 0.8; i += 0.2) {
 			tempwall = new Wall(startZ);
 			tempwall->setPosX(i);
 			tempwall->setPosY(0.f);
 			gameWorld.add_object(tempwall);
 		}
-		for (float i = -0.5; i < 0.5; i += 0.2) {
+		for (float i = -0.8; i < 0.8; i += 0.2) {
 			tempwall = new Wall(startZ);
 			tempwall->setPosX(0.f);
 			tempwall->setPosY(i);
@@ -47,8 +47,46 @@ void Stage::makePattern(int patternNum)
 		}
 		break;
 	case 1:
+		// pattern 1 : cross x
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(i);
+			tempwall->setPosY(i);
+			gameWorld.add_object(tempwall);
+		}
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(i);
+			tempwall->setPosY(-i);
+			gameWorld.add_object(tempwall);
+		}
 		break;
 	case 2:
+		// pattern 2 : rectangle ¤±
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(i);
+			tempwall->setPosY(0.8);
+			gameWorld.add_object(tempwall);
+		}
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(i);
+			tempwall->setPosY(-0.8);
+			gameWorld.add_object(tempwall);
+		}
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(0.8);
+			tempwall->setPosY(i);
+			gameWorld.add_object(tempwall);
+		}
+		for (float i = -0.8; i < 0.8; i += 0.2) {
+			tempwall = new Wall(startZ);
+			tempwall->setPosX(-0.8);
+			tempwall->setPosY(i);
+			gameWorld.add_object(tempwall);
+		}
 		break;
 	case 3:
 		break;
