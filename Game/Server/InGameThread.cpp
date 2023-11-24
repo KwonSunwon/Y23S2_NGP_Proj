@@ -52,12 +52,17 @@ static void InitPacket(array<Packet, NUM_OF_PLAYER>* playerPackets)
 }
 
 // 큐에서 데이터 Pop
-static void ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
+static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
 {
+	int dataNum = alivePlayer.size();
 	for (auto player : alivePlayer)
 	{
-		(*eventQueues)[player].toServerEventQueue->TryPop((*playerPackets)[player]);
+		if ((*eventQueues)[player].toServerEventQueue->TryPop((*playerPackets)[player]) == false)
+			dataNum--;
 	}
+	if (dataNum < 1)
+		return false;
+	return true;
 }
 
 // 게임 강제 종료 체크
@@ -157,13 +162,17 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
 
+	bool queueEmpty = false;
+	bool collision = false;
+
 	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 	while (true) {
-		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets);
+		if (ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets) == false)
+			queueEmpty = true;
 		if (alivePlayer.size() == 0)
 			break;
 		if (alivePlayer.size() == 1) {
@@ -180,6 +189,11 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		//PushPacket(eventQueues);
 		// 그에 따른 가속도 push
 		CaculateAcceleration(alivePlayer, &playerPackets, &players);
+		if (queueEmpty && !collision)
+		{
+			queueEmpty = false;
+			continue;
+		}
 #ifdef _DEBUG_INGAME
 		cout << "가속도 패킷데이터 확인" << endl;
 		PrintPacketData(playerPackets);
@@ -191,16 +205,16 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		}
 		time = chrono::system_clock::now() - start;
 		// 위치 보정
-		if (time.count() >= 0.3) {
-			// 위치 정보 계산결과 가져오고 push
-			// 위치 push전에 Packet 조정 [0__0__10]
-			CaculatePosition(alivePlayer, &playerPackets, &players);
-#ifdef _DEBUG_INGAME
-			cout << "위치 패킷데이터 확인" << endl;
-			PrintPacketData(playerPackets);
-#endif // _DEBUG_INGAME
-			PushPacket(alivePlayer, &eventQueues, playerPackets);
-			timeReset == false;
-		}
+//		if (time.count() >= 0.3) {
+//			// 위치 정보 계산결과 가져오고 push
+//			// 위치 push전에 Packet 조정 [0__0__10]
+//			CaculatePosition(alivePlayer, &playerPackets, &players);
+//#ifdef _DEBUG_INGAME
+//			cout << "위치 패킷데이터 확인" << endl;
+//			PrintPacketData(playerPackets);
+//#endif // _DEBUG_INGAME
+//			PushPacket(alivePlayer, &eventQueues, playerPackets);
+//			timeReset == false;
+//		}
 	}
 }
