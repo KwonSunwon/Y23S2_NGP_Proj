@@ -28,10 +28,12 @@ static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_P
 		(*players)[i].PosY = initialY[i];
 		// 랜덤 시드 값
 		(*playerPackets)[i].stateMask |= seed;
+		(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[i]);
 	}
 	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 		for (int j = 0; j < NUM_OF_PLAYER; ++j)
-			(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[j]);
+			if (i != j)
+				(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[j]);
 }
 
 // 초기 정보 전송 후 패킷 초기화
@@ -66,7 +68,8 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 		if ((*playerPackets)[i].x == numeric_limits<float>::infinity() ||
 			(*playerPackets)[i].y == numeric_limits<float>::infinity())
 		{
-			(*playerPackets)[i].stateMask |= (i << (int)STATE_MASK::PLAYER_NUM);
+			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
+			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
 			(*alivePlayer).erase((*alivePlayer).begin() + i);
 		}
 	}
