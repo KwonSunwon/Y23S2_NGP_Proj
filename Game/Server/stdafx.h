@@ -16,6 +16,7 @@
 #pragma comment(lib, "ws2_32")
 
 #include <windows.h>
+#include <algorithm>
 #include <iostream>
 #include <chrono>
 #include <thread>

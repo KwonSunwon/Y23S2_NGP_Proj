@@ -17,8 +17,8 @@ struct EventQueues {
 };
 
 // 초기 위치
-const float initialX[3] = { 0, -0.3, 0.3 };
-const float initialY[3] = { 0.3, -0.3, -0.3 };
+const float initialX[3] = { 0.f, -0.3f, 0.3f };
+const float initialY[3] = { 0.3f, -0.3f, -0.3f };
 
 // 임시 함수
 //void initClientInfoQueue();

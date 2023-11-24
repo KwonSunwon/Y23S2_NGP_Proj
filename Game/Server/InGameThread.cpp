@@ -55,10 +55,21 @@ static void InitPacket(array<Packet, NUM_OF_PLAYER>* playerPackets)
 static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
 {
 	int dataNum = alivePlayer.size();
+	Packet tmp;
 	for (auto player : alivePlayer)
 	{
-		if ((*eventQueues)[player].toServerEventQueue->TryPop((*playerPackets)[player]) == false)
+		if ((*eventQueues)[player].toServerEventQueue->TryPop(tmp) == false)
 			dataNum--;
+		else
+		{
+			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::GAME_START);
+			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+			(*playerPackets)[player].stateMask |= (3 << (int)STATE_MASK::LIFE);
+			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::PLAYING);
+			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::RESULT);
+			(*playerPackets)[player].x = tmp.x;
+			(*playerPackets)[player].y = tmp.y;
+		}
 	}
 	if (dataNum < 1)
 		return false;
@@ -70,12 +81,13 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 {
 	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 	{
-		if ((*playerPackets)[i].x == numeric_limits<float>::infinity() ||
+		if ((*playerPackets)[i].x == numeric_limits<float>::infinity() &&
 			(*playerPackets)[i].y == numeric_limits<float>::infinity())
 		{
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
 			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
-			(*alivePlayer).erase((*alivePlayer).begin() + i);
+			alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), i));
+			cout << "Player" << i + 1 << " exit!" <<  alivePlayer->size() << endl;
 		}
 	}
 }
@@ -117,11 +129,12 @@ static void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_P
 		//(*players)[player].VelY += (*players)[player].AccY;
 		//(*players)[player].PosY += (*players)[player].VelY;
 		// 계산된 가속도 정보 playerPacket에 넣기
-		(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
-		(*playerPackets)[player].x = (*players)[player].AccX;
-		(*playerPackets)[player].y = (*players)[player].AccY;
+		//(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+		//(*playerPackets)[player].x = (*players)[player].AccX;
+		//(*playerPackets)[player].y = (*players)[player].AccY;
 	}
 }
+
 // 위치 정보 계산
 static void CaculatePosition(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
 {
@@ -161,19 +174,23 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	// 플레이어가 죽으면 erase(player_num);
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
-
 	bool queueEmpty = false;
 	bool collision = false;
 
 	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
-	InitPacket(&playerPackets);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
+	PrintPacketData(playerPackets);
+#endif // _DEBUG_INGAME
+	InitPacket(&playerPackets);
+#ifdef _DEBUG_INGAME
+	cout << "초기 패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 	while (true) {
 		if (ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets) == false)
 			queueEmpty = true;
+		//CheckPlayerExitGame(&alivePlayer, &playerPackets);
 		if (alivePlayer.size() == 0)
 			break;
 		if (alivePlayer.size() == 1) {
@@ -189,7 +206,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		// 1명만 남을 시 winPlayer에 기록
 		//PushPacket(eventQueues);
 		// 그에 따른 가속도 push
-		CaculateAcceleration(alivePlayer, &playerPackets, &players);
+		//CaculateAcceleration(alivePlayer, &playerPackets, &players);
 		if (queueEmpty && !collision)
 		{
 			queueEmpty = false;
