@@ -13,10 +13,10 @@ void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
 void Physics::AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B)
 {
 	vec2f unitVec = DecideUnitVec(A->Pos, B->Pos);
-	vec2f diff = unitVec * (A->Radius + B->Radius);
+	vec2f diff = unitVec * (A->Radius + B->Radius) / 2;
 	AfterForce(&A->Acc, &B->Acc, unitVec, A->Mass, B->Mass);
-	A->Acc = A->Acc+ diff;
-	B->Acc = B->Acc;
+	A->Acc = A->Acc + diff;
+	B->Acc = B->Acc - diff;
 	//cout << AccA->x << ", " << AccA->y << endl;
 }
 
