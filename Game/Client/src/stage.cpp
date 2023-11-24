@@ -23,7 +23,7 @@ void Stage::makePattern(int patternNum)
 	randomPattern = 0;
 #endif
 
-	tempwall = new Wall(0, 0);
+	tempwall = new Wall(0);
 	// tempwall->initTexture();
 	tempitem = new Item(0, 0);
 	tempitem->initTexture();
@@ -34,13 +34,13 @@ void Stage::makePattern(int patternNum)
 	case 0:
 		// pattern 0 : cross
 		for (float i = -0.5; i < 0.5; i += 0.2) {
-			tempwall = new Wall(startZ, 0.0f);
+			tempwall = new Wall(startZ);
 			tempwall->setPosX(i);
 			tempwall->setPosY(0.f);
 			gameWorld.add_object(tempwall);
 		}
 		for (float i = -0.5; i < 0.5; i += 0.2) {
-			tempwall = new Wall(startZ, 0.0f);
+			tempwall = new Wall(startZ);
 			tempwall->setPosX(0.f);
 			tempwall->setPosY(i);
 			gameWorld.add_object(tempwall);

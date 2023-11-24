@@ -29,6 +29,33 @@ extern Player player;
 extern GameWorld gameWorld;
 extern SoundManager soundManager;
 
+Wall::Wall(float posZ, float revolutionZ)
+{
+	if (object == -1)
+	{
+		object = objReader.loadObj("res/Rock.obj");
+		vertices.resize(objReader.out_vertices.size());
+		normals.resize(objReader.out_normals.size());
+		uvs.resize(objReader.out_uvs.size());
+		for (int i = 0; i < objReader.out_vertices.size(); i++)
+		{
+			vertices[i] = objReader.out_vertices[i];
+			normals[i] = objReader.out_normals[i];
+			uvs[i] = objReader.out_uvs[i];
+		}
+	}
+
+	//if (revolutionZ > 360.0f)
+	//{
+	//	revolutionZ -= 360.0f;
+	//}
+	setPosZ(-posZ);
+	//setRevolutionZ(revolutionZ);
+	setRotate(glm::vec3(dis(gen), dis(gen), dis(gen)));
+	// setPosZ(-(float)dis(gen));
+	// setRevolutionZ((float)dis(gen));
+}
+
 Wall::Wall(float posZ)
 {
 	if (object == -1)

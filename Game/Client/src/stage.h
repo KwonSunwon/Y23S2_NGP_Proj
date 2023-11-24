@@ -8,7 +8,7 @@ typedef class Stage
 {
 protected:
 	int timer = 0;
-	int patterTime = 0;
+	float patternTime = 0;
 
 	short m_seed = 0;
 public:
