@@ -28,9 +28,10 @@ static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_P
 		(*players)[i].PosY = initialY[i];
 		// 랜덤 시드 값
 		(*playerPackets)[i].stateMask |= seed;
+	}
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 		for (int j = 0; j < NUM_OF_PLAYER; ++j)
 			(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[j]);
-	}
 }
 
 // 초기 정보 전송 후 패킷 초기화
