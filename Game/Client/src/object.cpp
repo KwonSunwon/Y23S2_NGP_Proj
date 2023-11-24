@@ -67,6 +67,7 @@ void Object::setSpeedZ(float z)
 	this->speed.z = z;
 }
 
+// 마찰 서버에서 처리 가능 부분
 void Object::SpeedUpdate()
 {
 	speed = speed + acc;

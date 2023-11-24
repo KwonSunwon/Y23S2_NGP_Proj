@@ -174,77 +174,8 @@ void Player::getEvent(unsigned char key, bool isDown)
 {
 }
 
-void Player::setMoveLeft(bool in)
+void Player::decideAcc()
 {
-	if (in != isMoveLeft) {
-		isMoveLeft = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
-	}
-	
-}
-void Player::setMoveRight(bool in)
-{
-	if (in != isMoveRight) {
-		isMoveRight = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
-	}
-}
-	
-void Player::setMoveUp(bool in)
-{
-	if (in != isMoveUp) {
-		isMoveUp = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
-	}
-	
-}
-void Player::setMoveDown(bool in)
-{
-	if (in != isMoveDown) {
-		isMoveDown = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
-	}
-	
-}
-
-void Player::setProtectedMode(bool in)
-{
-	isProtectedMode = in;
-	if (in)
-		protectTime = 0;
-}
-bool Player::getProtectedMode() { return isProtectedMode; }
-void Player::updateItemTimer()
-{
-	if (isProtectedMode)
-	{
-		protectTime++;
-		if (protectTime == 260)
-		{
-			isProtectedMode = false;
-			protectTime = 0;
-
-			camera.rolling(180.0f, 1);
-			camera.setFovy(45.0f);
-			camera.setEye(glm::vec3(0, 0, 3.0));
-		}
-	}
-}
-void Player::move()
-{
-	// 따로 서버에서 받는 가속도 변수 뺴놔야 할 거 같음
 	setAcc(glm::vec3(0, 0, 0));
 	if (isMoveLeft)
 	{
@@ -274,6 +205,114 @@ void Player::move()
 		else
 			setAccY(-ACCELERATION);
 	}
+}
+
+void Player::setMoveLeft(bool in)
+{
+	if (in != isMoveLeft) {
+		isMoveLeft = in;
+		decideAcc();
+		g_PacketManager->SendPacket(true, acc.x, acc.y);
+		//float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		//float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		//g_PacketManager->SendPacket(true, x, y);
+		
+	}
+	
+}
+void Player::setMoveRight(bool in)
+{
+	if (in != isMoveRight) {
+		isMoveRight = in;
+		decideAcc();
+		g_PacketManager->SendPacket(true, acc.x, acc.y);
+		//float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		//float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		//g_PacketManager->SendPacket(true, x, y);
+		
+	}
+}
+	
+void Player::setMoveUp(bool in)
+{
+	if (in != isMoveUp) {
+		isMoveUp = in;
+		decideAcc();
+		g_PacketManager->SendPacket(true, acc.x, acc.y);
+		//float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		//float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		//g_PacketManager->SendPacket(true, x, y);
+		
+	}
+	
+}
+void Player::setMoveDown(bool in)
+{
+	if (in != isMoveDown) {
+		isMoveDown = in;
+		decideAcc();
+		g_PacketManager->SendPacket(true, acc.x, acc.y);
+		//float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
+		//float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		//g_PacketManager->SendPacket(true, x, y);
+	}
+}
+
+void Player::setProtectedMode(bool in)
+{
+	isProtectedMode = in;
+	if (in)
+		protectTime = 0;
+}
+bool Player::getProtectedMode() { return isProtectedMode; }
+void Player::updateItemTimer()
+{
+	if (isProtectedMode)
+	{
+		protectTime++;
+		if (protectTime == 260)
+		{
+			isProtectedMode = false;
+			protectTime = 0;
+
+			camera.rolling(180.0f, 1);
+			camera.setFovy(45.0f);
+			camera.setEye(glm::vec3(0, 0, 3.0));
+		}
+	}
+}
+void Player::move()
+{
+	// 따로 서버에서 받는 가속도 변수 뺴놔야 할 거 같음
+	//setAcc(glm::vec3(0, 0, 0));
+	//if (isMoveLeft)
+	//{
+	//	if (isMoveUp || isMoveDown)
+	//		setAccX(-(ACCELERATION / ROOT_TWO));
+	//	else
+	//		setAccX(-ACCELERATION);
+	//}
+	//if (isMoveRight)
+	//{
+	//	if (isMoveUp || isMoveDown)
+	//		setAccX(ACCELERATION / ROOT_TWO);
+	//	else
+	//		setAccX(ACCELERATION);
+	//}
+	//if (isMoveUp)
+	//{
+	//	if (isMoveLeft || isMoveRight)
+	//		setAccY(ACCELERATION / ROOT_TWO);
+	//	else
+	//		setAccY(ACCELERATION);
+	//}
+	//if (isMoveDown)
+	//{
+	//	if (isMoveLeft || isMoveRight)
+	//		setAccY(-(ACCELERATION / ROOT_TWO));
+	//	else
+	//		setAccY(-ACCELERATION);
+	//}
 
 	// 리시브 한 정보 받고 적용
 	SpeedUpdate();
@@ -282,7 +321,16 @@ void Player::move()
 	pos.y += speed.y;
 	pos.z += speed.z;
 
-	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
+	//// x 끝 1.3f 반지름 0.15f
+	//if (pos.x < -1.15f)
+	//	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
+	//if (pos.x > 1.15f)
+	//	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
+	//// y 끝 0.9f 반지름 0.15f
+	//if (pos.y < -1.15f)
+	//	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
+	//if (pos.y > 1.15f)
+	//	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
 
 	if (revolution.z < 0)
 		revolution.z += 360.0f;
