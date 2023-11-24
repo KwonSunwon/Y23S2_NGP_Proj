@@ -211,8 +211,8 @@ void Player::setMoveDown(bool in)
 {
 	if (in != isMoveDown) {
 		isMoveDown = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		float x = -0.005f * isMoveLeft + 0.005f * isMoveRight;
+		float y = -0.005f * isMoveDown + 0.005f * isMoveUp;
 		g_PacketManager->SendPacket(true, x, y);
 		
 	}
@@ -255,21 +255,14 @@ void Player::move()
 {
 
 
-	if (isMoveLeft)
+	if (getAcc().x<=0.001)
 	{
-		setSpeedX(getSpeed().x - 0.005 * g_elapsedTime);
+		cout << "°¡¼Óµµ x:" << getAcc().x << endl;
+		setSpeedX(getSpeed().x + getAcc().x * g_elapsedTime);
 	}
-	if (isMoveRight)
+	if (getAcc().y<=0.001)
 	{
-		setSpeedX(getSpeed().x + 0.005 * g_elapsedTime);
-	}
-	if (isMoveUp)
-	{
-		setSpeedY(getSpeed().y + 0.005 * g_elapsedTime);
-	}
-	if (isMoveDown)
-	{
-		setSpeedY(getSpeed().y - 0.005 * g_elapsedTime);
+		setSpeedY(getSpeed().y + getAcc().y * g_elapsedTime);
 	}
 
 	//if (isMoveLeft)

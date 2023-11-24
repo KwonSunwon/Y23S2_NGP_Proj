@@ -162,7 +162,7 @@ void Wall::colorInit()
 
 void Wall::update()
 {
-    collision();
+    //collision();
     move();
 }
 

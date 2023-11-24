@@ -128,6 +128,7 @@ void EasyStage::update()
         else {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
+                    cout << accX << " " << accY << endl;
                     p->setAcc(glm::vec3(accX, accY, 0));
                 }
             }

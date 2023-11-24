@@ -86,8 +86,11 @@ void MainLoop(SOCKET client)
 				cout << "recv Loop" << endl;
 #endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
-				if(retval>0)
+				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
+					m_toServerEventQueue->Push(packet);
+				}
+					
 
 				if (retval < 0) {
 #ifdef _DEBUG_CLIENT_SERVER

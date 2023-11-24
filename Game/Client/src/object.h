@@ -97,6 +97,7 @@ public:
     glm::vec3 getRotate();
     glm::vec3 getRevolution();
     glm::vec3 getSpeed();
+    glm::vec3 getAcc();
     int getId();
 } Object;
 

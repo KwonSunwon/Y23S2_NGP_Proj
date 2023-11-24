@@ -36,6 +36,7 @@ void Object::initPos()
 	scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	rotate = glm::vec3(0.0f, 0.0f, 0.0f);
 	speed = glm::vec3(0.0f, 0.0f, 0.0f);
+	acc = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void Object::setPos(glm::vec3 pos) { this->pos = pos; }
@@ -105,6 +106,10 @@ glm::vec3 Object::getRevolution() { return revolution; }
 glm::vec3 Object::getSpeed()
 {
 	return speed;
+}
+glm::vec3 Object::getAcc()
+{
+	return acc;
 }
 int Object::getId() { return id; }
 
