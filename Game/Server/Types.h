@@ -18,12 +18,12 @@ enum class GAME_LEVEL : BYTE {
 };
 
 enum class STATE_MASK {
-	RESULT,
-	PLAYING,
-	LIFE,
-	POS_FLAG,
-	PLAYER_NUM,
-	GAME_START
+	RESULT=0,
+	PLAYING=1,
+	LIFE=2,
+	POS_FLAG=4,
+	PLAYER_NUM=5,
+	GAME_START=7
 };
 
 struct Packet {
