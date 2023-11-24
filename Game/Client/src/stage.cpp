@@ -10,17 +10,17 @@ Item* tempitem;
 extern GameWorld gameWorld;
 
 //std::random_device rd4;
-std::mt19937 gen4;
-std::uniform_int_distribution<int> dis4(0, 360);
+//std::mt19937 gen4;
+//std::uniform_int_distribution<int> dis4(0, 360);
 float startZ = 18.0f;
 void Stage::makePattern(int patternNum)
 {
-	gen4 = std::mt19937(m_seed);
-	std::uniform_int_distribution<int> pattern(0, 10);
-	int randomPattern = pattern(gen4);
+	//gen4 = std::mt19937(m_seed);
+	//std::uniform_int_distribution<int> pattern(0, 10);
+	//int randomPattern = pattern(gen4);
 
 #ifdef __DEBUG__
-	randomPattern = 9;
+	//randomPattern = 9;
 #endif
 
 	tempwall = new Wall(0);
@@ -29,7 +29,7 @@ void Stage::makePattern(int patternNum)
 	tempitem->initTexture();
 
 #ifndef LEGACY_PATTERN
-	switch (randomPattern)
+	switch (patternNum)
 	{
 	case 0:
 		// pattern 0: cross +

@@ -18,6 +18,10 @@ extern Object* playerPtr;
 extern Wall wall;
 extern BG backGround;
 
+short seed;
+std::mt19937 gen;
+std::uniform_int_distribution<int> pattern(0, 10);
+
 void EasyStage::init()
 {
 	cout << "easy Stage" << endl;
@@ -53,6 +57,8 @@ void EasyStage::init()
 		tempP->initBuffer();
 		gameWorld.add_object(tempP);
 	}
+
+	gen = std::mt19937(seed);
 }
 void EasyStage::update()
 {
@@ -72,7 +78,7 @@ void EasyStage::update()
 	}
 
 	if (patternTime > 4) {
-		makePattern(3);
+		makePattern(pattern(gen));
 		patternTime = 0;
 	}
 
