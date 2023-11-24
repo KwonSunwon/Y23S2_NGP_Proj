@@ -244,45 +244,45 @@ void Player::updateItemTimer()
 }
 void Player::move()
 {
-
-
+	// 따로 서버에서 받는 가속도 변수 뺴놔야 할 거 같음
+	setAcc(glm::vec3(0, 0, 0));
 	if (isMoveLeft)
 	{
-		setSpeedX(getSpeed().x - 0.002 * g_elapsedTime);
+		if (isMoveUp || isMoveDown)
+			setAccX(-(ACCELERATION / ROOT_TWO));
+		else
+			setAccX(-ACCELERATION);
 	}
 	if (isMoveRight)
 	{
-		setSpeedX(getSpeed().x + 0.002 * g_elapsedTime);
+		if (isMoveUp || isMoveDown)
+			setAccX(ACCELERATION / ROOT_TWO);
+		else
+			setAccX(ACCELERATION);
 	}
 	if (isMoveUp)
 	{
-		setSpeedY(getSpeed().y + 0.002 * g_elapsedTime);
+		if (isMoveLeft || isMoveRight)
+			setAccY(ACCELERATION / ROOT_TWO);
+		else
+			setAccY(ACCELERATION);
 	}
 	if (isMoveDown)
 	{
-		setSpeedY(getSpeed().y - 0.002 * g_elapsedTime);
+		if (isMoveLeft || isMoveRight)
+			setAccY(-(ACCELERATION / ROOT_TWO));
+		else
+			setAccY(-ACCELERATION);
 	}
 
-	//if (isMoveLeft)
-	//{
-	//	setSpeedX(getSpeed().x - 0.002);
-	//}
-	//if (isMoveRight)
-	//{
-	//	setSpeedX(getSpeed().x + 0.002);
-	//}
-	//if (isMoveUp)
-	//{
-	//	setSpeedY(getSpeed().y + 0.002);
-	//}
-	//if (isMoveDown)
-	//{
-	//	setSpeedY(getSpeed().y - 0.002);
-	//}
+	// 리시브 한 정보 받고 적용
+	SpeedUpdate();
 
 	pos.x += speed.x;
 	pos.y += speed.y;
 	pos.z += speed.z;
+
+	cout << "좌표 : " << pos.x << ", " << pos.y << endl;
 
 	if (revolution.z < 0)
 		revolution.z += 360.0f;

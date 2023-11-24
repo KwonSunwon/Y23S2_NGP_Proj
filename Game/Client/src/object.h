@@ -86,6 +86,8 @@ public:
     void setSpeedY(float y);
     void setSpeedZ(float z);
 
+    void SpeedUpdate();
+
     void setAcc(glm::vec3 acc);
     void setAccX(float x);
     void setAccY(float y);

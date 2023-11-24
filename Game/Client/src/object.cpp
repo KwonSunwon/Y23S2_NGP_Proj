@@ -57,40 +57,71 @@ void Object::setSpeed(glm::vec3 speed) { this->speed = speed; }
 void Object::setSpeedX(float x)
 {
 	this->speed.x = x;
-	if (this->speed.x > 0.02)
-		this->speed.x = 0.02;
 }
 void Object::setSpeedY(float y)
 {
 	this->speed.y = y;
-	if (this->speed.y > 0.02)
-		this->speed.y = 0.02;
 }
 void Object::setSpeedZ(float z)
 {
 	this->speed.z = z;
-	if (this->speed.z > 0.02)
-		this->speed.z = 0.02;
+}
+
+void Object::SpeedUpdate()
+{
+	speed = speed + acc;
+
+	glm::vec3 friction = -speed;
+	float mag = sqrt(friction.x * friction.x + friction.y * friction.y);
+	if (mag > FLT_EPSILON) {
+		friction = friction / mag;
+		friction = friction * COEF;
+
+		glm::vec3 resultVel = speed + friction;
+		if (resultVel.x * speed.x < 0.f)
+			speed.x = 0.f;
+		else
+			speed.x = resultVel.x;
+		if (resultVel.y * speed.y < 0.f)
+			speed.y = 0.f;
+		else
+			speed.y = resultVel.y;
+	}
+	if (speed.x > MAX_SPEED)
+		speed.x = MAX_SPEED;
+	if (speed.x < -MAX_SPEED)
+		speed.x = -MAX_SPEED;
+
+	if (speed.y > MAX_SPEED)
+		speed.y = MAX_SPEED;
+	if (speed.y < -MAX_SPEED)
+		speed.y = -MAX_SPEED;
+	if (speed.x == speed.y || speed.x * speed.x + speed.y * speed.y > MAX_SPEED * MAX_SPEED)
+	{
+		if (speed.x > MAX_SPEED / ROOT_TWO)
+			speed.x = MAX_SPEED / ROOT_TWO;
+		if (speed.x < -MAX_SPEED / ROOT_TWO)
+			speed.x = -MAX_SPEED / ROOT_TWO;
+
+		if (speed.y > MAX_SPEED / ROOT_TWO)
+			speed.y = MAX_SPEED / ROOT_TWO;
+		if (speed.y < -MAX_SPEED / ROOT_TWO)
+			speed.y = -MAX_SPEED / ROOT_TWO;
+	}
 }
 
 void Object::setAcc(glm::vec3 acc) { this->acc = acc; }
 void Object::setAccX(float x)
 {
 	this->acc.x = x;
-	if (this->acc.x > 0.02)
-		this->acc.x = 0.02;
 }
 void Object::setAccY(float y)
 {
 	this->acc.y = y;
-	if (this->acc.y > 0.02)
-		this->acc.y = 0.02;
 }
 void Object::setAccZ(float z)
 {
 	this->acc.z = z;
-	if (this->acc.z > 0.02)
-		this->acc.z = 0.02;
 }
 
 void Object::setRevolution(glm::vec3 revolution) { this->revolution = revolution; }
