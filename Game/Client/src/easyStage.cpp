@@ -18,6 +18,8 @@ extern Object *playerPtr;
 extern Wall wall;
 extern BG backGround;
 
+short seed;
+
 void EasyStage::init()
 {
     cout << "easy Stage" << endl;
@@ -30,19 +32,44 @@ void EasyStage::init()
     player.initTexture();
     gameWorld.add_object(playerPtr);
 
-    for(int i= 0 ; i < 2; i++){
-        Player* other = new Player();
-        other->initBuffer();
-        if (i == 0){
-            other->setPos(glm::vec3(0.3, 0.3, 0.3));
-            other->initTexture("res/Rock.png");
-            }
-        else{
-            other->setPos(glm::vec3(-0.3, 0.3, 0.3));
-            other->initTexture("res/Rock.png");
+    for(int i= 0 ; i < 3; i++){
+        Packet* packet;
+        while (true) {
+            int retval = g_PacketManager->RecvPacket(packet);
+            if (retval > 0)
+                break;
         }
-        gameWorld.add_object(other);
-        otherPlayers.emplace_back(other);
+        
+        seed = packet->stateMask & 0b1111;
+        packet->stateMask = packet->stateMask >> 4;
+
+        bool isPos = packet->stateMask & 1;
+        packet->stateMask = packet->stateMask >> 1;
+
+        short playerNum = packet->stateMask & 3;
+        packet->stateMask = packet->stateMask >> 2;
+
+        bool isInit = packet->stateMask & 1;
+
+        float accX = packet->x;
+        float accY = packet->y;
+
+        if (i == 0) {
+            player.setPlayerNum(playerNum);
+            player.setPos(glm::vec3(accX, accY, 0.7));
+            Player* other = &player;
+            otherPlayers.emplace_back(other);
+        }
+        else {
+            Player* other = new Player();
+            other->initBuffer();
+            other->setPos(glm::vec3(accX, accY, 0.7));
+            other->setPlayerNum(playerNum);
+            other->initTexture("res/Rock.png");
+            gameWorld.add_object(other);
+            otherPlayers.emplace_back(other);
+        }
+        
     }
 
     makePattern(3);
@@ -64,10 +91,44 @@ void EasyStage::update()
     
     Packet* packet;
     while (g_PacketManager->RecvPacket(packet)) {
-        short otherIdx = packet->stateMask & 0b01100000;
+        //short seed = packet->stateMask & 15;
+
+        bool isWin = packet->stateMask & 1;
+        packet->stateMask = packet->stateMask >> 1;
+
+        bool isInGame = packet->stateMask & 1;
+        packet->stateMask = packet->stateMask >> 1;
+
+        short life = packet->stateMask & 3;
+        packet->stateMask = packet->stateMask >> 2;
+
+        bool isPos = packet->stateMask & 1;
+        packet->stateMask = packet->stateMask >> 1;
+
+        short playerNum = packet->stateMask & 3;
+        packet->stateMask = packet->stateMask >> 2;
+
+        bool isInit = packet->stateMask & 1;
+
         float accX = packet->x;
         float accY = packet->y;
-        otherPlayers[otherIdx]->setAcc(glm::vec3(accX, accY, 0));
+
+        if (isPos) {
+            for (auto& p : otherPlayers) {
+                if (p->getPlayerNum() == playerNum) {
+                    p->setPos(glm::vec3(accX, accY, 0));
+                }
+            }
+            
+        }
+        else {
+            for (auto& p : otherPlayers) {
+                if (p->getPlayerNum() == playerNum) {
+                    p->setPos(glm::vec3(accX, accY, 0));
+                }
+            }
+        }
+        
     }
 
     if (patterTime > 250)

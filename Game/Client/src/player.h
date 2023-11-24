@@ -21,6 +21,7 @@ protected:
 	bool isMoveUp = false;
 	bool isMoveDown = false;
 	bool isProtectedMode = false;
+	short playerNum = 0;
 	int protectTime = 0;
 
 public:
@@ -37,8 +38,10 @@ public:
 	void setMoveRight(bool);
 	void setMoveUp(bool);
 	void setMoveDown(bool);
+	void setPlayerNum(short);
 	void setProtectedMode(bool);
 	bool getProtectedMode();
+	short getPlayerNum();
 	void updateItemTimer();
 	void collision();
 	void move();

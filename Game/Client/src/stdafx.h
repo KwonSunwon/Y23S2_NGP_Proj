@@ -7,6 +7,14 @@
 #define WALL_DESTROY 3
 #define ITEM_DESTROY 4
 
+enum class STATE_MASK {
+	RESULT,
+	PLAYING,
+	LIFE,
+	POS_FLAG,
+	PLAYER_NUM,
+	GAME_START
+};
 
 #if FREEGLUT_LIB_PRAGMAS
 #	ifdef NDEBUG

@@ -219,6 +219,11 @@ void Player::setMoveDown(bool in)
 	
 }
 
+void Player::setPlayerNum(short num)
+{
+	playerNum = num;
+}
+
 void Player::setProtectedMode(bool in)
 {
 	isProtectedMode = in;
@@ -226,6 +231,10 @@ void Player::setProtectedMode(bool in)
 		protectTime = 0;
 }
 bool Player::getProtectedMode() { return isProtectedMode; }
+short Player::getPlayerNum()
+{
+	return playerNum;
+}
 void Player::updateItemTimer()
 {
 	if (isProtectedMode)
@@ -248,19 +257,19 @@ void Player::move()
 
 	if (isMoveLeft)
 	{
-		setSpeedX(getSpeed().x - 0.002 * g_elapsedTime);
+		setSpeedX(getSpeed().x - 0.005 * g_elapsedTime);
 	}
 	if (isMoveRight)
 	{
-		setSpeedX(getSpeed().x + 0.002 * g_elapsedTime);
+		setSpeedX(getSpeed().x + 0.005 * g_elapsedTime);
 	}
 	if (isMoveUp)
 	{
-		setSpeedY(getSpeed().y + 0.002 * g_elapsedTime);
+		setSpeedY(getSpeed().y + 0.005 * g_elapsedTime);
 	}
 	if (isMoveDown)
 	{
-		setSpeedY(getSpeed().y - 0.002 * g_elapsedTime);
+		setSpeedY(getSpeed().y - 0.005 * g_elapsedTime);
 	}
 
 	//if (isMoveLeft)
