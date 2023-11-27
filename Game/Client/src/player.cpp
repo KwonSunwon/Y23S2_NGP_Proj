@@ -178,8 +178,8 @@ void Player::setMoveLeft(bool in)
 {
 	if (in != isMoveLeft) {
 		isMoveLeft = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
 		g_PacketManager->SendPacket(true, x, y);
 		
 	}
@@ -189,8 +189,8 @@ void Player::setMoveRight(bool in)
 {
 	if (in != isMoveRight) {
 		isMoveRight = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
 		g_PacketManager->SendPacket(true, x, y);
 		
 	}
@@ -200,8 +200,8 @@ void Player::setMoveUp(bool in)
 {
 	if (in != isMoveUp) {
 		isMoveUp = in;
-		float x = -0.0002 * isMoveLeft + 0.0002 * isMoveRight;
-		float y = -0.0002 * isMoveDown + 0.0002 * isMoveUp;
+		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
 		g_PacketManager->SendPacket(true, x, y);
 		
 	}
@@ -254,16 +254,9 @@ void Player::updateItemTimer()
 void Player::move()
 {
 
+	setSpeedX(getSpeed().x + getAcc().x * g_elapsedTime);
+	setSpeedY(getSpeed().y + getAcc().y * g_elapsedTime);
 
-	if (getAcc().x<=0.001)
-	{
-		//cout << "°¡¼Óµµ x:" << getAcc().x << endl;
-		setSpeedX(getSpeed().x + getAcc().x);
-	}
-	if (getAcc().y<=0.001)
-	{
-		setSpeedY(getSpeed().y + getAcc().y * g_elapsedTime);
-	}
 
 	//if (isMoveLeft)
 	//{

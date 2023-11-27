@@ -58,40 +58,28 @@ void Object::setSpeed(glm::vec3 speed) { this->speed = speed; }
 void Object::setSpeedX(float x)
 {
 	this->speed.x = x;
-	if (this->speed.x > 0.02)
-		this->speed.x = 0.02;
 }
 void Object::setSpeedY(float y)
 {
 	this->speed.y = y;
-	if (this->speed.y > 0.02)
-		this->speed.y = 0.02;
 }
 void Object::setSpeedZ(float z)
 {
 	this->speed.z = z;
-	if (this->speed.z > 0.02)
-		this->speed.z = 0.02;
 }
 
 void Object::setAcc(glm::vec3 acc) { this->acc = acc; }
 void Object::setAccX(float x)
 {
 	this->acc.x = x;
-	if (this->acc.x > 0.02)
-		this->acc.x = 0.02;
 }
 void Object::setAccY(float y)
 {
 	this->acc.y = y;
-	if (this->acc.y > 0.02)
-		this->acc.y = 0.02;
 }
 void Object::setAccZ(float z)
 {
 	this->acc.z = z;
-	if (this->acc.z > 0.02)
-		this->acc.z = 0.02;
 }
 
 void Object::setRevolution(glm::vec3 revolution) { this->revolution = revolution; }

@@ -123,7 +123,7 @@ void PacketManager::SendPacket(bool sig, float x, float y)
 	packet.x = x;
 	packet.y = y;
 	cout << "sendPacket x:" << x << " y:" << y << endl;
-	int retval = send(m_sock, (char*)&packet, sizeof(packet), 0);
+	int retval = send(m_sock, (char*)&packet, sizeof(Packet), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}

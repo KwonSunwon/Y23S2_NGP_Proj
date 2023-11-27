@@ -46,7 +46,7 @@ void EasyStage::init()
         bool isPos = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
 
-        short playerNum = packet->stateMask & 3;
+        short playerNum = packet->stateMask & 0b11;
         packet->stateMask = packet->stateMask >> 2;
 
         bool isInit = packet->stateMask & 1;
@@ -104,13 +104,13 @@ void EasyStage::update()
         bool isInGame = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
 
-        short life = packet->stateMask & 3;
+        short life = packet->stateMask & 0b11;
         packet->stateMask = packet->stateMask >> 2;
 
         bool isAcc = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
 
-        short playerNum = packet->stateMask & 3;
+        short playerNum = packet->stateMask & 0b11;
         packet->stateMask = packet->stateMask >> 2;
 
         bool isInit = packet->stateMask & 1;
@@ -121,6 +121,7 @@ void EasyStage::update()
         if (isAcc) {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
+                    cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
                     p->setAcc(glm::vec3(accX, accY, 0));
                    
                 }
