@@ -20,6 +20,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <math.h>
 // stateMask 체크를 위해 include
 #include <bitset>
 using namespace std;
@@ -27,6 +28,15 @@ using namespace std;
 #include "LockQueue.h"
 #include "Types.h"
 
+
+#define MAX_SPEED 0.04f
+#define ACCELERATION 0.01f
+#define COEF 0.003f
+#define ROOT_TWO 1.41421f
+
+#define NUM_OF_PLAYER 3
+#define END_OF_X 1.06f
+#define END_OF_Y 0.8f
 #define NUM_OF_PLAYER 3
 
 static const int NUM_OF_LEVEL = 3;

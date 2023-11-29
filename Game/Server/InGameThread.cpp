@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "InGameThread.h"
 
@@ -8,7 +7,7 @@ std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
 // 쓰레드 함수내 쓰레드 초기화 함수
-static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
+static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	int seed = dis(gen);
 
@@ -24,8 +23,8 @@ static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_P
 		(*playerPackets)[i].x = initialX[i];
 		(*playerPackets)[i].y = initialY[i];
 		// 플레이어 초기 위치 저장
-		(*players)[i].PosX = initialX[i];
-		(*players)[i].PosY = initialY[i];
+		(*players)[i].Pos.x = initialX[i];
+		(*players)[i].Pos.y = initialY[i];
 		// 랜덤 시드 값
 		(*playerPackets)[i].stateMask |= seed;
 		(*eventQueues)[i].toClientEventQueue->Push((*playerPackets)[i]);
@@ -52,23 +51,22 @@ static void InitPacket(array<Packet, NUM_OF_PLAYER>* playerPackets)
 }
 
 // 큐에서 데이터 Pop
-static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets)
+static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	int dataNum = alivePlayer.size();
 	Packet tmp;
 	for (auto player : alivePlayer)
 	{
-		if ((*eventQueues)[player].toServerEventQueue->TryPop(tmp) == false)
-			dataNum--;
-		else
+		if ((*eventQueues)[player].toServerEventQueue->TryPop(tmp) == true)
 		{
-			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::GAME_START);
-			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
-			(*playerPackets)[player].stateMask |= (3 << (int)STATE_MASK::LIFE);
-			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::PLAYING);
-			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::RESULT);
 			(*playerPackets)[player].x = tmp.x;
 			(*playerPackets)[player].y = tmp.y;
+			(*players)[player].Acc.x = tmp.x;
+			(*players)[player].Acc.y = tmp.y;
+		}
+		else
+		{
+			dataNum--;
 		}
 	}
 	if (dataNum < 1)
@@ -116,13 +114,13 @@ static void PrintPacketData(array<Packet, NUM_OF_PLAYER> playerPackets)
 }
 
 // 가속도 정보 계산
-static void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
+static void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	for (auto player : alivePlayer)
 	{
 		// 플레이어 정보에 데이터 넣기
-		(*players)[player].AccX = (*playerPackets)[player].x;
-		(*players)[player].AccY = (*playerPackets)[player].y;
+		(*players)[player].Acc.x = (*playerPackets)[player].x;
+		(*players)[player].Acc.y = (*playerPackets)[player].y;
 		// 들어온 가속도 정보에 의해 물리 계산
 		//(*players)[player].VelX += (*players)[player].AccX;
 		//(*players)[player].PosX += (*players)[player].VelX;
@@ -136,14 +134,14 @@ static void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_P
 }
 
 // 위치 정보 계산
-static void CaculatePosition(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerPosAcc, NUM_OF_PLAYER>* players)
+static void CaculatePosition(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	for (auto player : alivePlayer)
 	{
 		// 계산된 위치 정보 playerPacket에 넣기
 		(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
-		(*playerPackets)[player].x = (*players)[player].PosX;
-		(*playerPackets)[player].y = (*players)[player].PosY;
+		(*playerPackets)[player].x = (*players)[player].Pos.x;
+		(*playerPackets)[player].y = (*players)[player].Pos.y;
 	}
 }
 
@@ -167,7 +165,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	chrono::system_clock::time_point start;
 	chrono::duration<double> time;
 
-	array<PlayerPosAcc, NUM_OF_PLAYER> players;
+	array<PlayerInfo, NUM_OF_PLAYER> players;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
 	memset(&playerPackets, 0, sizeof(Packet) * NUM_OF_PLAYER);
 
