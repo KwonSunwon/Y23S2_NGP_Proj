@@ -6,6 +6,9 @@ std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
+Physics ps;
+CollisionManager cm;
+
 // 쓰레드 함수내 쓰레드 초기화 함수
 static void InitializeInGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
@@ -75,7 +78,7 @@ static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_O
 }
 
 // 게임 강제 종료 체크
-static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets)
+static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 	{
@@ -84,7 +87,14 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 		{
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
 			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
-			alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), i));
+			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
+			(*players)[i].Pos.x = END_OF_X + 1.f;
+			(*players)[i].Pos.y = END_OF_Y + 1.f;
+			(*players)[i].Acc.x = 0;
+			(*players)[i].Acc.y = 0;
+			(*players)[i].Vel.x = 0;
+			(*players)[i].Vel.y = 0;
+			alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), i), alivePlayer->end());
 			cout << "Player" << i + 1 << " exit!" <<  alivePlayer->size() << endl;
 		}
 	}
@@ -113,32 +123,20 @@ static void PrintPacketData(array<Packet, NUM_OF_PLAYER> playerPackets)
 	}
 }
 
-// 가속도 정보 계산
-static void CaculateAcceleration(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
+static void ModifyPacketVel(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	for (auto player : alivePlayer)
 	{
-		// 플레이어 정보에 데이터 넣기
-		(*players)[player].Acc.x = (*playerPackets)[player].x;
-		(*players)[player].Acc.y = (*playerPackets)[player].y;
-		// 들어온 가속도 정보에 의해 물리 계산
-		//(*players)[player].VelX += (*players)[player].AccX;
-		//(*players)[player].PosX += (*players)[player].VelX;
-		//(*players)[player].VelY += (*players)[player].AccY;
-		//(*players)[player].PosY += (*players)[player].VelY;
-		// 계산된 가속도 정보 playerPacket에 넣기
-		//(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
-		//(*playerPackets)[player].x = (*players)[player].AccX;
-		//(*playerPackets)[player].y = (*players)[player].AccY;
+		(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+		(*playerPackets)[player].x = (*players)[player].Vel.x;
+		(*playerPackets)[player].y = (*players)[player].Vel.y;
 	}
 }
 
-// 위치 정보 계산
-static void CaculatePosition(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
+static void ModifyPacketPos(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	for (auto player : alivePlayer)
 	{
-		// 계산된 위치 정보 playerPacket에 넣기
 		(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 		(*playerPackets)[player].x = (*players)[player].Pos.x;
 		(*playerPackets)[player].y = (*players)[player].Pos.y;
@@ -186,9 +184,9 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 	while (true) {
-		if (ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets) == false)
+		if (ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players) == false)
 			queueEmpty = true;
-		//CheckPlayerExitGame(&alivePlayer, &playerPackets);
+		CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
 			break;
 		if (alivePlayer.size() == 1) {
@@ -196,20 +194,36 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			alivePlayer.clear();
 			break;
 		}
-		// 물리클래스로 물리검사
-		//Physics.Caculate(eventQueues)
-		// 결과 업데이트
-		// 충돌 방생시 출돌정보 push [0__1__10]
-		// 플레이어 사망시 erase(player_num);
-		// 1명만 남을 시 winPlayer에 기록
-		//PushPacket(eventQueues);
-		// 그에 따른 가속도 push
-		//CaculateAcceleration(alivePlayer, &playerPackets, &players);
+		// 충돌 체크
+		for (int i = 0; i < NUM_OF_PLAYER; ++i) {
+			if (i == 0 || i == 1)
+			{
+				if (cm.DoCollideAB(&players[i], &players[i + 1]))
+					collision = true;
+				if (i == 0) {
+					if (cm.DoCollideAB(&players[i], &players[i + 2]))
+						collision = true;
+				}
+			}
+			if (cm.DoCollideWithWall(&players[i]))
+				collision = true;
+		}
+		// 속도 계산
+		for (auto p : alivePlayer) {
+			ps.CaculateVelocity(&players[p]);
+		}
+		// 위치 계산
+		for (auto p : alivePlayer) {
+			ps.CaculatePosition(&players[p]);
+		}
+		ModifyPacketVel(alivePlayer, &playerPackets, &players);
 		if (queueEmpty && !collision)
 		{
 			queueEmpty = false;
 			continue;
 		}
+		collision = false;
+
 #ifdef _DEBUG_INGAME
 		cout << "가속도 패킷데이터 확인" << endl;
 		PrintPacketData(playerPackets);
@@ -220,17 +234,17 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			start = chrono::system_clock::now();
 		}
 		time = chrono::system_clock::now() - start;
-		// 위치 보정
-//		if (time.count() >= 0.3) {
-//			// 위치 정보 계산결과 가져오고 push
-//			// 위치 push전에 Packet 조정 [0__0__10]
-//			CaculatePosition(alivePlayer, &playerPackets, &players);
-//#ifdef _DEBUG_INGAME
-//			cout << "위치 패킷데이터 확인" << endl;
-//			PrintPacketData(playerPackets);
-//#endif // _DEBUG_INGAME
-//			PushPacket(alivePlayer, &eventQueues, playerPackets);
-//			timeReset == false;
-//		}
+		//위치 보정
+		if (time.count() >= 0.3) {
+			// 위치 정보 계산결과 가져오고 push
+			// 위치 push전에 Packet 조정 [0__0__10]
+			ModifyPacketPos(alivePlayer, &playerPackets, &players);
+#ifdef _DEBUG_INGAME
+			cout << "위치 패킷데이터 확인" << endl;
+			PrintPacketData(playerPackets);
+#endif // _DEBUG_INGAME
+			PushPacket(alivePlayer, &eventQueues, playerPackets);
+			timeReset == false;
+		}
 	}
 }

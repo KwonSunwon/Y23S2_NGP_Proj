@@ -5,6 +5,55 @@ Physics::Physics() { };
 
 Physics::~Physics() {};
 
+void Physics::CaculateVelocity(PlayerInfo* players)
+{
+	players->Vel = players->Vel + players->Acc;
+
+	vec2f friction = players->Vel * -1;
+	float mag = friction.length();
+	if (mag > FLT_EPSILON) {
+		friction = friction / mag;
+		friction = friction * COEF;
+
+		vec2f resultVel = players->Vel + friction;
+		if (resultVel.x * players->Vel.x < 0.f)
+			players->Vel.x = 0.f;
+		else
+			players->Vel.x = friction.x;
+		if (resultVel.y * players->Vel.y < 0.f)
+			players->Vel.y = 0.f;
+		else
+			players->Vel.y = friction.y;
+	}
+	if (players->Vel.x > MAX_SPEED)
+		players->Vel.x = MAX_SPEED;
+	if (players->Vel.x < -MAX_SPEED)
+		players->Vel.x = -MAX_SPEED;
+
+	if (players->Vel.y > MAX_SPEED)
+		players->Vel.y = MAX_SPEED;
+	if (players->Vel.y < -MAX_SPEED)
+		players->Vel.y = -MAX_SPEED;
+
+	if (players->Vel.x == players->Vel.y || players->Vel.x * players->Vel.x + players->Vel.y * players->Vel.y > MAX_SPEED * MAX_SPEED)
+	{
+		if (players->Vel.x > MAX_SPEED / ROOT_TWO)
+			players->Vel.x = MAX_SPEED / ROOT_TWO;
+		if (players->Vel.x < -MAX_SPEED / ROOT_TWO)
+			players->Vel.x = -MAX_SPEED / ROOT_TWO;
+
+		if (players->Vel.y > MAX_SPEED / ROOT_TWO)
+			players->Vel.y = MAX_SPEED / ROOT_TWO;
+		if (players->Vel.y < -MAX_SPEED / ROOT_TWO)
+			players->Vel.y = -MAX_SPEED / ROOT_TWO;
+	}
+}
+
+void Physics::CaculatePosition(PlayerInfo* players)
+{
+	players->Pos = players->Pos + players->Vel;
+}
+
 void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
 {
 	*Acc = -(*Vel * 2) - diff;

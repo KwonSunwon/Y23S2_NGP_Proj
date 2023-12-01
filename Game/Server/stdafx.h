@@ -35,9 +35,11 @@ using namespace std;
 #define ROOT_TWO 1.41421f
 
 #define NUM_OF_PLAYER 3
-#define END_OF_X 1.06f
-#define END_OF_Y 0.8f
-#define NUM_OF_PLAYER 3
+#define END_OF_X 1.3f
+#define END_OF_Y 1.3f
+
+#define PLAYER_RADIUS 0.15f
+#define PLAYER_MASS 0.4f
 
 static const int NUM_OF_LEVEL = 3;
 

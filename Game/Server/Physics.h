@@ -5,8 +5,8 @@ struct PlayerInfo {
 	vec2f Vel;
 	vec2f Acc;
 	vec2f Pos;
-	float Radius = 0;
-	float Mass = 0;
+	float Radius = PLAYER_RADIUS;
+	float Mass = PLAYER_MASS;
 };
 
 class Physics
@@ -21,6 +21,9 @@ public:
 	Physics();
 	~Physics();
 
+
+	void CaculateVelocity(PlayerInfo* players);
+	void CaculatePosition(PlayerInfo* players);
 
 	void AfterColideWithWall(float* Acc, float* Vel, float diff);
 	//void AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB);	
