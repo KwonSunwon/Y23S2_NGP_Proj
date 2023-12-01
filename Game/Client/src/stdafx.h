@@ -63,7 +63,7 @@ enum class STATE_MASK {
 
 using namespace std;
 
-
+#define ACCELERATION 0.01f
 
 #define _USE_MATH_DEFINES
 #include <math.h>

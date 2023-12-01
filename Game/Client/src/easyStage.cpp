@@ -94,14 +94,7 @@ void EasyStage::update()
 	timer++;
 	patterTime++;
 
-<<<<<<< HEAD
-    // Camera rolling test
-    
-    Packet* packet= new Packet();
-    while (g_PacketManager->RecvPacket(packet)) {
-=======
 	// Camera rolling test
->>>>>>> client/feature/startUI
 
 	Packet* packet = new Packet();
 	while (g_PacketManager->RecvPacket(packet)) {
@@ -125,7 +118,9 @@ void EasyStage::update()
 
 		bool isInit = packet->stateMask & 1;
 
-<<<<<<< HEAD
+		float accX = packet->x;
+		float accY = packet->y;
+
         if (life == 0) {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
@@ -156,31 +151,6 @@ void EasyStage::update()
         }
         
     }
-=======
-		float accX = packet->x;
-		float accY = packet->y;
->>>>>>> client/feature/startUI
-
-		if (isAcc) {
-			for (auto& p : otherPlayers) {
-				if (p->getPlayerNum() == playerNum) {
-					cout << "id:" << playerNum << " accX: " << accX << " accY: " << accY << endl;
-					p->setAcc(glm::vec3(accX, accY, 0));
-
-				}
-			}
-
-		}
-		else {
-			for (auto& p : otherPlayers) {
-				if (p->getPlayerNum() == playerNum) {
-					//cout << accX << " " << accY << endl;
-					p->setPos(glm::vec3(accX, accY, 0));
-				}
-			}
-		}
-
-	}
 
 	if (patterTime > 250)
 	{

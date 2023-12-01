@@ -7,7 +7,6 @@ Physics::~Physics() {};
 
 void Physics::CaculateVelocity(PlayerInfo* players, float elapsedTime)
 {
-	vec2f tmpVel = players->Vel;
 	players->Vel = players->Acc * elapsedTime + players->Vel;
 
 	vec2f friction = players->Vel * -1;
@@ -47,8 +46,6 @@ void Physics::CaculateVelocity(PlayerInfo* players, float elapsedTime)
 		if (players->Vel.y < -MAX_SPEED / ROOT_TWO)
 			players->Vel.y = -MAX_SPEED / ROOT_TWO;
 	}
-	//cout <<"[속도]" << players->Vel.x << ", " << players->Vel.y << endl;
-	//players->Acc = players->Vel - tmpVel;
 }
 
 void Physics::CaculatePosition(PlayerInfo* players)
@@ -56,25 +53,33 @@ void Physics::CaculatePosition(PlayerInfo* players)
 	players->Pos = players->Pos + players->Vel;
 }
 
-void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
+void Physics::AfterColideWithWall(float* Acc, float* Vel, float *Pos, float diff)
 {
-	*Acc = -(*Vel * 2) - diff;
+	*Vel = -*Vel;
+	*Pos = diff;
 }
 
 void Physics::AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B)
 {
 	vec2f unitVec = DecideUnitVec(A->Pos, B->Pos);
 	vec2f diff = unitVec * PLAYER_RADIUS;
-	AfterForce(&A->Acc, &B->Acc, unitVec, PLAYER_MASS, PLAYER_MASS);
-	A->Acc = A->Acc + diff;
-	B->Acc = B->Acc - diff;
-	//cout << AccA->x << ", " << AccA->y << endl;
+	vec2f center = (A->Pos + B->Pos) / 2;
+	//AfterForce(&A->Acc, &B->Acc, unitVec, PLAYER_MASS, PLAYER_MASS);
+	//A->Acc = A->Acc + diff;
+	//B->Acc = B->Acc - diff; 
+	vec2f dirVelA = unitVec * vec2f().dot(A->Vel, unitVec);
+	vec2f dirVelB = unitVec * vec2f().dot(B->Vel, unitVec * -1);
+	vec2f sumVel = dirVelA + dirVelB;
+	A->Vel = A->Vel - sumVel;
+	B->Vel = B->Vel + sumVel;
+	A->Pos = center - diff;
+	B->Pos = center + diff;
 }
 
 vec2f Physics::DecideUnitVec(vec2f posA, vec2f posB)
 {		//위치차이 단위벡터
-	float x = posA.x - posB.x;
-	float y = posA.y - posB.y;
+	float x = posB.x - posA.x;
+	float y = posB.y - posA.y;
 
 	float nor_x = x / sqrt(x * x + y * y);
 	float nor_y = y / sqrt(x * x + y * y);

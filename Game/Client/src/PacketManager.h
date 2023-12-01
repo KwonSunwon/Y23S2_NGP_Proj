@@ -42,15 +42,6 @@ private:
 	SOCKET m_sock;
 	shared_ptr<queue<Packet>> m_toClientEventQue;
 
-<<<<<<< HEAD
-    //임시로 사용할 ip, port, Bufsize
-    //=======================================
-    //char* SERVERIP = (char*)"192.168.204.231";
-    char* SERVERIP = (char*)"127.0.0.1";
-    int SERVERPORT = 9000;
-    int BUFSIZE = 1024;
-    //=======================================
-=======
 	char* m_serverIP = (char*)"127.0.0.1";
 
 	//임시로 사용할 ip, port, Bufsize
@@ -69,7 +60,6 @@ public:
 		addr.s_addr = htonl(static_cast<u_long>(lp));
 		return inet_ntoa(addr);
 	}
->>>>>>> client/feature/startUI
 };
 
 

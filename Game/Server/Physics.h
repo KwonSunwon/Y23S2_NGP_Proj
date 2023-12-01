@@ -26,7 +26,7 @@ public:
 	void CaculateVelocity(PlayerInfo* players, float elapsedTime);
 	void CaculatePosition(PlayerInfo* players);
 
-	void AfterColideWithWall(float* Acc, float* Vel, float diff);
+	void AfterColideWithWall(float* Acc, float* Vel, float* Pos, float diff);
 	//void AfterColideWithPlayer(vec2f* AccA, vec2f* AccB, vec2f posA, vec2f posB, vec2f velA, vec2f velB, const float massA, const float massB);	
 	void AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B);
 

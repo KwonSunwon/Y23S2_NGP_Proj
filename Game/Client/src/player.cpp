@@ -179,8 +179,8 @@ void Player::setMoveLeft(bool in)
 	if (in != isMoveLeft) {
 		isMoveLeft = in;
 		{
-			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
+			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
 			BYTE flag = 0b10011110;
 			flag |= (playerNum << 5);
 			g_PacketManager->SendPacket(flag, x, y);
@@ -200,8 +200,8 @@ void Player::setMoveRight(bool in)
 	if (in != isMoveRight) {
 		isMoveRight = in;
 		{
-			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
+			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
 			BYTE flag = 0b10011110;
 			flag |= (playerNum << 5);
 			g_PacketManager->SendPacket(flag, x, y);
@@ -221,8 +221,8 @@ void Player::setMoveUp(bool in)
 	if (in != isMoveUp) {
 		isMoveUp = in;
 		{
-			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
+			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
 			BYTE flag = 0b10011110;
 			flag |= (playerNum << 5);
 			g_PacketManager->SendPacket(flag, x, y);
@@ -242,8 +242,8 @@ void Player::setMoveDown(bool in)
 	if (in != isMoveDown) {
 		isMoveDown = in;
 		{
-			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
+			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
 			BYTE flag = 0b10011110;
 			flag |= (playerNum << 5);
 			g_PacketManager->SendPacket(flag, x, y);
