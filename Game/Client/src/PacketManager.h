@@ -7,43 +7,56 @@
 #pragma comment(lib, "Ws2_32.lib") 
 
 struct Packet {
-    float x, y;
-    BYTE stateMask;
+	float x, y;
+	BYTE stateMask;
 };
 
-enum class GAME_LEVEL : BYTE { 
-    EASY,
-    NORMAL,
-    HARD,
-    NONE,
+enum class GAME_LEVEL : BYTE {
+	EASY,
+	NORMAL,
+	HARD,
+	NONE,
 };
 
 class PacketManager
 {
 
 public:
-    PacketManager();
-    ~PacketManager();
-    void Initialize(GAME_LEVEL level);
-    void Reset();
-    void SendPacket(BYTE flag, float x, float y);
-    bool RecvPacket(Packet* packet);
+	PacketManager();
+	~PacketManager();
+	void Initialize(GAME_LEVEL level);
+	void Reset();
+	void SendPacket(BYTE flag, float x, float y);
+	bool RecvPacket(Packet* packet);
 
-    void SetSocketOpt();
+	void SetSocketOpt();
 
-    shared_ptr<queue<Packet>> GetPacketQueue();
+	void SetIPAddress(char* ip);
+	char* GetIPAddress() { return m_serverIP; };
+
+	shared_ptr<queue<Packet>> GetPacketQueue();
 
 private:
 
-    SOCKET m_sock;
-    shared_ptr<queue<Packet>> m_toClientEventQue;
+	SOCKET m_sock;
+	shared_ptr<queue<Packet>> m_toClientEventQue;
 
-    //임시로 사용할 ip, port, Bufsize
-    //=======================================
-    char* SERVERIP = (char*)"127.0.0.1";
-    int SERVERPORT = 9000;
-    int BUFSIZE = 1024;
-    //=======================================
+	char* m_serverIP = (char*)"127.0.0.1";
+
+	//임시로 사용할 ip, port, Bufsize
+	//=======================================
+	char* SERVERIP = (char*)"127.0.0.1";
+	int SERVERPORT = 9000;
+	int BUFSIZE = 1024;
+	//=======================================
+
+public:
+	static inline char* LPARAMToCharPtr(LPARAM lp)
+	{
+		in_addr addr;
+		addr.s_addr = htonl(static_cast<u_long>(lp));
+		return inet_ntoa(addr);
+	}
 };
 
 

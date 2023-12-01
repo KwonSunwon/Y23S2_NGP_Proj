@@ -9,7 +9,6 @@
 #include <stdlib.h> // exit(), ...
 #include <string.h> // strncpy(), ...
 
-
 PacketManager::PacketManager()
 {
 }
@@ -82,7 +81,7 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	struct sockaddr_in serveraddr;
 	memset(&serveraddr, 0, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+	inet_pton(AF_INET, m_serverIP, &serveraddr.sin_addr);
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(m_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) {
@@ -118,11 +117,11 @@ void PacketManager::SendPacket(BYTE flag, float x, float y)
 {
 	//키 입력시 이 함수를 호출해서 서버로 send할 예정
 	Packet packet;
-	
+
 	packet.stateMask = flag;
 	packet.x = x;
 	packet.y = y;
-	cout << "sendPacket x:" << x << " y:" << y<<" bit:";
+	cout << "sendPacket x:" << x << " y:" << y << " bit:";
 	cout << bitset<8>(packet.stateMask);
 	int retval = send(m_sock, (char*)&packet, sizeof(Packet), 0);
 	if (retval == SOCKET_ERROR) {
@@ -143,13 +142,18 @@ bool PacketManager::RecvPacket(Packet* packet)
 		return false;
 	}
 	return true;
-		
+
 }
 
 void PacketManager::SetSocketOpt()
 {
 	DWORD optval = 10;
 	int retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+}
+
+void PacketManager::SetIPAddress(char* ip)
+{
+	m_serverIP = ip;
 }
 
 shared_ptr<queue<Packet>> PacketManager::GetPacketQueue()

@@ -11,6 +11,8 @@
 
 #include "src/PacketManager.h"
 
+#include "resource.h"
+
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid keyboard(unsigned char key, int x, int y);
@@ -32,8 +34,15 @@ extern int gameSpeed;
 
 GLvoid updateTimer(int value);
 
+INT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
+HWND g_ipEdit;
+LPARAM g_dlgServerIP = 0x7f000001;
+
 void main(int argc, char** argv)
 {
+	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
+	g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(300, 0);
@@ -112,4 +121,34 @@ GLvoid updateTimer(int value)
 {
 
 	glutTimerFunc(0.0001, updateTimer, 0);
+}
+
+INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+		SetWindowPos(hDlg, NULL, 200, 200, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		g_ipEdit = GetDlgItem(hDlg, IDC_IPADDRESS1);
+		SendMessage(g_ipEdit, IPM_SETADDRESS, 0, g_dlgServerIP);
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			SendMessage(g_ipEdit, IPM_GETADDRESS, 0, (LPARAM)&g_dlgServerIP);
+			EndDialog(hDlg, IDOK);
+			break;
+		case IDCANCEL:
+			EndDialog(hDlg, IDCANCEL);
+			exit(0);
+			break;
+		}
+		break;
+	case WM_CLOSE:
+		EndDialog(hDlg, IDCANCEL);
+		exit(0);
+		break;
+	}
+	return FALSE;
 }
