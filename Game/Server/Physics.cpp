@@ -15,8 +15,6 @@ void Physics::CaculateVelocity(PlayerInfo* players, float elapsedTime)
 	if (mag > FLT_EPSILON) {
 		friction = friction / mag;
 		friction = friction * COEF;
-		cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
-		cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
 		vec2f resultVel = players->Vel + friction;
 		if (resultVel.x * players->Vel.x < 0.f)
 			players->Vel.x = 0.f;
@@ -66,8 +64,8 @@ void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
 void Physics::AfterColideWithPlayer(PlayerInfo* A, PlayerInfo* B)
 {
 	vec2f unitVec = DecideUnitVec(A->Pos, B->Pos);
-	vec2f diff = unitVec * (A->Radius + B->Radius) / 2;
-	AfterForce(&A->Acc, &B->Acc, unitVec, A->Mass, B->Mass);
+	vec2f diff = unitVec * PLAYER_RADIUS;
+	AfterForce(&A->Acc, &B->Acc, unitVec, PLAYER_MASS, PLAYER_MASS);
 	A->Acc = A->Acc + diff;
 	B->Acc = B->Acc - diff;
 	//cout << AccA->x << ", " << AccA->y << endl;

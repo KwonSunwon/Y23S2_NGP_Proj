@@ -67,8 +67,10 @@ static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_O
 		{
 			(*playerPackets)[player].x = tmp.x;
 			(*playerPackets)[player].y = tmp.y;
-			(*players)[player].Acc.x = tmp.x;
-			(*players)[player].Acc.y = tmp.y;
+			//(*players)[player].Acc.x = tmp.x;
+			//(*players)[player].Acc.y = tmp.y;
+			(*players)[player].ConstAcc.x = tmp.x;
+			(*players)[player].ConstAcc.y = tmp.y;
 		}
 		else
 		{
@@ -78,6 +80,15 @@ static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_O
 	if (dataNum < 1)
 		return false;
 	return true;
+}
+
+static void ResetAcc(vector<int> alivePlayer, array<PlayerInfo, NUM_OF_PLAYER>* players)
+{
+	for (auto player : alivePlayer)
+	{
+		(*players)[player].Acc.x = (*players)[player].ConstAcc.x;
+		(*players)[player].Acc.y = (*players)[player].ConstAcc.y;
+	}
 }
 
 // 게임 강제 종료 체크
@@ -212,19 +223,6 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			alivePlayer.clear();
 			break;
 		}
-		// 충돌 체크
-		//for (int i = 0; i < NUM_OF_PLAYER; ++i) {
-		//	if (i == 0 || i == 1)
-		//	{
-		//		cm.DoCollideAB(&players[i], &players[i + 1]);
-		//		if (i == 0) {
-		//			cm.DoCollideAB(&players[i], &players[i + 2]);
-		//		}
-		//	}
-		//	cm.DoCollideWithWall(&players[i]);
-
-		//}
-		//ModifyPacketPos(alivePlayer, &playerPackets, &players);
 		//if (totalTime > 5.0f) {
 		//	cout << "목숨 패킷데이터 확인" << endl;
 		//	ModifyPacketLife(alivePlayer, &playerPackets, &players);
@@ -234,27 +232,39 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		//	totalTime = -1000;
 		//}
 
-		if (elapsedTime >= 0.016667f) {
-			// 속도 계산
-			for (auto p : alivePlayer) {
-				ps.CaculateVelocity(&players[p], elapsedTime);
+//		if (elapsedTime >= 0.016667f) {
+//			// 속도 계산
+//
+//			ModifyPacketVel(alivePlayer, &playerPackets, &players);
+//#ifdef _DEBUG_INGAME
+//			cout << "속도 패킷데이터 확인" << endl;
+//			PrintPacketData(playerPackets);
+//#endif // _DEBUG_INGAME
+//			PushPacket(alivePlayer, &eventQueues, playerPackets);
+//			//	// 위치 정보 계산결과 가져오고 push
+//			//	// 위치 push전에 Packet 조정 [0__0__10]
+//			prevTime = now;
+//		}
+		if (totalTime >= 0.0167f) {
+			ResetAcc(alivePlayer, &players);
+			// 충돌 체크
+			for (int i = 0; i < NUM_OF_PLAYER; ++i) {
+				if (i == 0 || i == 1)
+				{
+					cm.DoCollideAB(&players[i], &players[i + 1]);
+					if (i == 0) {
+						cm.DoCollideAB(&players[i], &players[i + 2]);
+					}
+				}
+				cm.DoCollideWithWall(&players[i]);
 			}
-
+			for (auto p : alivePlayer) {
+				ps.CaculateVelocity(&players[p], totalTime);
+			}
 			// 위치 계산
 			for (auto p : alivePlayer) {
 				ps.CaculatePosition(&players[p]);
 			}
-			ModifyPacketVel(alivePlayer, &playerPackets, &players);
-#ifdef _DEBUG_INGAME
-			cout << "속도 패킷데이터 확인" << endl;
-			PrintPacketData(playerPackets);
-#endif // _DEBUG_INGAME
-			PushPacket(alivePlayer, &eventQueues, playerPackets);
-			//	// 위치 정보 계산결과 가져오고 push
-			//	// 위치 push전에 Packet 조정 [0__0__10]
-			prevTime = now;
-		}
-		if (totalTime >= 0.0167f) {
 			ModifyPacketPos(alivePlayer, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
 			cout << "위치 패킷데이터 확인" << endl;

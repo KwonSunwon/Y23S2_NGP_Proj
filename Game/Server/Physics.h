@@ -5,6 +5,7 @@ struct PlayerInfo {
 	vec2f Vel;
 	vec2f Acc;
 	vec2f Pos;
+	vec2f ConstAcc = vec2f(0,0);
 	float Radius = PLAYER_RADIUS;
 	float Mass = PLAYER_MASS;
 };

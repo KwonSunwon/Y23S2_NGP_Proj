@@ -31,14 +31,14 @@ using namespace std;
 
 #define MAX_SPEED 0.04f
 #define ACCELERATION 0.01f
-#define COEF 0.00003f
+#define COEF 0.00005f
 #define ROOT_TWO 1.41421f
 
 #define NUM_OF_PLAYER 3
-#define END_OF_X 1.3f
-#define END_OF_Y 1.3f
+#define END_OF_X 1.2f
+#define END_OF_Y 1.2f
 
-#define PLAYER_RADIUS 0.15f
+#define PLAYER_RADIUS 0.115f
 #define PLAYER_MASS 0.4f
 
 static const int NUM_OF_LEVEL = 3;

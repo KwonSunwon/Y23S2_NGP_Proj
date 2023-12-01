@@ -40,7 +40,6 @@ bool CollisionManager::DoCollideAB(PlayerInfo* A, PlayerInfo* B)
 	float yDist = A->Pos.y - B->Pos.y;
 	float totalDist = xDist * xDist + yDist * yDist;
 	float radiusSum = A->Radius + B->Radius;
-	float radiusError = A->Radius + B->Radius - MAX_SPEED;
 
 	if (totalDist <= radiusSum * radiusSum)
 	{
