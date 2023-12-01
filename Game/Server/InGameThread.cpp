@@ -200,26 +200,24 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		//for (int i = 0; i < NUM_OF_PLAYER; ++i) {
 		//	if (i == 0 || i == 1)
 		//	{
-		//		if (cm.DoCollideAB(&players[i], &players[i + 1]))
-		//			collision = true;
+		//		cm.DoCollideAB(&players[i], &players[i + 1]);
 		//		if (i == 0) {
-		//			if (cm.DoCollideAB(&players[i], &players[i + 2]))
-		//				collision = true;
+		//			cm.DoCollideAB(&players[i], &players[i + 2]);
 		//		}
 		//	}
-		//	if (cm.DoCollideWithWall(&players[i]))
-		//		collision = true;
+		//	cm.DoCollideWithWall(&players[i]);
+
 		//}
-		// 속도 계산
-		for (auto p : alivePlayer) {
-			ps.CaculateVelocity(&players[p], elapsedTime);
-		}
-		// 위치 계산
-		for (auto p : alivePlayer) {
-			ps.CaculatePosition(&players[p]);
-		}
 		//ModifyPacketPos(alivePlayer, &playerPackets, &players);
-		if (elapsedTime >= 0.16667f) {
+		if (elapsedTime >= 0.016667f) {
+			// 속도 계산
+			for (auto p : alivePlayer) {
+				ps.CaculateVelocity(&players[p], elapsedTime);
+			}
+			// 위치 계산
+			for (auto p : alivePlayer) {
+				ps.CaculatePosition(&players[p]);
+			}
 			ModifyPacketVel(alivePlayer, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
 			cout << "속도 패킷데이터 확인" << endl;
