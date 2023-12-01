@@ -31,7 +31,7 @@ using namespace std;
 
 #define MAX_SPEED 0.04f
 
-#define COEF 0.00005f
+#define COEF 0.00008f
 #define ROOT_TWO 1.41421f
 
 #define NUM_OF_PLAYER 3

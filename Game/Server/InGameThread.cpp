@@ -88,6 +88,10 @@ static void ResetAcc(vector<int> alivePlayer, array<PlayerInfo, NUM_OF_PLAYER>* 
 	{
 		(*players)[player].Acc.x = (*players)[player].ConstAcc.x;
 		(*players)[player].Acc.y = (*players)[player].ConstAcc.y;
+		if ((*players)[player].Acc.x != 0 && (*players)[player].Acc.y != 0) {
+			(*players)[player].Acc.x = (*players)[player].Acc.x / ROOT_TWO;
+			(*players)[player].Acc.y = (*players)[player].Acc.y / ROOT_TWO;
+		}
 	}
 }
 
@@ -100,27 +104,32 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 			(*playerPackets)[i].y == numeric_limits<float>::infinity())
 		{
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
-			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
+			//(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
+			
 			(*players)[i].Pos.x = END_OF_X + 1.f;
 			(*players)[i].Pos.y = END_OF_Y + 1.f;
+			(*playerPackets)[i].x = (*players)[i].Pos.x;
+			(*playerPackets)[i].y = (*players)[i].Pos.y;
 			(*players)[i].Acc.x = 0;
 			(*players)[i].Acc.y = 0;
 			(*players)[i].Vel.x = 0;
 			(*players)[i].Vel.y = 0;
 			alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), i), alivePlayer->end());
 			cout << "Player" << i + 1 << " exit!" <<  alivePlayer->size() << endl;
+			for (auto p : *alivePlayer)
+				cout << p << endl;
 		}
 	}
 }
 
 // 승리시 승리 stateMask 비트 마스킹 후 큐에 Push
-static void PushWinPacket(EventQueues *winnerQueues)
+static void PushWinPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
-	Packet winPack;
-	(*winnerQueues).toServerEventQueue->WaitPop(winPack);
-	winPack.stateMask |= (1 << (int)STATE_MASK::RESULT);
-	(*winnerQueues).toClientEventQueue->Push(winPack);
+	playerPackets[*alivePlayer.begin()].stateMask |= (1 << (int)STATE_MASK::RESULT);
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+		(*eventQueues)[*alivePlayer.begin()].toClientEventQueue->Push(playerPackets[i]);
+	cout << "[Player_" << *alivePlayer.begin() + 1 << "] Win!!!!!!!" << endl;
 }
 
 // 디버그 테스트용 print함수
@@ -174,7 +183,9 @@ static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER
 	for (auto player : alivePlayer)
 	{
 		for (int i = 0; i < NUM_OF_PLAYER; ++i)
+		{
 			(*eventQueues)[player].toClientEventQueue->Push(playerPackets[i]);
+		}
 	}
 }
 
@@ -195,7 +206,6 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	// 플레이어가 죽으면 erase(player_num);
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
-
 	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
 	cout << "패킷데이터 확인" << endl;
@@ -215,11 +225,11 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		elapsedTime = static_cast<std::chrono::duration<double>>(now - prevTime).count();
 		totalTime = static_cast<std::chrono::duration<double>>(now - posPrevTime).count();
 		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players);
-		//CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
+		CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
 			break;
 		if (alivePlayer.size() == 1) {
-			PushWinPacket(&eventQueues[alivePlayer.front()]);
+			PushWinPacket(alivePlayer, &eventQueues, playerPackets);
 			alivePlayer.clear();
 			break;
 		}
