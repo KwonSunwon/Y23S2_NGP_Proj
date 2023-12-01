@@ -20,7 +20,6 @@ enum class GAME_LEVEL : BYTE {
 
 class PacketManager
 {
-
 public:
 	PacketManager();
 	~PacketManager();
@@ -35,6 +34,8 @@ public:
 	char* GetIPAddress() { return m_serverIP; };
 
 	shared_ptr<queue<Packet>> GetPacketQueue();
+
+	void WaitForPlayers();
 
 private:
 
@@ -51,6 +52,8 @@ private:
 	//=======================================
 
 public:
+	array<Packet, 3> m_initPacket;
+
 	static inline char* LPARAMToCharPtr(LPARAM lp)
 	{
 		in_addr addr;

@@ -59,6 +59,7 @@ enum class STATE_MASK {
 #include "Global.h"
 
 #include <CommCtrl.h>
+#include <thread>
 
 using namespace std;
 

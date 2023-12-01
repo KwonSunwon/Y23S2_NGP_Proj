@@ -35,8 +35,9 @@ void EasyStage::init()
 	gameWorld.add_object(playerPtr);
 
 	for (int i = 0; i < 3; i++) {
-		Packet* packet = new Packet();
-		g_PacketManager->RecvPacket(packet);
+		//Packet* packet = new Packet();
+		//g_PacketManager->RecvPacket(packet);
+		Packet* packet = &g_PacketManager->m_initPacket[i];
 
 		seed = packet->stateMask & 0b1111;
 		packet->stateMask = packet->stateMask >> 4;
@@ -74,6 +75,10 @@ void EasyStage::init()
 
 	}
 	g_PacketManager->SetSocketOpt();
+
+	// 이게 여깄으면 당연히 안되지...
+	SetEvent(g_connectionEvent);
+
 	makePattern(3);
 	for (int i = 0; i < 20; ++i)
 	{

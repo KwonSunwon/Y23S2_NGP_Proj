@@ -161,3 +161,13 @@ shared_ptr<queue<Packet>> PacketManager::GetPacketQueue()
 	return m_toClientEventQue;
 }
 
+void PacketManager::WaitForPlayers()
+{
+	for (int i = 0; i < 3; i++) {
+		Packet* packet = new Packet();
+		g_PacketManager->RecvPacket(packet);
+		m_initPacket[i] = *packet;
+	}
+	SetEvent(g_connectionEvent);
+}
+
