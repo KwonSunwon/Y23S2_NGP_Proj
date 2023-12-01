@@ -40,7 +40,7 @@ private:
 
     //임시로 사용할 ip, port, Bufsize
     //=======================================
-    char* SERVERIP = (char*)"127.0.0.1";
+    char* SERVERIP = (char*)"192.168.204.231";
     int SERVERPORT = 9000;
     int BUFSIZE = 1024;
     //=======================================

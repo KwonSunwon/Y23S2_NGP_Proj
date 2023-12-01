@@ -95,8 +95,6 @@ void EasyStage::update()
     
     Packet* packet= new Packet();
     while (g_PacketManager->RecvPacket(packet)) {
-        //short seed = packet->stateMask & 15;
-        //cout << "recv packet in stage" << endl;
 
         bool isWin = packet->stateMask & 1;
         packet->stateMask = packet->stateMask >> 1;
@@ -118,11 +116,21 @@ void EasyStage::update()
         float accX = packet->x;
         float accY = packet->y;
 
+        if (life == 0) {
+            for (auto& p : otherPlayers) {
+                if (p->getPlayerNum() == playerNum) {
+            
+                    p->collision();
+
+                }
+            }
+        }
+
         if (isAcc) {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
-                    cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
-                    p->setAcc(glm::vec3(accX, accY, 0));
+                    //cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
+                    p->setSpeed(glm::vec3(accX, accY, 0));
                    
                 }
             }
