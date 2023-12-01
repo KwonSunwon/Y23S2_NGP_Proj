@@ -82,37 +82,37 @@ void MainLoop(SOCKET client)
 		{
 			Packet packet;
 			while (true) {
-#ifdef _DEBUG_CLIENT_SERVER
+			#ifdef _DEBUG_CLIENT_SERVER
 				cout << "recv Loop" << endl;
-#endif
+			#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
 					m_toServerEventQueue->Push(packet);
-				}
-					
+			}
+
 
 				if (retval < 0) {
-#ifdef _DEBUG_CLIENT_SERVER
+				#ifdef _DEBUG_CLIENT_SERVER
 					cout << "TIMEOUT" << endl;
-#endif
+				#endif
 					break;
 				}
 				if (retval == 0) {
 					cout << "종료" << endl;
 					packet.stateMask = 0;
-					packet.x= numeric_limits<float>::infinity();
-					packet.y= numeric_limits<float>::infinity();
+					packet.x = numeric_limits<float>::infinity();
+					packet.y = numeric_limits<float>::infinity();
 					m_toServerEventQueue->Push(packet);
 					return;
 				}
-			}
 		}
+	}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
 
 
 		//보내기, 받기가 전부 완료되면 쓰레드 양보
 		this_thread::yield();
-	}
+}
 	closesocket(client);
 }

@@ -11,6 +11,8 @@
 
 #include "src/PacketManager.h"
 
+#include "resource.h"
+
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid keyboard(unsigned char key, int x, int y);
@@ -32,8 +34,23 @@ extern int gameSpeed;
 
 GLvoid updateTimer(int value);
 
+void DlgThread();
+INT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
+HINSTANCE g_inst;
+HWND g_dlg;
+HWND g_ipEdit, g_textEdit;
+LPARAM g_dlgServerIP = 0x7f000001;
+
 void main(int argc, char** argv)
 {
+	g_inst = GetModuleHandle(NULL);
+	thread dlgThread(DlgThread);
+	dlgThread.detach();
+	WaitForSingleObject(g_connectionEvent, INFINITE);
+	g_PacketManager->WaitForPlayers();
+	WaitForSingleObject(g_connectionEvent, INFINITE);
+	EndDialog(g_dlg, IDOK);
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(300, 0);
@@ -112,4 +129,52 @@ GLvoid updateTimer(int value)
 {
 
 	glutTimerFunc(0.0001, updateTimer, 0);
+}
+
+void DlgThread()
+{
+	g_dlg = CreateDialog(g_inst, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
+	ShowWindow(g_dlg, SW_SHOW);
+
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		WaitForSingleObject(g_connectionEvent, 0);
+	}
+}
+
+INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+		SetWindowPos(hDlg, NULL, 200, 200, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		g_ipEdit = GetDlgItem(hDlg, IDC_IPADDRESS1);
+		g_textEdit = GetDlgItem(hDlg, IDC_EDIT1);
+		SendMessage(g_ipEdit, IPM_SETADDRESS, 0, g_dlgServerIP);
+		SendMessage(g_textEdit, WM_SETTEXT, 0, (LPARAM)L"IP를 입력하고 접속 버튼을 눌러주세요.");
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			SendMessage(g_ipEdit, IPM_GETADDRESS, 0, (LPARAM)&g_dlgServerIP);
+			g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
+			g_PacketManager->Initialize(GAME_LEVEL::EASY);
+			SendMessageW(g_textEdit, WM_SETTEXT, 0, (LPARAM)L"다른 플레이어를 기다리는 중...");
+			SetEvent(g_connectionEvent);
+			break;
+		case IDCANCEL:
+			EndDialog(hDlg, IDCANCEL);
+			exit(0);
+			break;
+		}
+		break;
+	case WM_CLOSE:
+		EndDialog(hDlg, IDCANCEL);
+		exit(0);
+		break;
+	}
+	return FALSE;
 }
