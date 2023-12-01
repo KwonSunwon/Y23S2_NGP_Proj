@@ -41,7 +41,6 @@ LPARAM g_dlgServerIP = 0x7f000001;
 void main(int argc, char** argv)
 {
 	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DlgProc);
-	g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -137,6 +136,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case IDOK:
 			SendMessage(g_ipEdit, IPM_GETADDRESS, 0, (LPARAM)&g_dlgServerIP);
+			g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
+			g_PacketManager->Initialize(GAME_LEVEL::EASY);
 			EndDialog(hDlg, IDOK);
 			break;
 		case IDCANCEL:
