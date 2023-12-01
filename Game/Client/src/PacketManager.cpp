@@ -113,16 +113,17 @@ void PacketManager::Reset()
 	// 윈속 종료
 	WSACleanup();
 }
-
-void PacketManager::SendPacket(bool sig, float x, float y)
+#include<bitset>
+void PacketManager::SendPacket(BYTE flag, float x, float y)
 {
 	//키 입력시 이 함수를 호출해서 서버로 send할 예정
 	Packet packet;
 	
-	packet.stateMask = 0;
+	packet.stateMask = flag;
 	packet.x = x;
 	packet.y = y;
-	cout << "sendPacket x:" << x << " y:" << y << endl;
+	cout << "sendPacket x:" << x << " y:" << y<<" bit:";
+	cout << bitset<8>(packet.stateMask);
 	int retval = send(m_sock, (char*)&packet, sizeof(Packet), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");

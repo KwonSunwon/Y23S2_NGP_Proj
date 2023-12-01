@@ -63,7 +63,7 @@ static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_O
 		else
 		{
 			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::GAME_START);
-			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 			(*playerPackets)[player].stateMask |= (3 << (int)STATE_MASK::LIFE);
 			(*playerPackets)[player].stateMask |= (1 << (int)STATE_MASK::PLAYING);
 			(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::RESULT);

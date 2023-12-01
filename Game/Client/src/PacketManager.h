@@ -26,7 +26,7 @@ public:
     ~PacketManager();
     void Initialize(GAME_LEVEL level);
     void Reset();
-    void SendPacket(bool sig, float x, float y);
+    void SendPacket(BYTE flag, float x, float y);
     bool RecvPacket(Packet* packet);
 
     void SetSocketOpt();

@@ -178,10 +178,20 @@ void Player::setMoveLeft(bool in)
 {
 	if (in != isMoveLeft) {
 		isMoveLeft = in;
-		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
+		{
+			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			BYTE flag = 0b10011110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
+		{
+			float x = pos.x;
+			float y = pos.y;
+			BYTE flag = 0b10001110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}	
 	}
 	
 }
@@ -189,10 +199,20 @@ void Player::setMoveRight(bool in)
 {
 	if (in != isMoveRight) {
 		isMoveRight = in;
-		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
+		{
+			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			BYTE flag = 0b10011110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
+		{
+			float x = pos.x;
+			float y = pos.y;
+			BYTE flag = 0b10001110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
 	}
 }
 	
@@ -200,10 +220,20 @@ void Player::setMoveUp(bool in)
 {
 	if (in != isMoveUp) {
 		isMoveUp = in;
-		float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
-		float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
+		{
+			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			BYTE flag = 0b10011110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
+		{
+			float x = pos.x;
+			float y = pos.y;
+			BYTE flag = 0b10001110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
 	}
 	
 }
@@ -211,10 +241,20 @@ void Player::setMoveDown(bool in)
 {
 	if (in != isMoveDown) {
 		isMoveDown = in;
-		float x = -0.005f * isMoveLeft + 0.005f * isMoveRight;
-		float y = -0.005f * isMoveDown + 0.005f * isMoveUp;
-		g_PacketManager->SendPacket(true, x, y);
-		
+		{
+			float x = -0.005 * isMoveLeft + 0.005 * isMoveRight;
+			float y = -0.005 * isMoveDown + 0.005 * isMoveUp;
+			BYTE flag = 0b10011110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
+		{
+			float x = pos.x;
+			float y = pos.y;
+			BYTE flag = 0b10001110;
+			flag |= (playerNum << 5);
+			g_PacketManager->SendPacket(flag, x, y);
+		}
 	}
 	
 }

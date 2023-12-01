@@ -67,6 +67,12 @@ void main(int argc, char** argv)
 
 GLvoid drawScene()
 {
+	auto now = std::chrono::system_clock::now();
+	g_elapsedTime = static_cast<std::chrono::duration<double>>(now - g_prevTime).count();
+	g_prevTime = now;
+
+	gameManager.update();
+
 	glClearColor(g_color[0], g_color[1], g_color[2], g_color[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -104,10 +110,6 @@ GLvoid Mouse(int button, int state, int x, int y)
 }
 GLvoid updateTimer(int value)
 {
-	auto now = std::chrono::system_clock::now();
-	g_elapsedTime = static_cast<std::chrono::duration<double>>(now - g_prevTime).count();
-	g_prevTime = now;
 
-	gameManager.update();
-	glutTimerFunc(1000 / gameSpeed, updateTimer, 0);
+	glutTimerFunc(0.0001, updateTimer, 0);
 }
