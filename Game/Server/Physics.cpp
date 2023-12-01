@@ -5,28 +5,28 @@ Physics::Physics() { };
 
 Physics::~Physics() {};
 
-void Physics::CaculateVelocity(PlayerInfo* players, double elapsedTime)
+void Physics::CaculateVelocity(PlayerInfo* players, float elapsedTime)
 {
 	vec2f tmpVel = players->Vel;
 	players->Vel = players->Acc * elapsedTime + players->Vel;
 
-	//vec2f friction = players->Vel * -1;
-	//float mag = sqrtf(friction.x * friction.x + friction.y * friction.y);
-	//if (mag > FLT_EPSILON) {
-	//	friction = friction / mag;
-	//	friction = friction * COEF;
-	//	cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
-	//	cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
-	//	vec2f resultVel = players->Vel + friction;
-	//	if (resultVel.x * players->Vel.x < 0.f)
-	//		players->Vel.x = 0.f;
-	//	else
-	//		players->Vel.x = friction.x;
-	//	if (resultVel.y * players->Vel.y < 0.f)
-	//		players->Vel.y = 0.f;
-	//	else
-	//		players->Vel.y = friction.y;
-	//}
+	vec2f friction = players->Vel * -1;
+	float mag = sqrtf(friction.x * friction.x + friction.y * friction.y);
+	if (mag > FLT_EPSILON) {
+		friction = friction / mag;
+		friction = friction * COEF;
+		cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
+		cout << "[¸¶Âû]" << friction.x << ", " << friction.y << endl;
+		vec2f resultVel = players->Vel + friction;
+		if (resultVel.x * players->Vel.x < 0.f)
+			players->Vel.x = 0.f;
+		else
+			players->Vel.x = resultVel.x;
+		if (resultVel.y * players->Vel.y < 0.f)
+			players->Vel.y = 0.f;
+		else
+			players->Vel.y = resultVel.y;
+	}
 	if (players->Vel.x > MAX_SPEED)
 		players->Vel.x = MAX_SPEED;
 	if (players->Vel.x < -MAX_SPEED)

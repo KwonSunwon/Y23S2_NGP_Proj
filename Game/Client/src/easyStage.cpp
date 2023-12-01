@@ -119,9 +119,9 @@ void EasyStage::update()
         if (life == 0) {
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
-            
+                    //cout << "collllllllll" << endl;
                     p->collision();
-
+                    continue;
                 }
             }
         }
@@ -140,7 +140,7 @@ void EasyStage::update()
             for (auto& p : otherPlayers) {
                 if (p->getPlayerNum() == playerNum) {
                     //cout << accX << " " << accY << endl;
-                    p->setPos(glm::vec3(accX, accY, 0));
+                    p->setPos(glm::vec3(accX, accY, 0.7));
                 }
             }
         }

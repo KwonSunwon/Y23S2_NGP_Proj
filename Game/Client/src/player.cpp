@@ -346,14 +346,16 @@ void Player::die()
 	dieTimer++;
 	if (dieTimer > 100)
 	{
-		soundManager.soundStop(0);
+		//soundManager.soundStop(0);
 		dieTimer = 0;
-		camera.setRoll(0);
+		pos.x = 10000000;
+		pos.y = 10000000;
+		/*camera.setRoll(0);
 		gameWorld.del_objects();
 		stages.back()->out();
 		nowStage++;
 		stages.push_back(startStage);
-		stages[nowStage]->init();
+		stages[nowStage]->init();*/
 	}
 }
 int Player::getPlayerDieTimer()

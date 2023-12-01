@@ -6,7 +6,8 @@ std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
-double elapsedTime = 0.f;
+float elapsedTime = 0.f;
+double totalTime = 0.f;
 
 Physics ps;
 CollisionManager cm;
@@ -145,6 +146,17 @@ static void ModifyPacketPos(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER
 	}
 }
 
+//static void ModifyPacketLife(vector<int> alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
+//{
+//	for (auto player : alivePlayer)
+//	{
+//		(*playerPackets)[0].stateMask &= ~(1 << (int)STATE_MASK::LIFE);
+//		(*playerPackets)[player].x = (*players)[player].Pos.x;
+//		(*playerPackets)[player].y = (*players)[player].Pos.y;
+//	}
+//}
+
+
 // 큐에 데이터 Push
 static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
@@ -185,8 +197,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 	while (true) {
+		//cout << totalTime << endl;
 		auto now = std::chrono::system_clock::now();
 		elapsedTime = static_cast<std::chrono::duration<double>>(now - prevTime).count();
+		totalTime += elapsedTime;
 		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players);
 		//CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
@@ -209,6 +223,15 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 
 		//}
 		//ModifyPacketPos(alivePlayer, &playerPackets, &players);
+		//if (totalTime > 5.0f) {
+		//	cout << "목숨 패킷데이터 확인" << endl;
+		//	ModifyPacketLife(alivePlayer, &playerPackets, &players);
+		//	PrintPacketData(playerPackets);
+		//	PushPacket(alivePlayer, &eventQueues, playerPackets);
+
+		//	totalTime = -1000;
+		//}
+
 		if (elapsedTime >= 0.016667f) {
 			// 속도 계산
 			for (auto p : alivePlayer) {
