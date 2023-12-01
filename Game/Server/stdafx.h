@@ -47,4 +47,4 @@ extern array<LockQueue<ClientInfo>, 3> ClientInfoQueue;
 
 //#define _DEBUG_LOOBY
 //#define _DEBUG_CLIENT_SERVER
-#define _DEBUG_INGAME
+//#define _DEBUG_INGAME

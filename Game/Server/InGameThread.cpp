@@ -7,7 +7,7 @@ std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
 float elapsedTime = 0.f;
-double totalTime = 0.f;
+float totalTime = 0.f;
 
 Physics ps;
 CollisionManager cm;
@@ -176,7 +176,6 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	//bool timeReset = false;
 	//chrono::system_clock::time_point start;
 	//chrono::duration<double> time;
-	std::chrono::system_clock::time_point prevTime = std::chrono::system_clock::now();
 
 	array<PlayerInfo, NUM_OF_PLAYER> players;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
@@ -191,7 +190,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	cout << "패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
+
 	InitPacket(&playerPackets);
+	std::chrono::system_clock::time_point prevTime = std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point posPrevTime = std::chrono::system_clock::now();
 #ifdef _DEBUG_INGAME
 	cout << "초기 패킷데이터 확인" << endl;
 	PrintPacketData(playerPackets);
@@ -200,7 +202,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		//cout << totalTime << endl;
 		auto now = std::chrono::system_clock::now();
 		elapsedTime = static_cast<std::chrono::duration<double>>(now - prevTime).count();
-		totalTime += elapsedTime;
+		totalTime = static_cast<std::chrono::duration<double>>(now - posPrevTime).count();
 		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players);
 		//CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
@@ -237,6 +239,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			for (auto p : alivePlayer) {
 				ps.CaculateVelocity(&players[p], elapsedTime);
 			}
+
 			// 위치 계산
 			for (auto p : alivePlayer) {
 				ps.CaculatePosition(&players[p]);
@@ -249,12 +252,16 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			PushPacket(alivePlayer, &eventQueues, playerPackets);
 			//	// 위치 정보 계산결과 가져오고 push
 			//	// 위치 push전에 Packet 조정 [0__0__10]
-//#ifdef _DEBUG_INGAME
-//			cout << "위치 패킷데이터 확인" << endl;
-//			PrintPacketData(playerPackets);
-//#endif // _DEBUG_INGAME
-//			PushPacket(alivePlayer, &eventQueues, playerPackets);
 			prevTime = now;
+		}
+		if (totalTime >= 0.0167f) {
+			ModifyPacketPos(alivePlayer, &playerPackets, &players);
+#ifdef _DEBUG_INGAME
+			cout << "위치 패킷데이터 확인" << endl;
+			PrintPacketData(playerPackets);
+#endif // _DEBUG_INGAME
+			PushPacket(alivePlayer, &eventQueues, playerPackets);
+			posPrevTime = now;
 		}
 	}
 }
