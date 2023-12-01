@@ -5,9 +5,10 @@ Physics::Physics() { };
 
 Physics::~Physics() {};
 
-void Physics::CaculateVelocity(PlayerInfo* players)
+void Physics::CaculateVelocity(PlayerInfo* players, double elapsedTime)
 {
-	players->Vel = players->Vel + players->Acc;
+	vec2f tmpVel = players->Vel;
+	players->Vel = players->Acc + players->Vel;
 
 	vec2f friction = players->Vel * -1;
 	float mag = friction.length();
@@ -47,6 +48,8 @@ void Physics::CaculateVelocity(PlayerInfo* players)
 		if (players->Vel.y < -MAX_SPEED / ROOT_TWO)
 			players->Vel.y = -MAX_SPEED / ROOT_TWO;
 	}
+	//cout <<"[¼Óµµ]" << players->Vel.x << ", " << players->Vel.y << endl;
+	//players->Acc = players->Vel - tmpVel;
 }
 
 void Physics::CaculatePosition(PlayerInfo* players)

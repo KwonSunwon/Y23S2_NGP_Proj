@@ -6,6 +6,8 @@ std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dis(0, 15);
 
+double elapsedTime = 0.f;
+
 Physics ps;
 CollisionManager cm;
 
@@ -159,9 +161,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	cout << "InGame Thread Start" << endl;
 #endif // _DEBUG_INGAME
 
-	bool timeReset = false;
-	chrono::system_clock::time_point start;
-	chrono::duration<double> time;
+	//bool timeReset = false;
+	//chrono::system_clock::time_point start;
+	//chrono::duration<double> time;
+	std::chrono::system_clock::time_point prevTime = std::chrono::system_clock::now();
 
 	array<PlayerInfo, NUM_OF_PLAYER> players;
 	array<Packet, NUM_OF_PLAYER> playerPackets;
@@ -170,8 +173,6 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	// 플레이어가 죽으면 erase(player_num);
 	vector<int>alivePlayer(NUM_OF_PLAYER);
 	iota(alivePlayer.begin(), alivePlayer.end(), 0);
-	bool queueEmpty = false;
-	bool collision = false;
 
 	InitializeInGameThread(level, &eventQueues, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
@@ -184,9 +185,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 	PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 	while (true) {
-		if (ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players) == false)
-			queueEmpty = true;
-		CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
+		auto now = std::chrono::system_clock::now();
+		elapsedTime = static_cast<std::chrono::duration<double>>(now - prevTime).count();
+		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players);
+		//CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
 			break;
 		if (alivePlayer.size() == 1) {
@@ -195,56 +197,43 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			break;
 		}
 		// 충돌 체크
-		for (int i = 0; i < NUM_OF_PLAYER; ++i) {
-			if (i == 0 || i == 1)
-			{
-				if (cm.DoCollideAB(&players[i], &players[i + 1]))
-					collision = true;
-				if (i == 0) {
-					if (cm.DoCollideAB(&players[i], &players[i + 2]))
-						collision = true;
-				}
-			}
-			if (cm.DoCollideWithWall(&players[i]))
-				collision = true;
-		}
+		//for (int i = 0; i < NUM_OF_PLAYER; ++i) {
+		//	if (i == 0 || i == 1)
+		//	{
+		//		if (cm.DoCollideAB(&players[i], &players[i + 1]))
+		//			collision = true;
+		//		if (i == 0) {
+		//			if (cm.DoCollideAB(&players[i], &players[i + 2]))
+		//				collision = true;
+		//		}
+		//	}
+		//	if (cm.DoCollideWithWall(&players[i]))
+		//		collision = true;
+		//}
 		// 속도 계산
 		for (auto p : alivePlayer) {
-			ps.CaculateVelocity(&players[p]);
+			ps.CaculateVelocity(&players[p], elapsedTime);
 		}
 		// 위치 계산
 		for (auto p : alivePlayer) {
 			ps.CaculatePosition(&players[p]);
 		}
-		ModifyPacketVel(alivePlayer, &playerPackets, &players);
-		if (queueEmpty && !collision)
-		{
-			queueEmpty = false;
-			continue;
-		}
-		collision = false;
-
+		//ModifyPacketPos(alivePlayer, &playerPackets, &players);
+		if (elapsedTime >= 0.16667f) {
+			ModifyPacketVel(alivePlayer, &playerPackets, &players);
 #ifdef _DEBUG_INGAME
-		cout << "가속도 패킷데이터 확인" << endl;
-		PrintPacketData(playerPackets);
-#endif // _DEBUG_INGAME
-		PushPacket(alivePlayer, &eventQueues, playerPackets);
-		if (timeReset == false) {
-			timeReset = true;
-			start = chrono::system_clock::now();
-		}
-		time = chrono::system_clock::now() - start;
-		//위치 보정
-		if (time.count() >= 0.3) {
-			// 위치 정보 계산결과 가져오고 push
-			// 위치 push전에 Packet 조정 [0__0__10]
-			ModifyPacketPos(alivePlayer, &playerPackets, &players);
-#ifdef _DEBUG_INGAME
-			cout << "위치 패킷데이터 확인" << endl;
+			cout << "속도 패킷데이터 확인" << endl;
 			PrintPacketData(playerPackets);
 #endif // _DEBUG_INGAME
 			PushPacket(alivePlayer, &eventQueues, playerPackets);
-			timeReset == false;
+			//	// 위치 정보 계산결과 가져오고 push
+			//	// 위치 push전에 Packet 조정 [0__0__10]
+//#ifdef _DEBUG_INGAME
+//			cout << "위치 패킷데이터 확인" << endl;
+//			PrintPacketData(playerPackets);
+//#endif // _DEBUG_INGAME
+//			PushPacket(alivePlayer, &eventQueues, playerPackets);
+			prevTime = now;
 		}
 	}
 }

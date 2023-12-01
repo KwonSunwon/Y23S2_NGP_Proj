@@ -22,7 +22,7 @@ public:
 	~Physics();
 
 
-	void CaculateVelocity(PlayerInfo* players);
+	void CaculateVelocity(PlayerInfo* players, double elapsedTime);
 	void CaculatePosition(PlayerInfo* players);
 
 	void AfterColideWithWall(float* Acc, float* Vel, float diff);
