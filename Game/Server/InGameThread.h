@@ -1,14 +1,6 @@
 #pragma once
 #include <random>
-
-struct PlayerPosAcc {
-	float PosX = 0;
-	float PosY = 0;
-	float AccX = 0;
-	float AccY = 0;
-	float VelX = 0;
-	float VelY = 0;
-};
+#include "CollisionManager.h"
 
 // EventQueue담을 구조체 아이디어 1
 struct EventQueues {

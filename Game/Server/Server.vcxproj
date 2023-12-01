@@ -130,10 +130,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientServerThread.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="InGameThread.cpp" />
     <ClCompile Include="LobbyThread.cpp" />
     <ClCompile Include="LockQueue.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -141,11 +143,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientServerThread.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="InGameThread.h" />
     <ClInclude Include="LobbyThread.h" />
     <ClInclude Include="LockQueue.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,9 +1,58 @@
-#include "physics.h"
 #include "stdafx.h"
+#include "physics.h"
 
 Physics::Physics() { };
 
 Physics::~Physics() {};
+
+void Physics::CaculateVelocity(PlayerInfo* players)
+{
+	players->Vel = players->Vel + players->Acc;
+
+	vec2f friction = players->Vel * -1;
+	float mag = friction.length();
+	if (mag > FLT_EPSILON) {
+		friction = friction / mag;
+		friction = friction * COEF;
+
+		vec2f resultVel = players->Vel + friction;
+		if (resultVel.x * players->Vel.x < 0.f)
+			players->Vel.x = 0.f;
+		else
+			players->Vel.x = friction.x;
+		if (resultVel.y * players->Vel.y < 0.f)
+			players->Vel.y = 0.f;
+		else
+			players->Vel.y = friction.y;
+	}
+	if (players->Vel.x > MAX_SPEED)
+		players->Vel.x = MAX_SPEED;
+	if (players->Vel.x < -MAX_SPEED)
+		players->Vel.x = -MAX_SPEED;
+
+	if (players->Vel.y > MAX_SPEED)
+		players->Vel.y = MAX_SPEED;
+	if (players->Vel.y < -MAX_SPEED)
+		players->Vel.y = -MAX_SPEED;
+
+	if (players->Vel.x == players->Vel.y || players->Vel.x * players->Vel.x + players->Vel.y * players->Vel.y > MAX_SPEED * MAX_SPEED)
+	{
+		if (players->Vel.x > MAX_SPEED / ROOT_TWO)
+			players->Vel.x = MAX_SPEED / ROOT_TWO;
+		if (players->Vel.x < -MAX_SPEED / ROOT_TWO)
+			players->Vel.x = -MAX_SPEED / ROOT_TWO;
+
+		if (players->Vel.y > MAX_SPEED / ROOT_TWO)
+			players->Vel.y = MAX_SPEED / ROOT_TWO;
+		if (players->Vel.y < -MAX_SPEED / ROOT_TWO)
+			players->Vel.y = -MAX_SPEED / ROOT_TWO;
+	}
+}
+
+void Physics::CaculatePosition(PlayerInfo* players)
+{
+	players->Pos = players->Pos + players->Vel;
+}
 
 void Physics::AfterColideWithWall(float* Acc, float* Vel, float diff)
 {
@@ -36,7 +85,7 @@ vec2f Physics::AfterColisionVelocityA(vec2f velA, vec2f velB, vec2f unitVec, flo
 	vec2f vel1 = unitVec * vec2f().dot(velA, unitVec);
 	vec2f vel2 = unitVec * vec2f().dot(velB, unitVec);
 	vec2f velSub = vel1 - vel2;
-	vec2f J =  (velSub * -1 * massB) / ((massA + massB) / 2);
+	vec2f J = (velSub * -1 * massB) / ((massA + massB) / 2);
 	vec2f vel1After = vel1 + J;
 	return vel1After;
 }
@@ -52,7 +101,7 @@ vec2f Physics::AfterColisionVelocityB(vec2f velA, vec2f velB, vec2f unitVec, flo
 }
 
 // 작용 반작용
-void Physics::AfterForce(vec2f *AccA, vec2f *AccB, vec2f unitVec, float massA, float massB)
+void Physics::AfterForce(vec2f* AccA, vec2f* AccB, vec2f unitVec, float massA, float massB)
 {
 	vec2f forceA = *AccA * massA;
 	vec2f forceB = *AccB * massB;

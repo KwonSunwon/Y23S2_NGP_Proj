@@ -56,13 +56,16 @@ void UpdatePlayerInfo(PlayerInfo* Player, Object* obs)
 	Player->Mass = obs->GetMass();
 }
 
-void CheckColideWithOtherPlayer(PlayerInfo* Player1, PlayerInfo* Player2, Object* obs1)
+void CheckColideWithOtherPlayer(PlayerInfo* Player1, PlayerInfo* Player2, Object* obs1, Object* obs2)
 {
 	Cm.DoCollideAB(Player1, Player2);
 	if (Cm.DoCollideAB(Player1, Player2))
 	{
 		obs1->SetAccelerationX(Player1->Acc.x);
 		obs1->SetAccelerationY(Player1->Acc.y);
+
+		obs2->SetAccelerationX(Player2->Acc.x);
+		obs2->SetAccelerationY(Player2->Acc.y);
 	}
 
 	//if (Cm.DoCollideWithWall(Player2)) {
@@ -76,6 +79,7 @@ void CheckColideWithWall(PlayerInfo* Player, Object* obs)
 	if (Cm.DoCollideWithWall(Player)) {
 		obs->SetAccelerationX(Player->Acc.x);
 		obs->SetAccelerationY(Player->Acc.y);
+		//obs->SetVelocity(glm::vec2(Player->Vel.x, Player->Vel.y));
 	}
 }
 
@@ -221,12 +225,20 @@ GLvoid TimerFunction(int value)
 	{
 		Objects[i].SetAccelerationByKey();
 		UpdatePlayerInfo(&Players[i], &Objects[i]);
-		CheckColideWithOtherPlayer(&Players[i], &Players[(i + 1)%3], &Objects[i]);
-		CheckColideWithOtherPlayer(&Players[i], &Players[(i + 2)%3], &Objects[i]);
+	}
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+	{
+		if (i == 0 || i == 1)
+		{
+			CheckColideWithOtherPlayer(&Players[i], &Players[(i + 1)], &Objects[i], &Objects[i + 1]);
+			if (i == 0)
+				CheckColideWithOtherPlayer(&Players[i], &Players[(i + 2)], &Objects[i], &Objects[i + 2]);
+		}
 		CheckColideWithWall(&Players[i], &Objects[i]);
 		Objects[i].VelocityUpdate();
-		Objects[i].Update();
 	}
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+		Objects[i].Update();
 
 	//cout << "x=" << Objects[0].GetPos().x << "y=" << Objects[0].GetPos().y << endl;
 	//cout << "velocity=" << sqrt(Objects[0].GetVelocity().x * Objects[0].GetVelocity().x + Objects[0].GetVelocity().y * Objects[0].GetVelocity().y) << endl;
