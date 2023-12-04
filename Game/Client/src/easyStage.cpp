@@ -145,7 +145,11 @@ void EasyStage::update()
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
 					//cout << accX << " " << accY << endl;
-					p->setPos(glm::vec3(accX, accY, 0.7));
+					glm::vec3 temp = p->getPos();
+					if (abs(temp.x - accX) > 0.03 || abs(temp.y - accY) > 0.03) {
+						p->setPos(glm::vec3(accX, accY, 0.7));
+					}
+	
 				}
 			}
 		}
