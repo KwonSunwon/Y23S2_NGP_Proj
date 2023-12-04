@@ -23,94 +23,94 @@ std::uniform_int_distribution<int> disStage1(0, 4);
 
 void NormalStage::init()
 {
-    cout << "normal Stage" << endl;
+	cout << "normal Stage" << endl;
 
-    backGround.initBuffer();
-    backGround.initTexture();
-    gameWorld.add_object(&backGround);  
+	backGround.initBuffer();
+	backGround.initTexture();
+	gameWorld.add_object(&backGround);
 
-    player.initBuffer();
-    player.initTexture();
-    gameWorld.add_object(playerPtr);
+	player.initBuffer();
+	player.initTexture();
+	gameWorld.add_object(playerPtr);
 
-    /*for (int i = 0; i < 100; ++i)
-    {
-        cout << i << endl;
-        Wall *tempwall = new Wall();
-        tempwall->initBuffer();
-        tempwall->initTexture();
-        gameWorld.add_object(tempwall);
-    }*/
-    makePattern(1);
-    for (int i = 0; i < 20; ++i)
-    {
-        Particle* tempP = new Particle(true);
-        tempP->initBuffer();
-        gameWorld.add_object(tempP);
-    }
+	/*for (int i = 0; i < 100; ++i)
+	{
+		cout << i << endl;
+		Wall *tempwall = new Wall();
+		tempwall->initBuffer();
+		tempwall->initTexture();
+		gameWorld.add_object(tempwall);
+	}*/
+	makePattern(1);
+	for (int i = 0; i < 20; ++i)
+	{
+		Particle* tempP = new Particle(true);
+		tempP->initBuffer();
+		gameWorld.add_object(tempP);
+	}
 }
 void NormalStage::update()
 {
-    gameWorld.update_all();
-    light.update(); // ����
-    timer++;
-    patterTime++;
+	gameWorld.update_all();
+	light.update(); // ����
+	timer++;
+	patternTime++;
 
 
-    camera.rolling(1.0f, -1); // angle, direction
- 
+	camera.rolling(1.0f, -1); // angle, direction
 
-    if (patterTime > 250)
-    {
-        patterTime = 0;
-        makePattern(disStage1(genStage1));
-    }
 
-    glutPostRedisplay();
+	if (patternTime > 250)
+	{
+		patternTime = 0;
+		makePattern(disStage1(genStage1));
+	}
+
+	glutPostRedisplay();
 }
 void NormalStage::handleEvent(unsigned char key, bool isDown)
 {
-    if (isDown)
-    {
-        switch (key)
-        {
-        case'c':
-            makePattern(1);
-            //player.setProtectedMode(true);
-            break;
-        case 'a':
-            player.setMoveLeft(true);
-            break;
-        case 'd':
-            player.setMoveRight(true);
-            break;
-        case 'Q':
-        case 'q':
-            exit(0);
-            break;
-        }
-    }
-    else if (!isDown)
-    {
-        switch (key)
-        {
+	if (isDown)
+	{
+		switch (key)
+		{
+		case'c':
+			makePattern(1);
+			//player.setProtectedMode(true);
+			break;
+		case 'a':
+			player.setMoveLeft(true);
+			break;
+		case 'd':
+			player.setMoveRight(true);
+			break;
+		case 'Q':
+		case 'q':
+			exit(0);
+			break;
+		}
+	}
+	else if (!isDown)
+	{
+		switch (key)
+		{
 
-        case 'a':
-            player.setMoveLeft(false);
-            break;
-        case 'd':
-            player.setMoveRight(false);
-            break;
-        }
-    }
+		case 'a':
+			player.setMoveLeft(false);
+			break;
+		case 'd':
+			player.setMoveRight(false);
+			break;
+		}
+	}
 }
 void NormalStage::draw()
 {
-    camera.setCamera(shaderID, 0); // 0 = �������� / 1 = ��������
-    light.setLight(shaderID, camera.getEye());
-    gameWorld.draw_all();
+	camera.setCamera(shaderID, 0); // 0 = �������� / 1 = ��������
+	light.setLight(shaderID, camera.getEye());
+	gameWorld.draw_all();
 }
 void NormalStage::out()
 {
-    patterTime = 0;
+	patternTime = 0;
 }

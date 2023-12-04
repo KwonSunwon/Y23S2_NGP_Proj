@@ -19,6 +19,8 @@ extern Wall wall;
 extern BG backGround;
 
 short seed;
+std::mt19937 gen;
+std::uniform_int_distribution<int> pattern(0, 10);
 
 void EasyStage::init()
 {
@@ -90,9 +92,9 @@ void EasyStage::init()
 void EasyStage::update()
 {
 	gameWorld.update_all();
-	light.update(); // ����
+	//light.update(); // ����
 	timer++;
-	patterTime++;
+	patternTime += g_elapsedTime;
 
 	// Camera rolling test
 
@@ -101,6 +103,12 @@ void EasyStage::update()
 		//short seed = packet->stateMask & 15;
 		//cout << "recv packet in stage" << endl;
 
+	if (patternTime > 4) {
+		makePattern(pattern(gen));
+		patternTime = 0;
+	}
+
+	glutPostRedisplay();
 		bool isWin = packet->stateMask & 1;
 		packet->stateMask = packet->stateMask >> 1;
 
@@ -154,12 +162,6 @@ void EasyStage::update()
 			}
 		}
 
-	}
-
-	if (patterTime > 250)
-	{
-		makePattern(3);
-		patterTime = 0;
 	}
 
 	glutPostRedisplay();
@@ -229,6 +231,6 @@ void EasyStage::draw()
 void EasyStage::out()
 {
 	g_PacketManager->Reset();
-	patterTime = 0;
+	patternTime = 0;
 	cout << "Out Easy Stage" << endl;
 }

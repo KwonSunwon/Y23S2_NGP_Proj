@@ -174,6 +174,39 @@ void Player::getEvent(unsigned char key, bool isDown)
 {
 }
 
+void Player::decideAcc()
+{
+	setAcc(glm::vec3(0, 0, 0));
+	if (isMoveLeft)
+	{
+		if (isMoveUp || isMoveDown)
+			setAccX(-(ACCELERATION / ROOT_TWO));
+		else
+			setAccX(-ACCELERATION);
+	}
+	if (isMoveRight)
+	{
+		if (isMoveUp || isMoveDown)
+			setAccX(ACCELERATION / ROOT_TWO);
+		else
+			setAccX(ACCELERATION);
+	}
+	if (isMoveUp)
+	{
+		if (isMoveLeft || isMoveRight)
+			setAccY(ACCELERATION / ROOT_TWO);
+		else
+			setAccY(ACCELERATION);
+	}
+	if (isMoveDown)
+	{
+		if (isMoveLeft || isMoveRight)
+			setAccY(-(ACCELERATION / ROOT_TWO));
+		else
+			setAccY(-ACCELERATION);
+	}
+}
+
 void Player::setMoveLeft(bool in)
 {
 	if (in != isMoveLeft) {
@@ -256,7 +289,6 @@ void Player::setMoveDown(bool in)
 			g_PacketManager->SendPacket(flag, x, y);*/
 		}
 	}
-	
 }
 
 void Player::setPlayerNum(short num)
@@ -300,24 +332,50 @@ void Player::move()
 
 	//if (isMoveLeft)
 	//{
-	//	setSpeedX(getSpeed().x - 0.002);
+	//	if (isMoveUp || isMoveDown)
+	//		setAccX(-(ACCELERATION / ROOT_TWO));
+	//	else
+	//		setAccX(-ACCELERATION);
 	//}
 	//if (isMoveRight)
 	//{
-	//	setSpeedX(getSpeed().x + 0.002);
+	//	if (isMoveUp || isMoveDown)
+	//		setAccX(ACCELERATION / ROOT_TWO);
+	//	else
+	//		setAccX(ACCELERATION);
 	//}
 	//if (isMoveUp)
 	//{
-	//	setSpeedY(getSpeed().y + 0.002);
+	//	if (isMoveLeft || isMoveRight)
+	//		setAccY(ACCELERATION / ROOT_TWO);
+	//	else
+	//		setAccY(ACCELERATION);
 	//}
 	//if (isMoveDown)
 	//{
-	//	setSpeedY(getSpeed().y - 0.002);
+	//	if (isMoveLeft || isMoveRight)
+	//		setAccY(-(ACCELERATION / ROOT_TWO));
+	//	else
+	//		setAccY(-ACCELERATION);
 	//}
+
+	// ���ú� �� ���� �ް� ����
+	SpeedUpdate();
 
 	pos.x += speed.x;
 	pos.y += speed.y;
 	pos.z += speed.z;
+
+	//// x �� 1.3f ������ 0.15f
+	//if (pos.x < -1.15f)
+	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
+	//if (pos.x > 1.15f)
+	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
+	//// y �� 0.9f ������ 0.15f
+	//if (pos.y < -1.15f)
+	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
+	//if (pos.y > 1.15f)
+	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
 
 	if (revolution.z < 0)
 		revolution.z += 360.0f;

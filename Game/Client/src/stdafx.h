@@ -15,6 +15,12 @@ enum class STATE_MASK {
 	PLAYER_NUM,
 	GAME_START
 };
+#define MAX_SPEED 0.04f
+#define ACCELERATION 0.01f
+#define COEF 0.003f
+#define ROOT_TWO 1.41421f
+
+#define __DEBUG__
 
 #if FREEGLUT_LIB_PRAGMAS
 #	ifdef NDEBUG

@@ -68,6 +68,50 @@ void Object::setSpeedZ(float z)
 	this->speed.z = z;
 }
 
+// ���� �������� ó�� ���� �κ�
+void Object::SpeedUpdate()
+{
+	speed = speed + acc;
+
+	glm::vec3 friction = -speed;
+	float mag = sqrt(friction.x * friction.x + friction.y * friction.y);
+	if (mag > FLT_EPSILON) {
+		friction = friction / mag;
+		friction = friction * COEF;
+
+		glm::vec3 resultVel = speed + friction;
+		if (resultVel.x * speed.x < 0.f)
+			speed.x = 0.f;
+		else
+			speed.x = resultVel.x;
+		if (resultVel.y * speed.y < 0.f)
+			speed.y = 0.f;
+		else
+			speed.y = resultVel.y;
+	}
+	if (speed.x > MAX_SPEED)
+		speed.x = MAX_SPEED;
+	if (speed.x < -MAX_SPEED)
+		speed.x = -MAX_SPEED;
+
+	if (speed.y > MAX_SPEED)
+		speed.y = MAX_SPEED;
+	if (speed.y < -MAX_SPEED)
+		speed.y = -MAX_SPEED;
+	if (speed.x == speed.y || speed.x * speed.x + speed.y * speed.y > MAX_SPEED * MAX_SPEED)
+	{
+		if (speed.x > MAX_SPEED / ROOT_TWO)
+			speed.x = MAX_SPEED / ROOT_TWO;
+		if (speed.x < -MAX_SPEED / ROOT_TWO)
+			speed.x = -MAX_SPEED / ROOT_TWO;
+
+		if (speed.y > MAX_SPEED / ROOT_TWO)
+			speed.y = MAX_SPEED / ROOT_TWO;
+		if (speed.y < -MAX_SPEED / ROOT_TWO)
+			speed.y = -MAX_SPEED / ROOT_TWO;
+	}
+}
+
 void Object::setAcc(glm::vec3 acc) { this->acc = acc; }
 void Object::setAccX(float x)
 {
