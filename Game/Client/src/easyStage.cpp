@@ -19,12 +19,17 @@ extern Wall wall;
 extern BG backGround;
 
 short seed;
-std::mt19937 gen;
+std::mt19937 g_gen;
 std::uniform_int_distribution<int> pattern(0, 10);
 
 void EasyStage::init()
 {
 	cout << "easy Stage" << endl;
+
+	Wall* wall = new Wall(0, 0);
+	wall->initBuffer();
+	wall->initTexture();
+	delete wall;
 
 	light.setAmbientLight(0.7);
 
@@ -103,12 +108,12 @@ void EasyStage::update()
 		//short seed = packet->stateMask & 15;
 		//cout << "recv packet in stage" << endl;
 
-	if (patternTime > 4) {
-		makePattern(pattern(gen));
-		patternTime = 0;
-	}
+		if (patternTime > 4) {
+			makePattern(pattern(g_gen));
+			patternTime = 0;
+		}
 
-	glutPostRedisplay();
+		glutPostRedisplay();
 		bool isWin = packet->stateMask & 1;
 		packet->stateMask = packet->stateMask >> 1;
 
@@ -157,7 +162,7 @@ void EasyStage::update()
 					if (abs(temp.x - accX) > 0.03 || abs(temp.y - accY) > 0.03) {
 						p->setPos(glm::vec3(accX, accY, 0.7));
 					}
-	
+
 				}
 			}
 		}
