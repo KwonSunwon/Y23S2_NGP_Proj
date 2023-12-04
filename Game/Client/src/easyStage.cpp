@@ -121,36 +121,36 @@ void EasyStage::update()
 		float accX = packet->x;
 		float accY = packet->y;
 
-        if (life == 0) {
-            for (auto& p : otherPlayers) {
-                if (p->getPlayerNum() == playerNum) {
-                    //cout << "collllllllll" << endl;
-                    p->collision();
-                    continue;
-                }
-            }
-        }
+		if (life == 0) {
+			for (auto& p : otherPlayers) {
+				if (p->getPlayerNum() == playerNum) {
+					//cout << "collllllllll" << endl;
+					p->collision();
+					continue;
+				}
+			}
+		}
 
-        if (isAcc) {
-            for (auto& p : otherPlayers) {
-                if (p->getPlayerNum() == playerNum) {
-                    //cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
-                    p->setSpeed(glm::vec3(accX, accY, 0));
-                   
-                }
-            }
-            
-        }
-        else {
-            for (auto& p : otherPlayers) {
-                if (p->getPlayerNum() == playerNum) {
-                    //cout << accX << " " << accY << endl;
-                    p->setPos(glm::vec3(accX, accY, 0.7));
-                }
-            }
-        }
-        
-    }
+		if (isAcc) {
+			for (auto& p : otherPlayers) {
+				if (p->getPlayerNum() == playerNum) {
+					//cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
+					p->setSpeed(glm::vec3(accX, accY, 0));
+
+				}
+			}
+
+		}
+		else {
+			for (auto& p : otherPlayers) {
+				if (p->getPlayerNum() == playerNum) {
+					//cout << accX << " " << accY << endl;
+					p->setPos(glm::vec3(accX, accY, 0.7));
+				}
+			}
+		}
+
+	}
 
 	if (patterTime > 250)
 	{

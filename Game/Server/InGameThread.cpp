@@ -47,7 +47,7 @@ static void InitPacket(array<Packet, NUM_OF_PLAYER>* playerPackets)
 	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 	{
 		(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::GAME_START);
-		//(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
 		(*playerPackets)[i].stateMask |= (3 << (int)STATE_MASK::LIFE);
 		(*playerPackets)[i].stateMask |= (1 << (int)STATE_MASK::PLAYING);
 		(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::RESULT);
@@ -68,7 +68,7 @@ static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER
 }
 
 // 큐에서 데이터 Pop
-static bool ToServerQueueCheck(vector<int> *alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
+static bool ToServerQueueCheck(vector<int>* alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
 	int dataNum = (*alivePlayer).size();
 	Packet tmp;
@@ -257,28 +257,28 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			alivePlayer.clear();
 			break;
 		}
-		//if (totalTime > 5.0f) {
-		//	cout << "목숨 패킷데이터 확인" << endl;
-		//	ModifyPacketLife(alivePlayer, &playerPackets, &players);
+		/*if (totalTime > 5.0f) {
+			cout << "목숨 패킷데이터 확인" << endl;
+			ModifyPacketLife(alivePlayer, &playerPackets, &players);
+			PrintPacketData(playerPackets);
+			PushPacket(alivePlayer, &eventQueues, playerPackets);
+
+			totalTime = -1000;
+		}*/
+
+		//if (elapsedTime >= 0.056667f) {
+		//	// 속도 계산
+
+		//	ModifyPacketVel(alivePlayer, &playerPackets, &players);
+		//#ifdef _DEBUG_INGAME
+		//	cout << "속도 패킷데이터 확인" << endl;
 		//	PrintPacketData(playerPackets);
+		//#endif // _DEBUG_INGAME
 		//	PushPacket(alivePlayer, &eventQueues, playerPackets);
-
-		//	totalTime = -1000;
+		//	//	// 위치 정보 계산결과 가져오고 push
+		//	//	// 위치 push전에 Packet 조정 [0__0__10]
+		//	prevTime = now;
 		//}
-
-//		if (elapsedTime >= 0.016667f) {
-//			// 속도 계산
-//
-//			ModifyPacketVel(alivePlayer, &playerPackets, &players);
-//#ifdef _DEBUG_INGAME
-//			cout << "속도 패킷데이터 확인" << endl;
-//			PrintPacketData(playerPackets);
-//#endif // _DEBUG_INGAME
-//			PushPacket(alivePlayer, &eventQueues, playerPackets);
-//			//	// 위치 정보 계산결과 가져오고 push
-//			//	// 위치 push전에 Packet 조정 [0__0__10]
-//			prevTime = now;
-//		}
 		if (totalTime >= 0.0167f) {
 			ResetAcc(alivePlayer, &players);
 			// 충돌 체크
@@ -300,10 +300,10 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 				ps.CaculatePosition(&players[p]);
 			}
 			ModifyPacketPos(alivePlayer, &playerPackets, &players);
-#ifdef _DEBUG_INGAME
+		#ifdef _DEBUG_INGAME
 			cout << "위치 패킷데이터 확인" << endl;
 			PrintPacketData(playerPackets);
-#endif // _DEBUG_INGAME
+		#endif // _DEBUG_INGAME
 			PushPacket(alivePlayer, &eventQueues, playerPackets);
 			posPrevTime = now;
 		}

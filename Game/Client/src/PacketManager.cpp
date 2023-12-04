@@ -98,6 +98,9 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+
+	bool optval = true;
+	setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 }
 
 void PacketManager::Reset()
@@ -121,7 +124,7 @@ void PacketManager::SendPacket(BYTE flag, float x, float y)
 	packet.stateMask = flag;
 	packet.x = x;
 	packet.y = y;
-	cout << "sendPacket x:" << x << " y:" << y << " bit:";
+	cout << "\nsendPacket x:" << x << " y:" << y << " bit:";
 	cout << bitset<8>(packet.stateMask);
 	int retval = send(m_sock, (char*)&packet, sizeof(Packet), 0);
 	if (retval == SOCKET_ERROR) {
@@ -132,8 +135,13 @@ void PacketManager::SendPacket(BYTE flag, float x, float y)
 
 bool PacketManager::RecvPacket(Packet* packet)
 {
-
+	//Packet _packet;
 	int retval = recv(m_sock, (char*)packet, sizeof(Packet), 0);
+	//_packet.stateMask = packet->stateMask;
+	//_packet.x = packet->x;
+	//_packet.y = packet->y;
+	//cout << "\nsendPacket x:" << _packet.x << " y:" << _packet.y << " bit:";
+	//cout << bitset<8>(_packet.stateMask);
 	//cout << "retval:"<< retval << endl;
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("recv()");

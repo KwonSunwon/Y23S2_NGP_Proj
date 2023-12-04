@@ -59,6 +59,9 @@ void Initialize(SOCKET client)
 
 	DWORD optval = 10;
 	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
+
+	optval = true;
+	setsockopt(client, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 }
 
 void MainLoop(SOCKET client)
@@ -89,7 +92,7 @@ void MainLoop(SOCKET client)
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
 					m_toServerEventQueue->Push(packet);
-			}
+				}
 
 
 				if (retval < 0) {
@@ -97,7 +100,7 @@ void MainLoop(SOCKET client)
 					cout << "TIMEOUT" << endl;
 				#endif
 					break;
-				}
+	}
 				if (retval == 0) {
 					cout << "종료" << endl;
 					packet.stateMask = 0;
@@ -106,7 +109,7 @@ void MainLoop(SOCKET client)
 					m_toServerEventQueue->Push(packet);
 					return;
 				}
-		}
+}
 	}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
 
