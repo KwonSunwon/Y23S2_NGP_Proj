@@ -146,7 +146,7 @@ void EasyStage::update()
 				if (p->getPlayerNum() == playerNum) {
 					//cout << accX << " " << accY << endl;
 					glm::vec3 temp = p->getPos();
-					if (abs(temp.x - accX) > 0.03 || abs(temp.y - accY) > 0.03) {
+					if ((temp.x - accX) * (temp.x - accX) + (temp.y - accY) * (temp.y - accY) > 0.03 * 0.03){
 						float newX = temp.x + (accX - temp.x) * 0.5;
 						float newY = temp.y + (accY - temp.y) * 0.5;
 						p->setPos(glm::vec3(newX, newY, 0.7));
