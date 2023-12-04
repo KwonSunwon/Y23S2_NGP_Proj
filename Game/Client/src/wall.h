@@ -19,6 +19,8 @@ private:
 	static GLuint _nbo;
 	static GLuint _tbo;
 
+	bool m_isAlive = false;
+
 protected:
 public:
 	Wall(float, float);
@@ -32,6 +34,8 @@ public:
 	void update() override;
 	void move();
 	void collision();
+
+	void setAlive(bool isAlive) { m_isAlive = isAlive; };
 };
 
 #endif

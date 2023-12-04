@@ -4,9 +4,14 @@
 #include "stdafx.h"
 using namespace std;
 
+class Object;
+
 typedef class Stage
 {
 protected:
+	vector<Object*> walls;
+	unsigned short wallIndex = 0;
+
 	int timer = 0;
 	float patternTime = 0;
 

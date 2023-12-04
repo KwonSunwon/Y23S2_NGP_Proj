@@ -277,9 +277,9 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 					if (i == 0) {
 						cm.DoCollideAB(&players[i], &players[i + 2]);
 					}
-		}
+				}
 				cm.DoCollideWithWall(&players[i]);
-	}
+			}
 			for (auto p : alivePlayer) {
 				ps.CaculateVelocity(&players[p], elapsedTime);
 			}
@@ -297,7 +297,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			//	// 위치 push전에 Packet 조정 [0__0__10]
 			prevTime = now;
 		}
-		if (totalTime >= 0.0167f) {
+		if (totalTime >= 3.f) {
 			//ResetAcc(alivePlayer, &players);
 			//// 충돌 체크
 			//for (int i = 0; i < NUM_OF_PLAYER; ++i) {

@@ -5,97 +5,117 @@
 #include "item.h"
 #include "bg.h"
 
-Wall* tempwall;
-Item* tempitem;
 extern GameWorld gameWorld;
 
-//std::random_device rd4;
-//std::mt19937 gen4;
-//std::uniform_int_distribution<int> dis4(0, 360);
-float startZ = 18.0f;
+float startZ = -18.0f;
 void Stage::makePattern(int patternNum)
 {
-	//gen4 = std::mt19937(m_seed);
-	//std::uniform_int_distribution<int> pattern(0, 10);
-	//int randomPattern = pattern(gen4);
+	float patternPosX;
+	float patternPosY;
 
-#ifdef __DEBUG__
-	//randomPattern = 9;
-#endif
-
-	tempwall = new Wall(0);
-	// tempwall->initTexture();
-	tempitem = new Item(0, 0);
-	tempitem->initTexture();
-
+	const unsigned short indexSize = 120;
 #ifndef LEGACY_PATTERN
 	switch (patternNum)
 	{
 	case 0:
 		// pattern 0: cross +
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(i);
-			tempwall->setPosY(0.f);
-			gameWorld.add_object(tempwall);
+		patternPosX = -0.8f;
+		for (int i = 0; i < 10; i++) {
+			//tempwall = new Wall(startZ);
+			//tempwall->setPosX(i);
+			//tempwall->setPosY(0.f);
+			//gameWorld.add_object(tempwall);
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(patternPosX);
+			patternPosX += 0.2f;
+			walls[wallIndex]->setPosY(0.f);
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
+
 		}
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(0.f);
-			tempwall->setPosY(i);
-			gameWorld.add_object(tempwall);
+		patternPosY = -0.8f;
+		for (int i = 0; i < 10; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(0.f);
+			walls[wallIndex]->setPosY(patternPosY);
+			patternPosY += 0.2f;
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
 		break;
 	case 1:
 		// pattern 1: cross x
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(i);
-			tempwall->setPosY(i);
-			gameWorld.add_object(tempwall);
+		patternPosX = -0.8f;
+		patternPosY = -0.8f;
+		for (int i = 0; i < 10; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(patternPosX);
+			walls[wallIndex]->setPosY(patternPosY);
+			patternPosX += 0.2f;
+			patternPosY += 0.2f;
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(i);
-			tempwall->setPosY(-i);
-			gameWorld.add_object(tempwall);
+		patternPosX = -0.8f;
+		patternPosY = -0.8f;
+		for (int i = 0; i < 10; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(patternPosX);
+			walls[wallIndex]->setPosY(-patternPosY);
+			patternPosX += 0.2f;
+			patternPosY += 0.2f;
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
 		break;
 	case 2:
 		// pattern 2: rectangle ¤±
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(i);
-			tempwall->setPosY(0.8);
-			gameWorld.add_object(tempwall);
+		patternPosX = -0.8f;
+		for (int i = 0; i < 5; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(patternPosX);
+			patternPosX += 0.4f;
+			walls[wallIndex]->setPosY(0.8);
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(i);
-			tempwall->setPosY(-0.8);
-			gameWorld.add_object(tempwall);
+		patternPosX = -0.8f;
+		for (int i = 0; i < 5; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(patternPosX);
+			patternPosX += 0.4f;
+			walls[wallIndex]->setPosY(-0.8);
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(0.8);
-			tempwall->setPosY(i);
-			gameWorld.add_object(tempwall);
+		patternPosY = -0.8f;
+		for (int i = 0; i < 5; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(0.8);
+			walls[wallIndex]->setPosY(patternPosY);
+			patternPosY += 0.4f;
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			tempwall = new Wall(startZ);
-			tempwall->setPosX(-0.8);
-			tempwall->setPosY(i);
-			gameWorld.add_object(tempwall);
+		patternPosY = -0.8f;
+		for (int i = 0; i < 5; i++) {
+			wallIndex = ++wallIndex % indexSize;
+			walls[wallIndex]->setPosZ(startZ);
+			walls[wallIndex]->setPosX(-0.8);
+			walls[wallIndex]->setPosY(patternPosY);
+			patternPosY += 0.4f;
+			static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 		}
 		break;
 	case 3:
 		// pattern 3: window half(upside)
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			for (float j = 0.2; j < 0.8; j += 0.2) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
 		break;
@@ -103,10 +123,11 @@ void Stage::makePattern(int patternNum)
 		// pattern 4: window half(downside)
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			for (float j = -0.2; j > -0.8; j -= 0.2) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
 		break;
@@ -114,10 +135,11 @@ void Stage::makePattern(int patternNum)
 		// pattern 5: window half(leftside)
 		for (float i = -0.8; i > -0.2; i -= 0.2) {
 			for (float j = -0.8; j < 0.8; j += 0.2) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
 		break;
@@ -125,10 +147,11 @@ void Stage::makePattern(int patternNum)
 		// pattern 6: window half(rightside)
 		for (float i = 0.8; i < 0.2; i += 0.2) {
 			for (float j = -0.8; j < 0.8; j += 0.2) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
 		break;
@@ -136,10 +159,11 @@ void Stage::makePattern(int patternNum)
 		// pattern 7: sprite
 		for (float i = -0.8; i < 0.8; i += 0.2) {
 			for (float j = -0.8; j < 0.8; j += 0.6) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
 		break;
@@ -147,29 +171,18 @@ void Stage::makePattern(int patternNum)
 		// pattern 8: sprite 2
 		for (float i = -0.8; i < 0.8; i += 0.6) {
 			for (float j = -0.8; j < 0.8; j += 0.2) {
-				tempwall = new Wall(startZ);
-				tempwall->setPosX(i);
-				tempwall->setPosY(j);
-				gameWorld.add_object(tempwall);
+				wallIndex = ++wallIndex % indexSize;
+				walls[wallIndex]->setPosZ(startZ);
+				walls[wallIndex]->setPosX(i);
+				walls[wallIndex]->setPosY(j);
+				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
 		}
-		break;
-	case 9:
-		for (int z = 0; z < 6; z++)
-			for (float i = -0.8; i < 0.8; i += 0.2) {
-				for (float j = -0.8; j < 0.8; j += 0.6) {
-					tempwall = new Wall(startZ + z);
-					tempwall->setPosX(i);
-					tempwall->setPosY(j);
-					gameWorld.add_object(tempwall);
-				}
-			}
-		break;
-	case 10:
 		break;
 	default:
 		break;
 	}
+	cout << "make pattern case:" << patternNum << endl;
 #endif // !LEGACY_PATTERN
 
 #ifdef LEGACY_PATTERN

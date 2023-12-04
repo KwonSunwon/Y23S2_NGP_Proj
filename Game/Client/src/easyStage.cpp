@@ -20,16 +20,27 @@ extern BG backGround;
 
 short seed;
 std::mt19937 g_gen;
-std::uniform_int_distribution<int> pattern(0, 10);
+std::uniform_int_distribution<int> pattern(0, 2);
 
 void EasyStage::init()
 {
 	cout << "easy Stage" << endl;
 
-	Wall* wall = new Wall(0, 0);
-	wall->initBuffer();
-	wall->initTexture();
-	delete wall;
+	const unsigned short indexSize = 120;
+	walls.reserve(indexSize);
+
+	Wall* temp = new Wall(100);
+	temp->initBuffer();
+	temp->initTexture();
+	gameWorld.add_object(temp);
+	walls.emplace_back(temp);
+
+	for (int i = 0; i < indexSize - 1; i++) {
+		temp = new Wall(100);
+		gameWorld.add_object(temp);
+		walls.emplace_back(temp);
+	}
+	patternTime = 1000;
 
 	light.setAmbientLight(0.7);
 
@@ -83,10 +94,6 @@ void EasyStage::init()
 	}
 	g_PacketManager->SetSocketOpt();
 
-	// 이게 여깄으면 당연히 안되지...
-	SetEvent(g_connectionEvent);
-
-	makePattern(3);
 	for (int i = 0; i < 20; ++i)
 	{
 		Particle* tempP = new Particle(true);
@@ -108,7 +115,7 @@ void EasyStage::update()
 		//short seed = packet->stateMask & 15;
 		//cout << "recv packet in stage" << endl;
 
-		if (patternTime > 4) {
+		if (patternTime > 5) {
 			makePattern(pattern(g_gen));
 			patternTime = 0;
 		}

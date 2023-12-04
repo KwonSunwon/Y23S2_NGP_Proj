@@ -49,7 +49,7 @@ Wall::Wall(float posZ, float revolutionZ)
 	//{
 	//	revolutionZ -= 360.0f;
 	//}
-	setPosZ(-posZ);
+	setPosZ(posZ);
 	//setRevolutionZ(revolutionZ);
 	setRotate(glm::vec3(dis(gen), dis(gen), dis(gen)));
 	// setPosZ(-(float)dis(gen));
@@ -76,7 +76,7 @@ Wall::Wall(float posZ)
 	//{
 	//	revolutionZ -= 360.0f;
 	//}
-	setPosZ(-posZ);
+	setPosZ(posZ);
 	//setRevolutionZ(revolutionZ);
 	setRotate(glm::vec3(dis(gen), dis(gen), dis(gen)));
 	// setPosZ(-(float)dis(gen));
@@ -152,6 +152,9 @@ void Wall::initBuffer()
 
 void Wall::render(GLuint shaderProgramID)
 {
+	if (!m_isAlive)
+		return;
+
 	glUseProgram(shaderProgramID);
 
 	model = glm::mat4(1.0);
@@ -188,21 +191,21 @@ void Wall::colorInit()
 
 void Wall::update()
 {
-    //collision();
-    move();
+	//collision();
+	if (m_isAlive)
+		move();
 }
 
 void Wall::move()
 {
-
 	rotate.x += 0.1;
 	rotate.y += 0.1;
 	rotate.z += 0.1;
-	setPosZ(pos.z + 0.03f);
-	if (pos.z > 2.5)
-	{
-		gameWorld.del_object(id);
-		delete this;
+	setPosZ(pos.z + 1.5f * g_elapsedTime);
+	if (pos.z > 2.5) {
+		//gameWorld.del_object(id);
+		//delete this;
+		m_isAlive = false;
 	}
 }
 
