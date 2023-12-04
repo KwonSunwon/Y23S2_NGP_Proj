@@ -366,6 +366,9 @@ void Player::move()
 	pos.y += speed.y;
 	pos.z += speed.z;
 
+	rotate.x += speed.y*100.f;
+	rotate.y += speed.x*100.f;
+
 	//// x �� 1.3f ������ 0.15f
 	//if (pos.x < -1.15f)
 	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
@@ -384,6 +387,15 @@ void Player::move()
 }
 void Player::collision()
 {
+	pos.x = 123456789.f;
+	pos.y = 123456789.f;
+
+	float x = -123456789;
+	float y = -123456789;
+	BYTE flag = 0b00000010;
+	flag |= (playerNum << 5);
+	g_PacketManager->SendPacket(flag, x, y);
+
 	if (dieTimer != 0)
 		return;
 	for (int i = 0; i < 500; ++i)
