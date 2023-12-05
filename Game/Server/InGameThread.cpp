@@ -118,8 +118,8 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 
-			(*players)[i].Pos.x = END_OF_X + 1.f;
-			(*players)[i].Pos.y = END_OF_Y + 1.f;
+			(*players)[i].Pos.x = 100.f;
+			(*players)[i].Pos.y = 100.f;
 			(*playerPackets)[i].x = (*players)[i].Pos.x;
 			(*playerPackets)[i].y = (*players)[i].Pos.y;
 			(*players)[i].Acc.x = 0;
@@ -148,8 +148,8 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 
-			(*players)[i].Pos.x = END_OF_X + 1.f;
-			(*players)[i].Pos.y = END_OF_Y + 1.f;
+			(*players)[i].Pos.x = 100.f;
+			(*players)[i].Pos.y = 100.f;
 			(*playerPackets)[i].x = (*players)[i].Pos.x;
 			(*playerPackets)[i].y = (*players)[i].Pos.y;
 			(*players)[i].Acc.x = 0;
