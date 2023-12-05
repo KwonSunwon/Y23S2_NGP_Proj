@@ -74,7 +74,7 @@ void EasyStage::init()
 		float accX = packet->x;
 		float accY = packet->y;
 
-		cout << seed << " " << isPos << " " << playerNum << " " << isInit <<" " << accX<<" "<<accY<< endl;
+		cout << seed << " " << isPos << " " << playerNum << " " << isInit << " " << accX << " " << accY << endl;
 
 		if (i == 0) {
 			player.setPlayerNum(playerNum);
@@ -100,8 +100,6 @@ void EasyStage::init()
 
 	}
 	g_PacketManager->SetSocketOpt();
-
-
 }
 void EasyStage::update()
 {
@@ -136,6 +134,15 @@ void EasyStage::update()
 
 		float accX = packet->x;
 		float accY = packet->y;
+
+		if (isWin) {
+			cout << "win" << endl;
+			gameWorld.del_objects();
+			backGround.type = BG_TYPE::WIN;
+			gameWorld.add_object(&backGround);
+			light.setAmbientLight(1.0);
+			camera.setFovy(90);
+		}
 
 		if (life == 0) {
 			for (auto& p : otherPlayers) {
@@ -174,6 +181,15 @@ void EasyStage::update()
 
 				}
 			}
+		}
+
+		if (!player.getIsAlive()) {
+			cout << "loose" << endl;
+			gameWorld.del_objects();
+			backGround.type = BG_TYPE::LOOSE;
+			gameWorld.add_object(&backGround);
+			light.setAmbientLight(1.0);
+			camera.setFovy(90);
 		}
 
 	}

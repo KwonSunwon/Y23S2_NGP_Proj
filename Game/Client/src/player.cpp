@@ -389,41 +389,6 @@ void Player::move()
 	//	revolution.z -= 360.0f;
 }
 
-INT_PTR CALLBACK DlgProc2(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	RECT desktopRect;
-	RECT dialogRect;
-	int dialogWidth;
-	int dialogHeight;
-	int centerX;
-	int centerY;
-
-	switch (uMsg) {
-	case WM_INITDIALOG:
-		SetWindowText(hDlg, L"VOYAGE IN SPACE");
-		desktopRect;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktopRect, 0);
-		dialogRect;
-		GetWindowRect(hDlg, &dialogRect);
-		dialogWidth = dialogRect.right - dialogRect.left;
-		dialogHeight = dialogRect.bottom - dialogRect.top;
-		centerX = (desktopRect.left + desktopRect.right - dialogWidth) / 2;
-		centerY = (desktopRect.top + desktopRect.bottom - dialogHeight) / 2;
-		SetWindowPos(hDlg, NULL, centerX, centerY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		return TRUE;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDOK:
-			EndDialog(hDlg, 0);
-			exit(0);
-			return TRUE;
-		}
-		break;
-	default:
-		break;
-	}
-}
-
 void Player::collision()
 {
 	float x = numeric_limits<float>::infinity();
@@ -439,12 +404,7 @@ void Player::collision()
 
 	soundManager.soundPlay(PLAYER_DESTROY);
 
-	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG2), NULL, DlgProc2);
-	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0)) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+	isAlive = false;
 }
 void Player::die()
 {
