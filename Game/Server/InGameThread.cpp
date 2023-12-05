@@ -68,47 +68,20 @@ static void PushPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER
 }
 
 // 큐에서 데이터 Pop
-static bool ToServerQueueCheck(vector<int>* alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
+static bool ToServerQueueCheck(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players)
 {
-	int dataNum = (*alivePlayer).size();
+	int dataNum = alivePlayer.size();
 	Packet tmp;
-	for (auto player : *alivePlayer)
+	for (auto player : alivePlayer)
 	{
-		tmp.x = 0;
-		tmp.y = 0;
 		if ((*eventQueues)[player].toServerEventQueue->TryPop(tmp) == true)
 		{
-			if (tmp.x == numeric_limits<float>::infinity() &&
-				tmp.y == numeric_limits<float>::infinity())
-			{
-				int i = player;
-				(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
-				(*playerPackets)[player].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
-				(*playerPackets)[player].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
-
-				(*players)[player].Pos.x = END_OF_X + 1.f;
-				(*players)[player].Pos.y = END_OF_Y + 1.f;
-				(*playerPackets)[player].x = (*players)[player].Pos.x;
-				(*playerPackets)[player].y = (*players)[player].Pos.y;
-				(*players)[player].Acc.x = 0;
-				(*players)[player].Acc.y = 0;
-				(*players)[player].Vel.x = 0;
-				(*players)[player].Vel.y = 0;
-				alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), player), alivePlayer->end());
-				cout << "Player" << player + 1 << " exit!" << alivePlayer->size() << endl;
-				for (auto p : *alivePlayer)
-					cout << p << endl;
-				PushPacket(*alivePlayer, eventQueues, *playerPackets);
-				(*playerPackets)[i].stateMask |= (3 << (int)STATE_MASK::LIFE);
-			}
-			else {
-				(*playerPackets)[player].x = tmp.x;
-				(*playerPackets)[player].y = tmp.y;
-				//(*players)[player].Acc.x = tmp.x;
-				//(*players)[player].Acc.y = tmp.y;
-				(*players)[player].ConstAcc.x = tmp.x;
-				(*players)[player].ConstAcc.y = tmp.y;
-			}
+			(*playerPackets)[player].x = tmp.x;
+			(*playerPackets)[player].y = tmp.y;
+			//(*players)[player].Acc.x = tmp.x;
+			//(*players)[player].Acc.y = tmp.y;
+			(*players)[player].ConstAcc.x = tmp.x;
+			(*players)[player].ConstAcc.y = tmp.y;
 		}
 		else
 		{
@@ -129,6 +102,36 @@ static void ResetAcc(vector<int> alivePlayer, array<PlayerInfo, NUM_OF_PLAYER>* 
 		if ((*players)[player].Acc.x != 0 && (*players)[player].Acc.y != 0) {
 			(*players)[player].Acc.x = (*players)[player].Acc.x / ROOT_TWO;
 			(*players)[player].Acc.y = (*players)[player].Acc.y / ROOT_TWO;
+		}
+	}
+}
+
+// 게임 강제 종료 체크
+static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_PLAYER>* playerPackets, array<PlayerInfo, NUM_OF_PLAYER>* players, array<EventQueues, NUM_OF_PLAYER>* eventQueues)
+{
+	for (int i = 0; i < NUM_OF_PLAYER; ++i)
+	{
+		if ((*playerPackets)[i].x == numeric_limits<float>::infinity() &&
+			(*playerPackets)[i].y == numeric_limits<float>::infinity())
+		{
+			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
+			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
+			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
+
+			(*players)[i].Pos.x = END_OF_X + 1.f;
+			(*players)[i].Pos.y = END_OF_Y + 1.f;
+			(*playerPackets)[i].x = (*players)[i].Pos.x;
+			(*playerPackets)[i].y = (*players)[i].Pos.y;
+			(*players)[i].Acc.x = 0;
+			(*players)[i].Acc.y = 0;
+			(*players)[i].Vel.x = 0;
+			(*players)[i].Vel.y = 0;
+			alivePlayer->erase(std::remove(alivePlayer->begin(), alivePlayer->end(), i), alivePlayer->end());
+			cout << "Player" << i + 1 << " exit!" << alivePlayer->size() << endl;
+			for (auto p : *alivePlayer)
+				cout << p << endl;
+			PushPacket(*alivePlayer, eventQueues, *playerPackets);
+			(*playerPackets)[i].stateMask |= (3 << (int)STATE_MASK::LIFE);
 		}
 	}
 }
@@ -250,7 +253,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 		auto now = std::chrono::system_clock::now();
 		elapsedTime = static_cast<std::chrono::duration<double>>(now - prevTime).count();
 		totalTime = static_cast<std::chrono::duration<double>>(now - posPrevTime).count();
-		ToServerQueueCheck(&alivePlayer, &eventQueues, &playerPackets, &players);
+		ToServerQueueCheck(alivePlayer, &eventQueues, &playerPackets, &players);
 		CheckPlayerExitGame(&alivePlayer, &playerPackets, &players);
 		if (alivePlayer.size() == 0)
 			break;
