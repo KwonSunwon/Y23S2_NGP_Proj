@@ -220,20 +220,33 @@ float calcDis(glm::vec3 w, glm::vec3 p) {
 void Wall::collision()
 {
 	if (m_isAlive) {
-		for (auto p : easyStage->otherPlayers) {
-			glm::vec3 posP = p->getPos();
-			float dis = calcDis(pos, posP);
-			if (dis < 0.2) {
-				p->collision();
-				m_isAlive = false;
-				for (int i = 0; i < 500; ++i)
-				{
-					Particle* tempP = new Particle(false);
-					tempP->initBuffer();
-					gameWorld.add_object(tempP);
-				}
+		//for (auto p : easyStage->otherPlayers) {
+		//	glm::vec3 posP = p->getPos();
+		//	float dis = calcDis(pos, posP);
+		//	if (dis < 0.2) {
+		//		p->collision();
+		//		m_isAlive = false;
+		//		for (int i = 0; i < 500; ++i)
+		//		{
+		//			Particle* tempP = new Particle(false);
+		//			tempP->initBuffer();
+		//			gameWorld.add_object(tempP);
+		//		}
 
+		//	}
+		//}
+		glm::vec3 posP = player.getPos();
+		float dis = calcDis(pos, posP);
+		if (dis < 0.2) {
+			player.collision();
+			m_isAlive = false;
+			for (int i = 0; i < 500; ++i)
+			{
+				Particle* tempP = new Particle(false);
+				tempP->initBuffer();
+				gameWorld.add_object(tempP);
 			}
+
 		}
 	}
 	//if (1)
