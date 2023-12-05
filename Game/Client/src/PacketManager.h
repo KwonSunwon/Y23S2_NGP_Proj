@@ -37,6 +37,8 @@ public:
 
 	void WaitForPlayers();
 
+	void SendClosePacket();
+
 private:
 
 	SOCKET m_sock;

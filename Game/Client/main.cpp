@@ -181,7 +181,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetEvent(g_connectionEvent);
 			break;
 		case IDCANCEL:
-			g_PacketManager->~PacketManager();
+			g_PacketManager->SendClosePacket();
 			EndDialog(hDlg, IDCANCEL);
 			exit(0);
 			break;

@@ -172,3 +172,12 @@ void PacketManager::WaitForPlayers()
 	SetEvent(g_connectionEvent);
 }
 
+void PacketManager::SendClosePacket()
+{
+	Packet packet;
+	packet.stateMask = 0;
+	packet.x = 777;
+	packet.y = 777;
+	send(m_sock, (char*)&packet, sizeof(Packet), 0);
+}
+

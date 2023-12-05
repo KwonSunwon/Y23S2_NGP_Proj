@@ -3,6 +3,8 @@
 thread_local shared_ptr<LockQueue<Packet>> m_toServerEventQueue = make_shared<LockQueue<Packet>>();
 thread_local shared_ptr<LockQueue<Packet>> m_toClientEventQueue = make_shared<LockQueue<Packet>>();;
 
+thread_local ClientInfo* clientInfo;
+
 void ClientServerThread(SOCKET client)
 {
 	Initialize(client);
@@ -49,11 +51,11 @@ void Initialize(SOCKET client)
 
 	//최초 1회 TLS로 이벤트큐를 2개 설정후
 	//ClientInfoQueue에 넣어준다.
-	ClientInfo clientInfo;
-	clientInfo.level = level;
-	clientInfo.sock = client;
-	clientInfo.toClientEventQueue = m_toClientEventQueue;
-	clientInfo.toServerEventQueue = m_toServerEventQueue;
+	clientInfo = new ClientInfo();
+	clientInfo->level = level;
+	clientInfo->sock = client;
+	clientInfo->toClientEventQueue = m_toClientEventQueue;
+	clientInfo->toServerEventQueue = m_toServerEventQueue;
 
 	ClientInfoQueue[(int)level].Push(clientInfo);
 
@@ -89,7 +91,7 @@ void MainLoop(SOCKET client)
 				cout << "recv Loop" << endl;
 			#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
-				cout << retval << '\n';
+				//cout << retval << '\n';
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
 					m_toServerEventQueue->Push(packet);
@@ -101,21 +103,22 @@ void MainLoop(SOCKET client)
 					cout << "TIMEOUT" << endl;
 				#endif
 					break;
-			}
-				if (retval == 0) {
+				}
+				if (retval == 0 || packet.x == 777) {
 					cout << "종료" << endl;
 					packet.stateMask = 0;
 					packet.x = numeric_limits<float>::infinity();
 					packet.y = numeric_limits<float>::infinity();
 					m_toServerEventQueue->Push(packet);
+					clientInfo->sock = 0;
 					return;
 				}
+			}
 		}
-	}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
 
 		//보내기, 받기가 전부 완료되면 쓰레드 양보
 		this_thread::yield();
-}
+	}
 	closesocket(client);
 }
