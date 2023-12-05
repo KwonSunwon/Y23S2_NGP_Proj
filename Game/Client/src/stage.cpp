@@ -109,74 +109,70 @@ void Stage::makePattern(int patternNum)
 		break;
 	case 3:
 		// pattern 3: window half(upside)
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			for (float j = 0.2; j < 0.8; j += 0.2) {
+		patternPosX = -0.8f;
+		patternPosY = 0.8f;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 4; j++) {
 				wallIndex = ++wallIndex % indexSize;
 				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
+				walls[wallIndex]->setPosX(patternPosX);
+				walls[wallIndex]->setPosY(patternPosY);
+				patternPosX += 0.4f;
 				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
+			patternPosX = -0.8f;
+			patternPosY -= 0.2f;
 		}
 		break;
 	case 4:
 		// pattern 4: window half(downside)
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			for (float j = -0.2; j > -0.8; j -= 0.2) {
+		patternPosX = -0.8f;
+		patternPosY = -0.8f;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 4; j++) {
 				wallIndex = ++wallIndex % indexSize;
 				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
+				walls[wallIndex]->setPosX(patternPosX);
+				walls[wallIndex]->setPosY(patternPosY);
+				patternPosX += 0.4f;
 				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
-		}
-		break;
-	case 5:
-		// pattern 5: window half(leftside)
-		for (float i = -0.8; i > -0.2; i -= 0.2) {
-			for (float j = -0.8; j < 0.8; j += 0.2) {
-				wallIndex = ++wallIndex % indexSize;
-				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
-				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
-			}
+			patternPosX = -0.8f;
+			patternPosY += 0.2f;
 		}
 		break;
 	case 6:
-		// pattern 6: window half(rightside)
-		for (float i = 0.8; i < 0.2; i += 0.2) {
-			for (float j = -0.8; j < 0.8; j += 0.2) {
+		// pattern 7: sprite
+		patternPosX = -0.4f;
+		patternPosY = -0.8f;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 10; j++) {
 				wallIndex = ++wallIndex % indexSize;
 				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
+				walls[wallIndex]->setPosX(patternPosX);
+				walls[wallIndex]->setPosY(patternPosY);
+				patternPosY += 0.2f;
 				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
+			patternPosX = 0.4f;
+			patternPosY = -0.8f;
 		}
 		break;
 	case 7:
-		// pattern 7: sprite
-		for (float i = -0.8; i < 0.8; i += 0.2) {
-			for (float j = -0.8; j < 0.8; j += 0.6) {
-				wallIndex = ++wallIndex % indexSize;
-				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
-				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
-			}
-		}
-		break;
-	case 8:
 		// pattern 8: sprite 2
-		for (float i = -0.8; i < 0.8; i += 0.6) {
-			for (float j = -0.8; j < 0.8; j += 0.2) {
+		patternPosX = -0.8f;
+		patternPosY = -0.4f;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 10; j++) {
 				wallIndex = ++wallIndex % indexSize;
 				walls[wallIndex]->setPosZ(startZ);
-				walls[wallIndex]->setPosX(i);
-				walls[wallIndex]->setPosY(j);
+				walls[wallIndex]->setPosX(patternPosX);
+				walls[wallIndex]->setPosY(patternPosY);
+				patternPosX += 0.2f;
 				static_cast<Wall*>(walls[wallIndex])->setAlive(true);
 			}
+			patternPosX = -0.8f;
+			patternPosY = 0.4f;
 		}
 		break;
 	default:
