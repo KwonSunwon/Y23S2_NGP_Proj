@@ -146,10 +146,26 @@ void DlgThread()
 
 INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	RECT desktopRect;
+	RECT dialogRect;
+	int dialogWidth;
+	int dialogHeight;
+	int centerX;
+	int centerY;
+
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
-		SetWindowPos(hDlg, NULL, 200, 200, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowText(hDlg, L"VOYAGE IN SPACE");
+		desktopRect;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktopRect, 0);
+		dialogRect;
+		GetWindowRect(hDlg, &dialogRect);
+		dialogWidth = dialogRect.right - dialogRect.left;
+		dialogHeight = dialogRect.bottom - dialogRect.top;
+		centerX = (desktopRect.left + desktopRect.right - dialogWidth) / 2;
+		centerY = (desktopRect.top + desktopRect.bottom - dialogHeight) / 2;
+		SetWindowPos(hDlg, NULL, centerX, centerY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		g_ipEdit = GetDlgItem(hDlg, IDC_IPADDRESS1);
 		g_textEdit = GetDlgItem(hDlg, IDC_EDIT1);
 		SendMessage(g_ipEdit, IPM_SETADDRESS, 0, g_dlgServerIP);

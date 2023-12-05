@@ -10,6 +10,8 @@
 #include "PacketManager.h"
 #include "soundManager.h"
 
+#include "../resource.h"
+
 #ifndef __PLAYER_STATIC__
 #define __PLAYER_STATIC__
 
@@ -366,9 +368,9 @@ void Player::move()
 	pos.y += speed.y;
 	pos.z += speed.z;
 
-	rotate.x += speed.y*100.f;
+	rotate.x += speed.y * 100.f;
 	rotate.x -= g_elapsedTime * 100.f;
-	rotate.y += speed.x*100.f;
+	rotate.y += speed.x * 100.f;
 
 	//// x �� 1.3f ������ 0.15f
 	//if (pos.x < -1.15f)
@@ -386,6 +388,44 @@ void Player::move()
 	//if (revolution.z > 360)
 	//	revolution.z -= 360.0f;
 }
+
+INT_PTR CALLBACK DlgProc2(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	RECT desktopRect;
+	RECT dialogRect;
+	int dialogWidth;
+	int dialogHeight;
+	int centerX;
+	int centerY;
+
+	switch (uMsg)
+	{
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case WM_INITDIALOG:
+			SetWindowText(hDlg, L"VOYAGE IN SPACE");
+			desktopRect;
+			SystemParametersInfo(SPI_GETWORKAREA, 0, &desktopRect, 0);
+			dialogRect;
+			GetWindowRect(hDlg, &dialogRect);
+			dialogWidth = dialogRect.right - dialogRect.left;
+			dialogHeight = dialogRect.bottom - dialogRect.top;
+			centerX = (desktopRect.left + desktopRect.right - dialogWidth) / 2;
+			centerY = (desktopRect.top + desktopRect.bottom - dialogHeight) / 2;
+			SetWindowPos(hDlg, NULL, centerX, centerY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			return TRUE;
+		case IDOK:
+			EndDialog(hDlg, 0);
+			exit(0);
+			return TRUE;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void Player::collision()
 {
 	float x = numeric_limits<float>::infinity();
@@ -397,10 +437,11 @@ void Player::collision()
 	if (dieTimer != 0)
 		return;
 
-
 	dieTimer++;
 
 	soundManager.soundPlay(PLAYER_DESTROY);
+
+	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG2), NULL, (DLGPROC)DlgProc2);
 }
 void Player::die()
 {
