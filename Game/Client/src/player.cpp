@@ -387,11 +387,11 @@ void Player::move()
 }
 void Player::collision()
 {
-	pos.x = 123456789.f;
-	pos.y = 123456789.f;
+	pos.x = numeric_limits<float>::infinity();
+	pos.y = numeric_limits<float>::infinity();
 
-	float x = -123456789;
-	float y = -123456789;
+	float x = numeric_limits<float>::infinity();
+	float y = numeric_limits<float>::infinity();
 	BYTE flag = 0b00000010;
 	flag |= (playerNum << 5);
 	g_PacketManager->SendPacket(flag, x, y);
