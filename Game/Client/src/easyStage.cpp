@@ -219,6 +219,10 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
 
 		case 'Q':
 		case 'q':
+			float x = numeric_limits<float>::infinity();
+			float y = numeric_limits<float>::infinity();
+			BYTE flag = 0b00000000;
+			g_PacketManager->SendPacket(flag, x, y);
 			exit(0);
 			break;
 		}
