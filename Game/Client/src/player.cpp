@@ -133,7 +133,7 @@ void Player::render(GLuint shaderProgramID)
 	glUseProgram(shaderProgramID);
 
 	model = glm::mat4(1.0);
-	model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
+	//model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
 	model = glm::translate(model, pos);
 	model = glm::rotate(model, glm::radians(rotate.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(rotate.x), glm::vec3(1, 0, 0));

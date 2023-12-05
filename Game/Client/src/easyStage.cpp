@@ -138,9 +138,9 @@ void EasyStage::update()
 		if (life == 0) {
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
-					//cout << "collllllllll" << endl;
+					cout << "collllllllll" << endl;
 					cout << playerNum << endl;
-					p->collision();
+					//p->collision();
 					continue;
 				}
 			}
