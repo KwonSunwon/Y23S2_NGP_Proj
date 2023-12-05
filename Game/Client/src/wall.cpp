@@ -225,8 +225,13 @@ void Wall::collision()
 			float dis = calcDis(pos, posP);
 			if (dis < 0.2) {
 				p->collision();
-				gameWorld.del_object(id);
-
+				m_isAlive = false;
+				for (int i = 0; i < 500; ++i)
+				{
+					Particle* tempP = new Particle(false);
+					tempP->initBuffer();
+					gameWorld.add_object(tempP);
+				}
 
 			}
 		}
@@ -239,12 +244,7 @@ void Wall::collision()
 	//		if (player.getProtectedMode())
 	//		{
 	//			soundManager.soundPlay(WALL_DESTROY);
-	//			for (int i = 0; i < 50; ++i)
-	//			{
-	//				Particle* tempP = new Particle(false);
-	//				tempP->initBuffer();
-	//				gameWorld.add_object(tempP);
-	//			}
+	//			
 	//			gameWorld.del_object(id);
 	//		}
 	//		else
