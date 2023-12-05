@@ -21,7 +21,7 @@ extern BG backGround;
 
 short seed;
 std::mt19937 g_gen;
-std::uniform_int_distribution<int> pattern(0, 8);
+std::uniform_int_distribution<int> pattern(0, 6);
 
 void EasyStage::init()
 {

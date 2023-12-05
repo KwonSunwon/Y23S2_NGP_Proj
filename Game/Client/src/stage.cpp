@@ -141,7 +141,7 @@ void Stage::makePattern(int patternNum)
 			patternPosY += 0.2f;
 		}
 		break;
-	case 6:
+	case 5:
 		// pattern 7: sprite
 		patternPosX = -0.4f;
 		patternPosY = -0.8f;
@@ -158,7 +158,7 @@ void Stage::makePattern(int patternNum)
 			patternPosY = -0.8f;
 		}
 		break;
-	case 7:
+	case 6:
 		// pattern 8: sprite 2
 		patternPosX = -0.8f;
 		patternPosY = -0.4f;
