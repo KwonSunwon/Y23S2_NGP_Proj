@@ -73,7 +73,7 @@ void EasyStage::init()
 		float accX = packet->x;
 		float accY = packet->y;
 
-		//cout << seed << " " << isPos << " " << playerNum << " " << isInit <<" " << accX<<" "<<accY<< endl;
+		cout << seed << " " << isPos << " " << playerNum << " " << isInit <<" " << accX<<" "<<accY<< endl;
 
 		if (i == 0) {
 			player.setPlayerNum(playerNum);
@@ -139,6 +139,7 @@ void EasyStage::update()
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
 					//cout << "collllllllll" << endl;
+					cout << playerNum << endl;
 					p->collision();
 					continue;
 				}

@@ -161,7 +161,7 @@ void Wall::render(GLuint shaderProgramID)
 	glUseProgram(shaderProgramID);
 
 	model = glm::mat4(1.0);
-	model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
+	//model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
 	model = glm::translate(model, pos);
 	model = glm::rotate(model, glm::radians(rotate.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(rotate.x), glm::vec3(1, 0, 0));
@@ -219,36 +219,38 @@ float calcDis(glm::vec3 w, glm::vec3 p) {
 
 void Wall::collision()
 {
-	for (auto p : easyStage->otherPlayers) {
-		glm::vec3 posP = p->getPos();
-		float dis = calcDis(pos, posP);
-		if (dis < 0.3) {
-			player.collision();
-			gameWorld.del_object(id);
-
-			
-		}
-	}
-	if (1)
-	{
-		if (abs(revolution.z - player.getRevolution().z) < 10 || abs(revolution.z + 360.0f - player.getRevolution().z) < 10 || abs(revolution.z - 360.0f - player.getRevolution().z) < 10)
-		{
-			// cout << "collision with Wall" << endl;
-			if (player.getProtectedMode())
-			{
-				soundManager.soundPlay(WALL_DESTROY);
-				for (int i = 0; i < 50; ++i)
-				{
-					Particle* tempP = new Particle(false);
-					tempP->initBuffer();
-					gameWorld.add_object(tempP);
-				}
+	if (m_isAlive) {
+		for (auto p : easyStage->otherPlayers) {
+			glm::vec3 posP = p->getPos();
+			float dis = calcDis(pos, posP);
+			if (dis < 0.2) {
+				p->collision();
 				gameWorld.del_object(id);
-			}
-			else
-			{
-				
+
+
 			}
 		}
 	}
+	//if (1)
+	//{
+	//	if (abs(revolution.z - player.getRevolution().z) < 10 || abs(revolution.z + 360.0f - player.getRevolution().z) < 10 || abs(revolution.z - 360.0f - player.getRevolution().z) < 10)
+	//	{
+	//		// cout << "collision with Wall" << endl;
+	//		if (player.getProtectedMode())
+	//		{
+	//			soundManager.soundPlay(WALL_DESTROY);
+	//			for (int i = 0; i < 50; ++i)
+	//			{
+	//				Particle* tempP = new Particle(false);
+	//				tempP->initBuffer();
+	//				gameWorld.add_object(tempP);
+	//			}
+	//			gameWorld.del_object(id);
+	//		}
+	//		else
+	//		{
+	//			
+	//		}
+	//	}
+	//}
 }

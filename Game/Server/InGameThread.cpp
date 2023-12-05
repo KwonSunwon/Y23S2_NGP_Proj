@@ -74,6 +74,8 @@ static bool ToServerQueueCheck(vector<int>* alivePlayer, array<EventQueues, NUM_
 	Packet tmp;
 	for (auto player : *alivePlayer)
 	{
+		tmp.x = 0;
+		tmp.y = 0;
 		if ((*eventQueues)[player].toServerEventQueue->TryPop(tmp) == true)
 		{
 			if (tmp.x == numeric_limits<float>::infinity() &&

@@ -380,10 +380,10 @@ void Player::move()
 	//if (pos.y > 1.15f)
 	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
 
-	if (revolution.z < 0)
-		revolution.z += 360.0f;
-	if (revolution.z > 360)
-		revolution.z -= 360.0f;
+	//if (revolution.z < 0)
+	//	revolution.z += 360.0f;
+	//if (revolution.z > 360)
+	//	revolution.z -= 360.0f;
 }
 void Player::collision()
 {
