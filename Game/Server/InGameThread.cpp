@@ -145,7 +145,7 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 			(*playerPackets)[i].y == numeric_limits<float>::infinity())
 		{
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::PLAYING);
-			//(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
+			(*playerPackets)[i].stateMask &= ~(3 << (int)STATE_MASK::LIFE);
 			(*playerPackets)[i].stateMask &= ~(1 << (int)STATE_MASK::POS_FLAG);
 
 			(*players)[i].Pos.x = END_OF_X + 1.f;
