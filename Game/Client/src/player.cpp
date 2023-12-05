@@ -224,9 +224,9 @@ void Player::setMoveLeft(bool in)
 			BYTE flag = 0b10001110;
 			flag |= (playerNum << 5);
 			g_PacketManager->SendPacket(flag, x, y);*/
-		}	
+		}
 	}
-	
+
 }
 void Player::setMoveRight(bool in)
 {
@@ -240,15 +240,15 @@ void Player::setMoveRight(bool in)
 			g_PacketManager->SendPacket(flag, x, y);
 		}
 		{
-		/*	float x = pos.x;
-			float y = pos.y;
-			BYTE flag = 0b10001110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);*/
+			/*	float x = pos.x;
+				float y = pos.y;
+				BYTE flag = 0b10001110;
+				flag |= (playerNum << 5);
+				g_PacketManager->SendPacket(flag, x, y);*/
 		}
 	}
 }
-	
+
 void Player::setMoveUp(bool in)
 {
 	if (in != isMoveUp) {
@@ -268,7 +268,7 @@ void Player::setMoveUp(bool in)
 			g_PacketManager->SendPacket(flag, x, y);*/
 		}
 	}
-	
+
 }
 void Player::setMoveDown(bool in)
 {
@@ -360,7 +360,7 @@ void Player::move()
 	//}
 
 	// ���ú� �� ���� �ް� ����
-	SpeedUpdate();
+	// SpeedUpdate();
 
 	pos.x += speed.x;
 	pos.y += speed.y;
