@@ -99,8 +99,8 @@ void PacketManager::Initialize(GAME_LEVEL level)
 		err_display("send()");
 	}
 
-	bool optval = true;
-	setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+	//bool optval = true;
+	//setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 }
 
 void PacketManager::Reset()
