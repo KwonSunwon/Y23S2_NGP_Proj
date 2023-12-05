@@ -8,6 +8,7 @@
 #include "particle.h"
 #include "bg.h"
 #include "PacketManager.h"
+#include "particle.h"
 
 extern Player player;
 extern Light light;
@@ -90,16 +91,17 @@ void EasyStage::init()
 			gameWorld.add_object(other);
 			otherPlayers.emplace_back(other);
 		}
+		for (int j = 0; j < 20; ++j)
+		{
+			Particle* tempP = new Particle(true, otherPlayers[i]);
+			tempP->initBuffer();
+			gameWorld.add_object(tempP);
+		}
 
 	}
 	g_PacketManager->SetSocketOpt();
 
-	for (int i = 0; i < 20; ++i)
-	{
-		Particle* tempP = new Particle(true);
-		tempP->initBuffer();
-		gameWorld.add_object(tempP);
-	}
+
 }
 void EasyStage::update()
 {
@@ -141,7 +143,24 @@ void EasyStage::update()
 					cout << "collllllllll" << endl;
 					cout << playerNum << endl;
 					//p->collision();
-					continue;
+					if (p->getPos().x > 2.0)
+						continue;
+
+					if (p->getPos().x < 2.0)
+						continue;
+					if (p->getPos().y > 2.0)
+						continue;
+
+					if (p->getPos().y < 2.0)
+						continue;
+
+					for (int i = 0; i < 500; ++i)
+					{
+						
+						Particle* tempP = new Particle(false, p);
+						tempP->initBuffer();
+						gameWorld.add_object(tempP);
+					}
 				}
 			}
 		}

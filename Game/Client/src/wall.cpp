@@ -242,7 +242,7 @@ void Wall::collision()
 			m_isAlive = false;
 			for (int i = 0; i < 500; ++i)
 			{
-				Particle* tempP = new Particle(false);
+				Particle* tempP = new Particle(false,&player);
 				tempP->initBuffer();
 				gameWorld.add_object(tempP);
 			}

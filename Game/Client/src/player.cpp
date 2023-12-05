@@ -387,9 +387,6 @@ void Player::move()
 }
 void Player::collision()
 {
-	pos.x = numeric_limits<float>::infinity();
-	pos.y = numeric_limits<float>::infinity();
-
 	float x = numeric_limits<float>::infinity();
 	float y = numeric_limits<float>::infinity();
 	BYTE flag = 0b00000010;
@@ -398,12 +395,7 @@ void Player::collision()
 
 	if (dieTimer != 0)
 		return;
-	for (int i = 0; i < 500; ++i)
-	{
-		Particle* tempP = new Particle(false);
-		tempP->initBuffer();
-		gameWorld.add_object(tempP);
-	}
+
 
 	dieTimer++;
 

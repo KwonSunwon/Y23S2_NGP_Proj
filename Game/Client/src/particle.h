@@ -3,6 +3,7 @@
 
 #include "object.h"
 #include "stdafx.h"
+class Player;
 
 class Particle : public Object
 {
@@ -18,7 +19,7 @@ private:
 
 protected:
 public:
-    Particle(bool);
+    Particle(bool, Player*);
     ~Particle();
     void render(GLuint shaderProgramID) override;
     void colorInit();

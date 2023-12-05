@@ -18,7 +18,7 @@ unsigned int Particle::texture = -1;
 extern Player player;
 extern GameWorld gameWorld;
 
-Particle::Particle(bool isPlayersParticle)
+Particle::Particle(bool isPlayersParticle, Player* p)
 {
     if (object == -1)
     {
@@ -33,10 +33,10 @@ Particle::Particle(bool isPlayersParticle)
             uvs[i] = objReader.out_uvs[i];
         }
     }
-    setPosY(-1.05f);
-    setPosX(player.getPos().x);
-    setPosZ(player.getPos().z);
-    setRevolutionZ(player.getRevolution().z); 
+    
+    setPosX(p->getPos().x);
+    setPosY(p->getPos().y);
+    setPosZ(p->getPos().z);
     if (isPlayersParticle)
     {
         setDx((float)(dis1(gen1) - 50) / 10000);
@@ -45,9 +45,9 @@ Particle::Particle(bool isPlayersParticle)
     }
     else
     {
-        setDx((float)(dis1(gen1) - 50) / 1000);
-        setDy((float)(dis1(gen1) - 50) / 1000);
-        setDz((float)(dis1(gen1) - 50) / 1000);
+        setDx((float)(dis1(gen1) - 50) / 10000);
+        setDy((float)(dis1(gen1) - 50) / 10000);
+        setDz((float)(dis1(gen1) - 50) / 10000);
     }
 
     this->isPlayersParticle = isPlayersParticle;
@@ -85,7 +85,7 @@ void Particle::render(GLuint shaderProgramID)
     glUseProgram(shaderProgramID);
 
     model = glm::mat4(1.0);
-    model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
+    //model = glm::rotate(model, glm::radians(revolution.z), glm::vec3(0, 0, 1));
     model = glm::translate(model, pos);
     model = glm::rotate(model, glm::radians(rotate.y), glm::vec3(0, 1, 0));
     model = glm::scale(model, glm::vec3(0.01, 0.01, 0.01));
@@ -123,14 +123,14 @@ void Particle::move()
     if (isPlayersParticle)
     {
         setPosZ(pos.z + dz);
-        //setPosY(pos.y + dy);
+        setPosY(pos.y + dy);
         setPosX(pos.x + dx);
         if (pos.z > 3.0)
         {
             //setPosY(-1.0f);
-            setPosX(player.getPos().x);
+           /* setPosX(player.getPos().x);
             setPosZ(player.getPos().z);
-            setRevolutionZ(player.getRevolution().z);
+            setRevolutionZ(player.getRevolution().z);*/
         }
     }
     else
@@ -140,8 +140,8 @@ void Particle::move()
         setPosX(pos.x + dx);
         if (abs(pos.z) > 3.0 || abs(pos.x)>3.0||abs(pos.y>3.0))
         {
-            gameWorld.del_object(id);
-            delete this;
+            //gameWorld.del_object(id);
+            //delete this;
 
         }
     }
