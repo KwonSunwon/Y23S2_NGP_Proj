@@ -367,6 +367,7 @@ void Player::move()
 	pos.z += speed.z;
 
 	rotate.x += speed.y*100.f;
+	rotate.x -= g_elapsedTime * 100.f;
 	rotate.y += speed.x*100.f;
 
 	//// x �� 1.3f ������ 0.15f

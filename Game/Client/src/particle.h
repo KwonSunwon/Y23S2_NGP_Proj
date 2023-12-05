@@ -18,6 +18,7 @@ private:
     static unsigned int texture;
 
 protected:
+    Player* p = nullptr;
 public:
     Particle(bool, Player*);
     ~Particle();

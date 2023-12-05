@@ -20,6 +20,7 @@ extern GameWorld gameWorld;
 
 Particle::Particle(bool isPlayersParticle, Player* p)
 {
+    this->p = p;
     if (object == -1)
     {
         object = objReader.loadObj("res/wall.obj");
@@ -128,9 +129,10 @@ void Particle::move()
         if (pos.z > 3.0)
         {
             //setPosY(-1.0f);
-           /* setPosX(player.getPos().x);
-            setPosZ(player.getPos().z);
-            setRevolutionZ(player.getRevolution().z);*/
+            setPosX(p->getPos().x);
+            setPosY(p->getPos().y);
+            setPosZ(p->getPos().z);
+            //setRevolutionZ(player.getRevolution().z);
         }
     }
     else
