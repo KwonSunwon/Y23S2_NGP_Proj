@@ -168,6 +168,10 @@ static void CheckPlayerExitGame(vector<int>* alivePlayer, array<Packet, NUM_OF_P
 static void PushWinPacket(vector<int> alivePlayer, array<EventQueues, NUM_OF_PLAYER>* eventQueues, array<Packet, NUM_OF_PLAYER> playerPackets)
 {
 	playerPackets[*alivePlayer.begin()].stateMask |= (1 << (int)STATE_MASK::RESULT);
+	playerPackets[*alivePlayer.begin()].stateMask |= (1 << (int)STATE_MASK::POS_FLAG);
+	playerPackets[*alivePlayer.begin()].x = 0;
+	playerPackets[*alivePlayer.begin()].y = 0;
+
 	for (int i = 0; i < NUM_OF_PLAYER; ++i)
 		(*eventQueues)[*alivePlayer.begin()].toClientEventQueue->Push(playerPackets[i]);
 	cout << "[Player_" << *alivePlayer.begin() + 1 << "] Win!!!!!!!" << endl;
