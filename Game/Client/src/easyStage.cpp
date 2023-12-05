@@ -53,9 +53,8 @@ void EasyStage::init()
 	player.initTexture();
 	gameWorld.add_object(playerPtr);
 
+	//플레이어의 초기 위치와 playerNum, random seed 수신
 	for (int i = 0; i < 3; i++) {
-		//Packet* packet = new Packet();
-		//g_PacketManager->RecvPacket(packet);
 		Packet* packet = &g_PacketManager->m_initPacket[i];
 
 		seed = packet->stateMask & 0b1111;
@@ -106,17 +105,12 @@ void EasyStage::init()
 void EasyStage::update()
 {
 	gameWorld.update_all();
-	//light.update(); // ����
 	timer++;
 	patternTime += g_elapsedTime;
 
-
-	// Camera rolling test
-
+	//패킷 수신
 	Packet* packet = new Packet();
 	while (g_PacketManager->RecvPacket(packet)) {
-		//short seed = packet->stateMask & 15;
-		//cout << "recv packet in stage" << endl;
 		bool isWin = packet->stateMask & 1;
 		packet->stateMask = packet->stateMask >> 1;
 
@@ -137,6 +131,7 @@ void EasyStage::update()
 		float accX = packet->x;
 		float accY = packet->y;
 
+		//사망 패킷 수신시
 		if (life == 0) {
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
@@ -153,16 +148,16 @@ void EasyStage::update()
 			}
 		}
 
+		//속도 패킷 수신시
 		if (isAcc) {
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
-					//cout << "id:" << playerNum<<" accX: "<< accX<<" accY: " << accY << endl;
 					p->setSpeed(glm::vec3(accX, accY, 0));
-
 				}
 			}
 
 		}
+		//위치 패킷 수신시
 		else {
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
@@ -191,12 +186,7 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
 	{
 		switch (key)
 		{
-		case'c':
-			makePattern(1);
-			//player.setProtectedMode(true);
-			break;
 		case 'a':
-
 			player.setMoveLeft(true);
 			break;
 
@@ -243,7 +233,7 @@ void EasyStage::handleEvent(unsigned char key, bool isDown)
 }
 void EasyStage::draw()
 {
-	camera.setCamera(shaderID, 0); // 0 = �������� / 1 = ��������
+	camera.setCamera(shaderID, 0);
 	light.setLight(shaderID, camera.getEye());
 	gameWorld.draw_all();
 }

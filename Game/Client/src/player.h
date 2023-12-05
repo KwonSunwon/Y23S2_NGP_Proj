@@ -36,6 +36,7 @@ public:
 	void update() override;
 	void getEvent(unsigned char key, bool isDown);
 	void decideAcc();
+	void sendMovePacket();
 	void setMoveLeft(bool);
 	void setMoveRight(bool);
 	void setMoveUp(bool);
