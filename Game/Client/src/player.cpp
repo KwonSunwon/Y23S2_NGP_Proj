@@ -398,23 +398,21 @@ INT_PTR CALLBACK DlgProc2(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	int centerX;
 	int centerY;
 
-	switch (uMsg)
-	{
+	switch (uMsg) {
+	case WM_INITDIALOG:
+		SetWindowText(hDlg, L"VOYAGE IN SPACE");
+		desktopRect;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktopRect, 0);
+		dialogRect;
+		GetWindowRect(hDlg, &dialogRect);
+		dialogWidth = dialogRect.right - dialogRect.left;
+		dialogHeight = dialogRect.bottom - dialogRect.top;
+		centerX = (desktopRect.left + desktopRect.right - dialogWidth) / 2;
+		centerY = (desktopRect.top + desktopRect.bottom - dialogHeight) / 2;
+		SetWindowPos(hDlg, NULL, centerX, centerY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		return TRUE;
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
-		case WM_INITDIALOG:
-			SetWindowText(hDlg, L"VOYAGE IN SPACE");
-			desktopRect;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &desktopRect, 0);
-			dialogRect;
-			GetWindowRect(hDlg, &dialogRect);
-			dialogWidth = dialogRect.right - dialogRect.left;
-			dialogHeight = dialogRect.bottom - dialogRect.top;
-			centerX = (desktopRect.left + desktopRect.right - dialogWidth) / 2;
-			centerY = (desktopRect.top + desktopRect.bottom - dialogHeight) / 2;
-			SetWindowPos(hDlg, NULL, centerX, centerY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-			return TRUE;
+		switch (LOWORD(wParam)) {
 		case IDOK:
 			EndDialog(hDlg, 0);
 			exit(0);
@@ -441,7 +439,12 @@ void Player::collision()
 
 	soundManager.soundPlay(PLAYER_DESTROY);
 
-	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG2), NULL, (DLGPROC)DlgProc2);
+	DialogBox(NULL, MAKEINTRESOURCE(IDD_DIALOG2), NULL, DlgProc2);
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 }
 void Player::die()
 {

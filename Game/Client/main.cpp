@@ -55,7 +55,7 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(300, 0);
 	glutInitWindowSize(g_width, g_height);
-	glutCreateWindow("Last Project");
+	glutCreateWindow("VOYAGE IN SPACE");
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
@@ -153,8 +153,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	int centerX;
 	int centerY;
 
-	switch (uMsg)
-	{
+	switch (uMsg) {
 	case WM_INITDIALOG:
 		SetWindowText(hDlg, L"VOYAGE IN SPACE");
 		desktopRect;
@@ -172,8 +171,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(g_textEdit, WM_SETTEXT, 0, (LPARAM)L"IP를 입력하고 접속 버튼을 눌러주세요.");
 		return TRUE;
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
+		switch (LOWORD(wParam)) {
 		case IDOK:
 			SendMessage(g_ipEdit, IPM_GETADDRESS, 0, (LPARAM)&g_dlgServerIP);
 			g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
