@@ -89,6 +89,7 @@ void MainLoop(SOCKET client)
 				cout << "recv Loop" << endl;
 			#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
+				cout << retval << '\n';
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
 					m_toServerEventQueue->Push(packet);
@@ -100,7 +101,7 @@ void MainLoop(SOCKET client)
 					cout << "TIMEOUT" << endl;
 				#endif
 					break;
-				}
+			}
 				if (retval == 0) {
 					cout << "종료" << endl;
 					packet.stateMask = 0;
@@ -109,12 +110,12 @@ void MainLoop(SOCKET client)
 					m_toServerEventQueue->Push(packet);
 					return;
 				}
-			}
 		}
+	}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
 
 		//보내기, 받기가 전부 완료되면 쓰레드 양보
 		this_thread::yield();
-	}
+}
 	closesocket(client);
 }
