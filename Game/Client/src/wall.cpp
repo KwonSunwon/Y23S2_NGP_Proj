@@ -48,15 +48,10 @@ Wall::Wall(float posZ, float revolutionZ)
 		}
 	}
 
-	//if (revolutionZ > 360.0f)
-	//{
-	//	revolutionZ -= 360.0f;
-	//}
+
 	setPosZ(posZ);
-	//setRevolutionZ(revolutionZ);
 	setRotate(glm::vec3(dis(gen), dis(gen), dis(gen)));
-	// setPosZ(-(float)dis(gen));
-	// setRevolutionZ((float)dis(gen));
+
 }
 
 Wall::Wall(float posZ)
@@ -75,15 +70,9 @@ Wall::Wall(float posZ)
 		}
 	}
 
-	//if (revolutionZ > 360.0f)
-	//{
-	//	revolutionZ -= 360.0f;
-	//}
 	setPosZ(posZ);
-	//setRevolutionZ(revolutionZ);
+
 	setRotate(glm::vec3(dis(gen), dis(gen), dis(gen)));
-	// setPosZ(-(float)dis(gen));
-	// setRevolutionZ((float)dis(gen));
 }
 
 Wall::~Wall()
@@ -220,21 +209,6 @@ float calcDis(glm::vec3 w, glm::vec3 p) {
 void Wall::collision()
 {
 	if (m_isAlive) {
-		//for (auto p : easyStage->otherPlayers) {
-		//	glm::vec3 posP = p->getPos();
-		//	float dis = calcDis(pos, posP);
-		//	if (dis < 0.2) {
-		//		p->collision();
-		//		m_isAlive = false;
-		//		for (int i = 0; i < 500; ++i)
-		//		{
-		//			Particle* tempP = new Particle(false);
-		//			tempP->initBuffer();
-		//			gameWorld.add_object(tempP);
-		//		}
-
-		//	}
-		//}
 		glm::vec3 posP = player.getPos();
 		float dis = calcDis(pos, posP);
 		if (dis < 0.2) {
@@ -249,21 +223,4 @@ void Wall::collision()
 
 		}
 	}
-	//if (1)
-	//{
-	//	if (abs(revolution.z - player.getRevolution().z) < 10 || abs(revolution.z + 360.0f - player.getRevolution().z) < 10 || abs(revolution.z - 360.0f - player.getRevolution().z) < 10)
-	//	{
-	//		// cout << "collision with Wall" << endl;
-	//		if (player.getProtectedMode())
-	//		{
-	//			soundManager.soundPlay(WALL_DESTROY);
-	//			
-	//			gameWorld.del_object(id);
-	//		}
-	//		else
-	//		{
-	//			
-	//		}
-	//	}
-	//}
 }

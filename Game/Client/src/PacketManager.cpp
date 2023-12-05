@@ -9,19 +9,9 @@
 #include <stdlib.h> // exit(), ...
 #include <string.h> // strncpy(), ...
 
-PacketManager::PacketManager()
-{
-}
-
-PacketManager::~PacketManager()
-{
-	// 소켓 닫기
-	closesocket(m_sock);
-	cout << "close Sock" << endl;
-	// 윈속 종료
-	WSACleanup();
-}
-
+//-----------------------------------------------------------------
+//에러 처리 함수
+//-----------------------------------------------------------------
 void err_quit(const char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -60,6 +50,24 @@ void err_display(int errcode)
 	printf("[오류] %s\n", (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
+//----------------------------------------------------------------------
+
+
+
+//----------------------------------------------------------------------
+//패킷 매니저
+//----------------------------------------------------------------------
+PacketManager::PacketManager()
+{
+}
+
+PacketManager::~PacketManager()
+{
+	// 소켓 정리
+	closesocket(m_sock);
+	cout << "close Sock" << endl;
+	WSACleanup();
+}
 
 void PacketManager::Initialize(GAME_LEVEL level)
 {
@@ -87,10 +95,6 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	if (retval == SOCKET_ERROR) {
 		err_quit("connect()");
 	}
-
-	//
-	/*DWORD optval = 10;
-	retval = setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));*/
 
 	//최초 난이도 제공용 send
 	retval = send(m_sock, (char*)&level, sizeof(level), 0);
@@ -135,22 +139,11 @@ void PacketManager::SendPacket(BYTE flag, float x, float y)
 
 bool PacketManager::RecvPacket(Packet* packet)
 {
-	//Packet _packet;
 	int retval = recv(m_sock, (char*)packet, sizeof(Packet), 0);
-	//_packet.stateMask = packet->stateMask;
-	//_packet.x = packet->x;
-	//_packet.y = packet->y;
-	//cout << "\nsendPacket x:" << _packet.x << " y:" << _packet.y << " bit:";
-	//cout << bitset<8>(_packet.stateMask);
-	//cout << "retval:"<< retval << endl;
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
 	if (retval < 0) {
 		return false;
 	}
 	return true;
-
 }
 
 void PacketManager::SetSocketOpt()

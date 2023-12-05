@@ -307,25 +307,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			prevTime = now;
 		}
 		if (totalTime >= 0.167f) {
-			//ResetAcc(alivePlayer, &players);
-			//// 충돌 체크
-			//for (int i = 0; i < NUM_OF_PLAYER; ++i) {
-			//	if (i == 0 || i == 1)
-			//	{
-			//		cm.DoCollideAB(&players[i], &players[i + 1]);
-			//		if (i == 0) {
-			//			cm.DoCollideAB(&players[i], &players[i + 2]);
-			//		}
-			//	}
-			//	cm.DoCollideWithWall(&players[i]);
-			//}
-			//for (auto p : alivePlayer) {
-			//	ps.CaculateVelocity(&players[p], totalTime);
-			//}
-			//// 위치 계산
-			//for (auto p : alivePlayer) {
-			//	ps.CaculatePosition(&players[p]);
-			//}
+
 			ModifyPacketPos(alivePlayer, &playerPackets, &players);
 		#ifdef _DEBUG_INGAME
 			cout << "위치 패킷데이터 확인" << endl;

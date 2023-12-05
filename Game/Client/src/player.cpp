@@ -209,24 +209,19 @@ void Player::decideAcc()
 	}
 }
 
+void Player::sendMovePacket() {
+	float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
+	float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
+	BYTE flag = 0b10011110;
+	flag |= (playerNum << 5);
+	g_PacketManager->SendPacket(flag, x, y);
+}
+
 void Player::setMoveLeft(bool in)
 {
 	if (in != isMoveLeft) {
 		isMoveLeft = in;
-		{
-			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
-			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
-			BYTE flag = 0b10011110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);
-		}
-		{
-			/*float x = pos.x;
-			float y = pos.y;
-			BYTE flag = 0b10001110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);*/
-		}
+		sendMovePacket();
 	}
 
 }
@@ -234,20 +229,7 @@ void Player::setMoveRight(bool in)
 {
 	if (in != isMoveRight) {
 		isMoveRight = in;
-		{
-			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
-			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
-			BYTE flag = 0b10011110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);
-		}
-		{
-			/*	float x = pos.x;
-				float y = pos.y;
-				BYTE flag = 0b10001110;
-				flag |= (playerNum << 5);
-				g_PacketManager->SendPacket(flag, x, y);*/
-		}
+		sendMovePacket();
 	}
 }
 
@@ -255,20 +237,7 @@ void Player::setMoveUp(bool in)
 {
 	if (in != isMoveUp) {
 		isMoveUp = in;
-		{
-			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
-			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
-			BYTE flag = 0b10011110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);
-		}
-		{
-			/*float x = pos.x;
-			float y = pos.y;
-			BYTE flag = 0b10001110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);*/
-		}
+		sendMovePacket();
 	}
 
 }
@@ -276,20 +245,7 @@ void Player::setMoveDown(bool in)
 {
 	if (in != isMoveDown) {
 		isMoveDown = in;
-		{
-			float x = -ACCELERATION * isMoveLeft + ACCELERATION * isMoveRight;
-			float y = -ACCELERATION * isMoveDown + ACCELERATION * isMoveUp;
-			BYTE flag = 0b10011110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);
-		}
-		{
-			/*float x = pos.x;
-			float y = pos.y;
-			BYTE flag = 0b10001110;
-			flag |= (playerNum << 5);
-			g_PacketManager->SendPacket(flag, x, y);*/
-		}
+		sendMovePacket();
 	}
 }
 
@@ -331,39 +287,6 @@ void Player::move()
 	setSpeedX(getSpeed().x + getAcc().x * g_elapsedTime);
 	setSpeedY(getSpeed().y + getAcc().y * g_elapsedTime);
 
-
-	//if (isMoveLeft)
-	//{
-	//	if (isMoveUp || isMoveDown)
-	//		setAccX(-(ACCELERATION / ROOT_TWO));
-	//	else
-	//		setAccX(-ACCELERATION);
-	//}
-	//if (isMoveRight)
-	//{
-	//	if (isMoveUp || isMoveDown)
-	//		setAccX(ACCELERATION / ROOT_TWO);
-	//	else
-	//		setAccX(ACCELERATION);
-	//}
-	//if (isMoveUp)
-	//{
-	//	if (isMoveLeft || isMoveRight)
-	//		setAccY(ACCELERATION / ROOT_TWO);
-	//	else
-	//		setAccY(ACCELERATION);
-	//}
-	//if (isMoveDown)
-	//{
-	//	if (isMoveLeft || isMoveRight)
-	//		setAccY(-(ACCELERATION / ROOT_TWO));
-	//	else
-	//		setAccY(-ACCELERATION);
-	//}
-
-	// ���ú� �� ���� �ް� ����
-	// SpeedUpdate();
-
 	pos.x += speed.x;
 	pos.y += speed.y;
 	pos.z += speed.z;
@@ -371,22 +294,6 @@ void Player::move()
 	rotate.x += speed.y * 100.f;
 	rotate.x -= g_elapsedTime * 100.f;
 	rotate.y += speed.x * 100.f;
-
-	//// x �� 1.3f ������ 0.15f
-	//if (pos.x < -1.15f)
-	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
-	//if (pos.x > 1.15f)
-	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
-	//// y �� 0.9f ������ 0.15f
-	//if (pos.y < -1.15f)
-	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
-	//if (pos.y > 1.15f)
-	//	cout << "��ǥ : " << pos.x << ", " << pos.y << endl;
-
-	//if (revolution.z < 0)
-	//	revolution.z += 360.0f;
-	//if (revolution.z > 360)
-	//	revolution.z -= 360.0f;
 }
 
 void Player::collision()
@@ -413,16 +320,9 @@ void Player::die()
 	dieTimer++;
 	if (dieTimer > 100)
 	{
-		//soundManager.soundStop(0);
 		dieTimer = 0;
 		pos.x = 10000000;
 		pos.y = 10000000;
-		/*camera.setRoll(0);
-		gameWorld.del_objects();
-		stages.back()->out();
-		nowStage++;
-		stages.push_back(startStage);
-		stages[nowStage]->init();*/
 	}
 }
 int Player::getPlayerDieTimer()

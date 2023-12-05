@@ -81,13 +81,13 @@ void MainLoop(SOCKET client)
 			}
 		}
 
-		//recv() 로직 짜기
+		//recv()
 		{
 			Packet packet;
 			while (true) {
-			#ifdef _DEBUG_CLIENT_SERVER
+#ifdef _DEBUG_CLIENT_SERVER
 				cout << "recv Loop" << endl;
-			#endif
+#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
@@ -96,9 +96,9 @@ void MainLoop(SOCKET client)
 
 
 				if (retval < 0) {
-				#ifdef _DEBUG_CLIENT_SERVER
+#ifdef _DEBUG_CLIENT_SERVER
 					cout << "TIMEOUT" << endl;
-				#endif
+#endif
 					break;
 				}
 				if (retval == 0) {
@@ -112,7 +112,6 @@ void MainLoop(SOCKET client)
 			}
 		}
 		//버퍼에 받은 패킷이 있으면 모두 서버큐로 푸쉬
-
 
 		//보내기, 받기가 전부 완료되면 쓰레드 양보
 		this_thread::yield();
