@@ -108,19 +108,13 @@ void EasyStage::update()
 	timer++;
 	patternTime += g_elapsedTime;
 
+
 	// Camera rolling test
 
 	Packet* packet = new Packet();
 	while (g_PacketManager->RecvPacket(packet)) {
 		//short seed = packet->stateMask & 15;
 		//cout << "recv packet in stage" << endl;
-
-		if (patternTime > 5) {
-			makePattern(pattern(g_gen));
-			patternTime = 0;
-		}
-
-		glutPostRedisplay();
 		bool isWin = packet->stateMask & 1;
 		packet->stateMask = packet->stateMask >> 1;
 
@@ -174,6 +168,11 @@ void EasyStage::update()
 			}
 		}
 
+	}
+
+	if (patternTime > 5) {
+		makePattern(pattern(g_gen));
+		patternTime = 0;
 	}
 
 	glutPostRedisplay();
