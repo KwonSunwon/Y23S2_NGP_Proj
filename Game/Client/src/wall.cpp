@@ -4,6 +4,8 @@
 #include "particle.h"
 #include "stb_image.h"
 #include "soundManager.h"
+#include "easyStage.h"
+#include "PacketManager.h"
 
 #ifndef __WALL_STATIC__
 #define __WALL_STATIC__
@@ -28,6 +30,7 @@ GLuint Wall::_tbo = -1;
 extern Player player;
 extern GameWorld gameWorld;
 extern SoundManager soundManager;
+extern EasyStage* easyStage;
 
 Wall::Wall(float posZ, float revolutionZ)
 {
@@ -194,6 +197,7 @@ void Wall::update()
 	//collision();
 	if (m_isAlive)
 		move();
+    collision();
 }
 
 void Wall::move()
@@ -209,9 +213,23 @@ void Wall::move()
 	}
 }
 
+float calcDis(glm::vec3 w, glm::vec3 p) {
+	return sqrtf(pow(w.x - p.x, 2) + pow(w.y - p.y, 2) + pow(w.z - p.z, 2));
+}
+
 void Wall::collision()
 {
-	if (abs(pos.z) < 0.3)
+	for (auto p : easyStage->otherPlayers) {
+		glm::vec3 posP = p->getPos();
+		float dis = calcDis(pos, posP);
+		if (dis < 0.3) {
+			player.collision();
+			gameWorld.del_object(id);
+
+			
+		}
+	}
+	if (1)
 	{
 		if (abs(revolution.z - player.getRevolution().z) < 10 || abs(revolution.z + 360.0f - player.getRevolution().z) < 10 || abs(revolution.z - 360.0f - player.getRevolution().z) < 10)
 		{
@@ -229,8 +247,7 @@ void Wall::collision()
 			}
 			else
 			{
-				player.collision();
-				gameWorld.del_object(id);
+				
 			}
 		}
 	}
