@@ -306,7 +306,7 @@ void InGameThread(GAME_LEVEL level, array<EventQueues, NUM_OF_PLAYER> eventQueue
 			//	// 위치 push전에 Packet 조정 [0__0__10]
 			prevTime = now;
 		}
-		if (totalTime >= 3.f) {
+		if (totalTime >= 0.167f) {
 			//ResetAcc(alivePlayer, &players);
 			//// 충돌 체크
 			//for (int i = 0; i < NUM_OF_PLAYER; ++i) {
