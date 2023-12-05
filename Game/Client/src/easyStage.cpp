@@ -254,7 +254,6 @@ void EasyStage::draw()
 }
 void EasyStage::out()
 {
-	g_PacketManager->Reset();
 	patternTime = 0;
 	cout << "Out Easy Stage" << endl;
 }

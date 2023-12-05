@@ -24,7 +24,6 @@ public:
 	PacketManager();
 	~PacketManager();
 	void Initialize(GAME_LEVEL level);
-	void Reset();
 	void SendPacket(BYTE flag, float x, float y);
 	bool RecvPacket(Packet* packet);
 
@@ -33,7 +32,6 @@ public:
 	void SetIPAddress(char* ip);
 	char* GetIPAddress() { return m_serverIP; };
 
-	shared_ptr<queue<Packet>> GetPacketQueue();
 
 	void WaitForPlayers();
 

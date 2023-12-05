@@ -107,18 +107,6 @@ void PacketManager::Initialize(GAME_LEVEL level)
 	setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 }
 
-void PacketManager::Reset()
-{
-	Packet packet;
-	packet.stateMask = 0;
-	send(m_sock, (char*)&packet, sizeof(packet), 0);
-	cout << "소켓 종료" << endl;
-	// 소켓 닫기
-	closesocket(m_sock);
-	cout << "close Sock" << endl;
-	// 윈속 종료
-	WSACleanup();
-}
 #include<bitset>
 void PacketManager::SendPacket(BYTE flag, float x, float y)
 {
@@ -157,10 +145,6 @@ void PacketManager::SetIPAddress(char* ip)
 	m_serverIP = ip;
 }
 
-shared_ptr<queue<Packet>> PacketManager::GetPacketQueue()
-{
-	return m_toClientEventQue;
-}
 
 void PacketManager::WaitForPlayers()
 {
