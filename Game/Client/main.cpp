@@ -177,6 +177,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			g_PacketManager->SetIPAddress(PacketManager::LPARAMToCharPtr(g_dlgServerIP));
 			g_PacketManager->Initialize(GAME_LEVEL::EASY);
 			SendMessageW(g_textEdit, WM_SETTEXT, 0, (LPARAM)L"다른 플레이어를 기다리는 중...");
+			EnableWindow(GetDlgItem(hDlg, IDOK), FALSE);
 			SetEvent(g_connectionEvent);
 			break;
 		case IDCANCEL:

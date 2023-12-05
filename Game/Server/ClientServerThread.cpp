@@ -60,8 +60,8 @@ void Initialize(SOCKET client)
 	DWORD optval = 10;
 	retval = setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&optval, sizeof(optval));
 
-	//optval = true;
-	//setsockopt(client, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+	optval = true;
+	setsockopt(client, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
 }
 
 void MainLoop(SOCKET client)
@@ -85,9 +85,9 @@ void MainLoop(SOCKET client)
 		{
 			Packet packet;
 			while (true) {
-#ifdef _DEBUG_CLIENT_SERVER
+			#ifdef _DEBUG_CLIENT_SERVER
 				cout << "recv Loop" << endl;
-#endif
+			#endif
 				retval = recv(client, (char*)&packet, sizeof(packet), 0);
 				if (retval > 0) {
 					cout << packet.x << " " << packet.y << " " << packet.stateMask << endl;
@@ -96,9 +96,9 @@ void MainLoop(SOCKET client)
 
 
 				if (retval < 0) {
-#ifdef _DEBUG_CLIENT_SERVER
+				#ifdef _DEBUG_CLIENT_SERVER
 					cout << "TIMEOUT" << endl;
-#endif
+				#endif
 					break;
 				}
 				if (retval == 0) {

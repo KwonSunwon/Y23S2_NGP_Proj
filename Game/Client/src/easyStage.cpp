@@ -186,7 +186,6 @@ void EasyStage::update()
 			light.setAmbientLight(1.0);
 			camera.setFovy(90);
 		}
-
 	}
 
 	if (patternTime > 5) {
