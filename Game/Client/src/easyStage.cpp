@@ -140,26 +140,14 @@ void EasyStage::update()
 		if (life == 0) {
 			for (auto& p : otherPlayers) {
 				if (p->getPlayerNum() == playerNum) {
-					cout << "collllllllll" << endl;
-					cout << playerNum << endl;
-					//p->collision();
-					if (p->getPos().x > 2.0)
-						continue;
-
-					if (p->getPos().x < 2.0)
-						continue;
-					if (p->getPos().y > 2.0)
-						continue;
-
-					if (p->getPos().y < 2.0)
-						continue;
-
-					for (int i = 0; i < 500; ++i)
-					{
-						
-						Particle* tempP = new Particle(false, p);
-						tempP->initBuffer();
-						gameWorld.add_object(tempP);
+					if (p->getIsAlive()) {
+						for (int i = 0; i < 500; ++i)
+						{
+							p->setIsAlive(false);
+							Particle* tempP = new Particle(false, p);
+							tempP->initBuffer();
+							gameWorld.add_object(tempP);
+						}
 					}
 				}
 			}

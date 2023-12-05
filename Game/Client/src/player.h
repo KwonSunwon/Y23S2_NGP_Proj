@@ -23,6 +23,7 @@ protected:
 	bool isProtectedMode = false;
 	short playerNum = 0;
 	int protectTime = 0;
+	bool isAlive = true;
 
 public:
 	Player();
@@ -48,6 +49,9 @@ public:
 	void move();
 	void die();
 	int getPlayerDieTimer();
+
+	bool getIsAlive();
+	void setIsAlive(bool);
 };
 
 #endif

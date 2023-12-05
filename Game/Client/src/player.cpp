@@ -424,3 +424,13 @@ int Player::getPlayerDieTimer()
 {
 	return dieTimer;
 }
+
+bool Player::getIsAlive()
+{
+	return isAlive;
+}
+
+void Player::setIsAlive(bool flag)
+{
+	isAlive = flag;
+}

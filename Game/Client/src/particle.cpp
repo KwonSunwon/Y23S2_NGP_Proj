@@ -45,9 +45,9 @@ Particle::Particle(bool isPlayersParticle, Player* p)
     }
     else
     {
-        setDx((float)(dis1(gen1) - 50) / 10000);
-        setDy((float)(dis1(gen1) - 50) / 10000);
-        setDz((float)(dis1(gen1) - 50) / 10000);
+        setDx((float)(dis1(gen1) - 50) / 1000);
+        setDy((float)(dis1(gen1) - 50) / 1000);
+        setDz((float)(dis1(gen1) - 50) / 1000);
     }
 
     this->isPlayersParticle = isPlayersParticle;
